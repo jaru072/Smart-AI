@@ -1,5 +1,5 @@
 #include "FS.h"
-//#include <LITTLEFS.h>
+#include <LITTLEFS.h>
 #include "WiFi.h"
 #ifndef CONFIG_LITTLEFS_FOR_IDF_3_2
  #include <time.h>
@@ -8,8 +8,7 @@
    test or else use the LITTLEFS plugin to create a partition
    https://github.com/lorol/arduino-esp32littlefs-plugin */
    
-#define FORMAT_LITTLEFS_IF_FAILED true
-#define SPIFFS LITTLEFS
+
 
 // extern String ssid;
 // extern String pass;

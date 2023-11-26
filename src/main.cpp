@@ -27,7 +27,7 @@ void setup() {
   WiFi.disconnect();
   delay(100);
   check_ssid();
-  int connectInternet(20);  
+  connectInternet();  
 }
 int z,N;
 void loop(){N++;

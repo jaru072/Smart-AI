@@ -1,6 +1,9 @@
 #include <Arduino.h>
-#include <LITTLEFS.h>
+// #include <LITTLEFS.h>
 #include <Config.h>
+
+#define FORMAT_LITTLEFS_IF_FAILED true
+#define SPIFFS LITTLEFS
 
 // put function definitions here:
 int myFunction(int x, int y) {
