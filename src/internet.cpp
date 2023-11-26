@@ -1,5 +1,4 @@
 #include <Arduino.h>
-// #include "WiFi.h"
 #include <Config.h>
 
 String ssid = "HUAWEI MediaPad T3 10";
