@@ -6,7 +6,8 @@ long timezone = 7;  // 2;
 byte daysavetime = 0; // 1;
 String CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
 String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName = "";
-int NYear,NMonth,NDay,Nmdaymonyear,NDoW = 0;
+int NMonth,NDay,Nmdaymonyear,NDoW = 0;
+int NYear = 1970;
 bool LTime_Between,Ltalk_Firsttime,LFirstOnly = false;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 
@@ -98,7 +99,7 @@ void setup() {
   connectInternet();  
   if (Wifi_Connect == true) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
-    delay(3000);GetTimeInternet();
+    delay(1000);GetTimeInternet();
   }
 }
 int z,N;
@@ -106,5 +107,8 @@ void loop(){N++;
   z = myFunction(5,7);
   Serial.println(z+N);
   delay(1500);
-  // GetTimeInternet();
+  if (Wifi_Connect == true and NYear == 1970) {
+    configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+    GetTimeInternet();
+  }
 }

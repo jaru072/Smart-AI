@@ -8,14 +8,15 @@
 // void talk_time_current(void);
 //....................................... Get Date Time from Internet ...........................................//
 void GetTimeInternet(void) { 
-  if (Wifi_Connect == true) {Serial.println(" Run void GetTimeInternet and Wifi_Connect == true");
+  if (Wifi_Connect == true) {
     tmstruct.tm_year = 0; GetLocalTime(&tmstruct, 1000);
     hour = tmstruct.tm_hour;minute = tmstruct.tm_min;
-    Serial.print(hour);Serial.print(":");Serial.println(minute);
     char Cha[32];strftime(Cha, sizeof Cha, "%Y-%m-%d %H:%M:%S", &tmstruct); CDateTime = String(Cha);
     NYear = (tmstruct.tm_year + 1900); NMonth = (tmstruct.tm_mon + 1); NDay = (tmstruct.tm_mday);
     CYear = String(NYear);if(NMonth < 10){CMon = ("0"+String(NMonth));}else{CMon = String(NMonth);} if(NDay < 10){CDay = ("0"+String(NDay));}else{CDay = String(NDay);}  DayofWeek(NDay,NMonth,NYear); // while (tmstruct.tm_year < 100);
-    Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
+    if (NYear > 1970) {
+      Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
+    }
 //    Serial.print(" LPlayFinish ");Serial.print(LPlayFinish);LPlayFinish = 0;Serial.print(" Ltalk_Everytime = ");Serial.print(Ltalk_Everytime);
 //    Serial.print(" N = ");Serial.print(N);Serial.print(" Leof_mp3 = ");Serial.print(Leof_mp3);Serial.print(" Leof_speech = ");Serial.println(Leof_speech);
     if (Ltalk_Firsttime == 0) {MoonPhase(NYear+543,NMonth,NDay);start_time_relay = "**";  // กำหนดค่า start_time_relay = "**" เพื่อส่งผลไปยัง talk_time_current() 
@@ -42,7 +43,9 @@ void talk_time_current(void) {
     Serial.println("Not Talk Time if hour = 0 and minute = 0");
   }else {
     if (Wifi_Connect == true) {
-      Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d\n",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
+      if (NYear > 1970) {
+        Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d\n",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
+      }
       // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
       if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
           audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
@@ -53,7 +56,10 @@ void talk_time_current(void) {
         } 
         if(start_time_relay.startsWith("***")) {CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai);} 
         if(start_time_relay.startsWith("****")){CString = (" วันที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+" "+String(tmstruct.tm_year + 1900+543)+ " เวลา "+CDateTime.substring(11,16));}       
-        Serial.println(CString);audio.stopSong();audio.connecttospeech(CString.c_str(), "th");          
+        if (NYear > 1970) {
+          Serial.println(CString);
+        }
+        audio.stopSong();audio.connecttospeech(CString.c_str(), "th");          
       }
     }
   }
