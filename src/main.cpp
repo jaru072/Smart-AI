@@ -97,8 +97,8 @@ void setup() {
   check_ssid();
   connectInternet();  
   if (Wifi_Connect == true) {
-    delay(1000); configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
-    delay(1000);GetTimeInternet();
+    configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+    delay(3000);GetTimeInternet();
   }
 }
 int z,N;
