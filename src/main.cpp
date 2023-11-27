@@ -1,5 +1,16 @@
 #include <Arduino.h>
 #include <Config.h>
+//#include <time.h>
+//...... Get Date Time from Internet
+long timezone = 7;  // 2;
+byte daysavetime = 0; // 1;
+String CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
+String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName = "";
+int NYear,NMonth,NDay,Nmdaymonyear,NDoW = 0;
+bool LTime_Between,Ltalk_Firsttime,LFirstOnly = false;
+
+Audio audio;
+struct tm tmstruct ;
 
 File file;
 const char filename[] = "/recording.wav";
@@ -60,7 +71,6 @@ bool f_time     = false;
 int8_t timefile = -1;
 char chbuf[100];
 
-bool LTime_Between,LFirstOnly = false;
 //................... ตัวแปร เก็บใน SPIFFS (in Ram of Board) ...........................//
 String CSound,CPlay_Test = "";
 bool Wifi_Connect,Lconfirm,LScheduled,LReplace_Config,LConnect_internet_Auto,LStartSong,LTime_Schedu,LPlayAuto,LTalk_Everytime = false;
@@ -85,6 +95,10 @@ void setup() {
   delay(100);
   check_ssid();
   connectInternet();  
+  if (Wifi_Connect == true) {
+    delay(1000); configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+    GetTimeInternet();
+  }
 }
 int z,N;
 void loop(){N++;

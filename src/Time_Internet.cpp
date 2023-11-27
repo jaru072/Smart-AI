@@ -8,8 +8,10 @@
 // void talk_time_current(void);
 //....................................... Get Date Time from Internet ...........................................//
 void GetTimeInternet(void) { 
-  if (Wifi_Connect == true) {
-    tmstruct.tm_year = 0; GetLocalTime(&tmstruct, 1000);hour = tmstruct.tm_hour;minute = tmstruct.tm_min;
+  if (Wifi_Connect == true) {Serial.println(" Run void GetTimeInternet and Wifi_Connect == true");
+    tmstruct.tm_year = 0; GetLocalTime(&tmstruct, 1000);
+    hour = tmstruct.tm_hour;minute = tmstruct.tm_min;
+    Serial.print(hour);Serial.print(":");Serial.println(minute);
     char Cha[32];strftime(Cha, sizeof Cha, "%Y-%m-%d %H:%M:%S", &tmstruct); CDateTime = String(Cha);
     NYear = (tmstruct.tm_year + 1900); NMonth = (tmstruct.tm_mon + 1); NDay = (tmstruct.tm_mday);
     CYear = String(NYear);if(NMonth < 10){CMon = ("0"+String(NMonth));}else{CMon = String(NMonth);} if(NDay < 10){CDay = ("0"+String(NDay));}else{CDay = String(NDay);}  DayofWeek(NDay,NMonth,NYear); // while (tmstruct.tm_year < 100);
