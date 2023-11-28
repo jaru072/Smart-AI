@@ -95,7 +95,14 @@ void connectInternet(void);
 int z,N;
 void IRrecv_void(void) {
   if (irrecv.decode(&results)) { 
-    if (results.value == ir_seven){if (WiFi.status() == false){connectInternet();}else{WiFi.disconnect();Serial.println("disconnect");N=N+1;Serial.println(N);}}
+    if (results.value == ir_seven){
+      if (WiFi.status() != WL_CONNECTED) {
+        Serial.println("Connecting Internet...");
+        connectInternet();
+      }else{
+        WiFi.disconnect();Serial.println("disconnect");N=N+1;Serial.println(N);
+      }
+    }
   }
   irrecv.resume(); // Receive the next value  
   delay(50);
