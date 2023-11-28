@@ -81,6 +81,12 @@ String ATime[40][2];String Ascheduled[30][3];
 const char * Replace_Config;
 int NSammaArahang = 0;
 
+#include <IRremote.h>
+int RECV_PIN = 32;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+unsigned long last,last_Sleep = millis();
+
 void List_Config(void);
 void Start_Config(void);
 void check_ssid(void);
@@ -101,9 +107,20 @@ void setup() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
   }
+  irrecv.enableIRIn(); //..... Start the receiver ...............//
 }
 int z,N;
+void IRrecv_void(void);
+void IRrecv_void(void) {
+  if (irrecv.decode(&results)) { 
+    if (results.value == ir_seven){if (WiFi.status() == false){connectInternet();}else{WiFi.disconnect();Serial.println("disconnect");N=N+1;Serial.println(N);}}
+  }
+  irrecv.resume(); // Receive the next value  
+  delay(50);
+}
+
 void loop(){N++;
+  IRrecv_void();    // ใช้ Remote Control 
   z = myFunction(5,7);
   Serial.println(z+N);
   delay(1500);
