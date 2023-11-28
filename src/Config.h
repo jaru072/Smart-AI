@@ -35,6 +35,7 @@ extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern void talk_time_current(void);
 extern void GetTimeInternet(void);
+extern void IRrecv_void(void);
 extern int NYear,NMonth,NDay,Nmdaymonyear,NDoW;
 extern String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName;
 extern int MoonPhase(int ,int ,int );   
