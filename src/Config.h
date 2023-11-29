@@ -31,6 +31,8 @@ extern byte daysavetime;
 // extern IRrecv irrecv(RECV_PIN);
 // extern decode_results results;
 
+extern void PlayAuto();
+extern void Check_SDcard(int);
 extern void talk_time_current(void);
 extern void GetTimeInternet(void);
 extern void IRrecv_void(void);
@@ -39,6 +41,13 @@ extern void Start_Config(void);
 extern void check_ssid(void);
 extern void connectInternet(int);
 
+//... ตัวแปร Audio and Sdcard
+extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,Lspeech,LSDcard;
+extern unsigned long last_timer,last_Stopsong;
+extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
+extern String OldFolder,FolderName,S_info,OldFolderName;
+extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
+//... ตัวแปร Time
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern int NYear,NMonth,NDay,Nmdaymonyear,NDoW;
@@ -46,6 +55,7 @@ extern String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName;
 extern int MoonPhase(int ,int ,int );   
 extern bool LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
 extern String CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
+//... ตัวแปร อุณหภูมิ ความชื้น
 extern float h,t;
 //................... ตัวแปร เก็บใน SPIFFS (in Ram of Board) ...........................//
 extern String CSound;

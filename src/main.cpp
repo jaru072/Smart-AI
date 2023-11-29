@@ -109,6 +109,17 @@ void setup() {
   //... Load data from Spiffs file /mydir/config.txt (Ram on board)
   // Start_Config();
   List_Config();  
+  //... Set Audio
+  pinMode(SD_CS, OUTPUT);
+  digitalWrite(SD_CS, HIGH);
+  SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
+  SPI.setFrequency(1000000);
+
+  Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
+  
+  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+  audio.setVolume(NVolume); delay(1000);
+
   //........... Start Wifi .............//
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -131,6 +142,27 @@ void loop(){N++;
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
-  sendDHT();  // Send values Tempurature and Humidity
+  // sendDHT();  // Send values Tempurature and Humidity
+  if (millis() - last_timer > 4000) {last_timer = millis();
+    Check_SDcard(1); // เช็ค SD Card 
+    if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
+  }
+  if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
+    // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
+    audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+  }
+  if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
+    Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
+    audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
+  }
+
+  if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
+
+  if ((Leof_mp3 == true or Lspeech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Lspeech = false;
+    PlayAuto();LStartSong = true;
+  }
+  if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
+
+  audio.loop(); //Executa o loop interno da biblioteca audio
 }
 
