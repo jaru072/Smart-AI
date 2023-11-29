@@ -37,8 +37,8 @@ extern void IRrecv_void(void);
 extern void List_Config(void);
 extern void Start_Config(void);
 extern void check_ssid(void);
-extern void connectInternet(void);
 
+extern int connectInternet(int);
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern int NYear,NMonth,NDay,Nmdaymonyear,NDoW;

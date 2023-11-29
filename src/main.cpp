@@ -88,12 +88,12 @@ decode_results results;
 unsigned long last,last_Sleep = millis();
 
 int z,N;
-void IRrecv_void(void) {
+void IRrecv_void() {
   if (irrecv.decode(&results)) { 
     if (results.value == ir_seven){
       if (WiFi.status() != WL_CONNECTED) {
         Serial.println("Connecting Internet...");
-        connectInternet();
+        connectInternet(15);
       }else{
         WiFi.disconnect();Serial.println("disconnect");N=N+1;Serial.println(N);
       }
@@ -114,7 +114,7 @@ void setup() {
   WiFi.disconnect();
   delay(100);
   check_ssid();
-  connectInternet();  
+  connectInternet(20);  
   if (Wifi_Connect == true) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
