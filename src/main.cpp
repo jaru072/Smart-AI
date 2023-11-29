@@ -11,7 +11,7 @@ int NYear = 1970;
 bool LTime_Between,Ltalk_Firsttime,LFirstOnly = false;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 
-Audio audio;
+// Audio audio;
 struct tm tmstruct ;
 
 File file;
@@ -29,8 +29,8 @@ const int headerSize = 44;
 #define I2S_BCLK      27
 #define I2S_LRC       26
 
-// Audio audio;
-// WiFiMulti wifiMulti;
+Audio audio;
+WiFiMulti wifiMulti;
 
 // #include <DHT.h>
 #define DHTPIN 33  // 27 //Connect Out pin to D2 in NODE MCU
