@@ -87,7 +87,7 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last,last_Sleep = millis();
 
-int z,N;
+// int z,N;
 void IRrecv_void() {
   if (irrecv.decode(&results)) { 
     if (results.value == ir_seven){
@@ -133,16 +133,16 @@ void setup() {
   irrecv.enableIRIn(); //..... Start the receiver ...............//
 }
 
-void loop(){N++;
-  IRrecv_void();    // ใช้ Remote Control 
-  z = myFunction(5,7);
-  // Serial.println(z+N);
-  delay(1500);
+void loop() {
+  // IRrecv_void();    // ใช้ Remote Control 
+
   if (Wifi_Connect == true and NYear == 1970) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
+
   // sendDHT();  // Send values Tempurature and Humidity
+
   if (millis() - last_timer > 4000) {last_timer = millis();
     Check_SDcard(1); // เช็ค SD Card 
     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
