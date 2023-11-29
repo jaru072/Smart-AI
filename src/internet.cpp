@@ -3,9 +3,9 @@
 
 String ssid = "HUAWEI MediaPad T3 10";
 String pass = "00000000";
-int TotalconnectCount = 20;
+// int TotalconnectCount = 20;
 //******************************************INTERNET CONNECT****************************************//
-int connectInternet(int TotalconnectCount) { 
+void connectInternet(int TotalconnectCount) { 
   int connectCount = 0;  // Scan หาไวไฟ
 
   WiFi.mode(WIFI_STA);WiFi.begin(ssid.c_str(), pass.c_str()); // 
