@@ -87,11 +87,6 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last,last_Sleep = millis();
 
-void List_Config(void);
-void Start_Config(void);
-void check_ssid(void);
-void connectInternet(void);
-
 int z,N;
 void IRrecv_void(void) {
   if (irrecv.decode(&results)) { 
@@ -130,11 +125,12 @@ void setup() {
 void loop(){N++;
   IRrecv_void();    // ใช้ Remote Control 
   z = myFunction(5,7);
-  Serial.println(z+N);
+  // Serial.println(z+N);
   delay(1500);
   if (Wifi_Connect == true and NYear == 1970) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
+  sendDHT();  // Send values Tempurature and Humidity
 }
 

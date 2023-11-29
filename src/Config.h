@@ -31,11 +31,16 @@ extern byte daysavetime;
 // extern IRrecv irrecv(RECV_PIN);
 // extern decode_results results;
 
-extern bool GetLocalTime(struct tm * , uint32_t);
-extern int DayofWeek(int,int,int);
 extern void talk_time_current(void);
 extern void GetTimeInternet(void);
 extern void IRrecv_void(void);
+extern void List_Config(void);
+extern void Start_Config(void);
+extern void check_ssid(void);
+extern void connectInternet(void);
+
+extern bool GetLocalTime(struct tm * , uint32_t);
+extern int DayofWeek(int,int,int);
 extern int NYear,NMonth,NDay,Nmdaymonyear,NDoW;
 extern String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName;
 extern int MoonPhase(int ,int ,int );   
@@ -46,7 +51,7 @@ extern float h,t;
 extern String CSound;
 extern String CPlay_Test;
 extern bool LScheduled,LReplace_Config,LConnect_internet_Auto,LStartSong,LTime_Schedu,LPlayAuto,LTalk_Everytime;
-extern int NVolume,N;
+extern int NVolume,N,z;
 extern String ATime[40][2];
 extern String Ascheduled[30][3];
 extern const char * Replace_Config;
