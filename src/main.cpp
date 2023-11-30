@@ -100,7 +100,7 @@ void IRrecv_void() {
     }
   }
   irrecv.resume(); // Receive the next value  
-  delay(50);
+  // delay(50);
 }
 
 //....................... SETUP ...........................//
@@ -134,7 +134,7 @@ void setup() {
 }
 
 void loop() {
-  // IRrecv_void();    // ใช้ Remote Control 
+  IRrecv_void();    // ใช้ Remote Control 
 
   if (Wifi_Connect == true and NYear == 1970) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
