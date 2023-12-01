@@ -51,7 +51,7 @@ extern String OldFolder,FolderName,S_info,OldFolderName;
 extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
 //... ตัวแปร Play Song
 extern int NPlayAuto,FolderPlay,FilePlay,NSongMode;
-extern bool Leof_speech;
+extern bool LNumber_Sound,Leof_speech;
 //... ตัวแปร Time
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
@@ -63,7 +63,7 @@ extern String CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
 //... ตัวแปร อุณหภูมิ ความชื้น
 extern float h,t;
 //... ตัวแปร Remote
-extern int NSleep,volume_old,LNumber_Sound,NChange_Remote,Total_last_Sleep;
+extern int NSleep,volume_old,NChange_Remote,Total_last_Sleep;
 extern bool LcontrolBoard;
 extern  String Control_Board;
 //................... ตัวแปร เก็บใน SPIFFS (in Ram of Board) ...........................//
@@ -75,24 +75,6 @@ extern String ATime[40][2];
 extern String Ascheduled[30][3];
 extern const char * Replace_Config;
 extern int NSammaArahang;
-
-#define ir_one 16753245   // ค่าปุ่มกด 0-9 * # OK สามเหลี่ยม บน ขวา ล่าง ซ้าย
-#define ir_two 16736925
-#define ir_three 16769565
-#define ir_four 16720605
-#define ir_five 16712445
-#define ir_six 16761405
-#define ir_seven 16769055
-#define ir_eight 16754775
-#define ir_nine 16748655
-#define ir_zero 16750695
-#define ir_star 16738455
-#define ir_sharp 16756815
-#define ir_ok 16726215
-#define ir_top 16718055
-#define ir_right 16734885
-#define ir_bottom 16730805
-#define ir_left 16716015
 
 #define code_ON  33446055 // ค่าปุ่มกด Auto ON
 #define code_OFF 33446055 // ค่าปุ่มกด Auto OFF
