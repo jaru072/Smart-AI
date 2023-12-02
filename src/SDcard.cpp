@@ -23,9 +23,6 @@ const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tu
 String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
 File root;
 bool LFirst_Song,Leof_mp3,Lspeech,LSDcard = false;
-// bool LPlayAuto = true;
-// bool Wifi_Connect,Lconfirm,LConnect_internet_Auto,LStartSong = false;
-String OldFolder = "Old";String FolderName = "FolderName";
 
 unsigned long last_timer,last_Stopsong = millis();
 int count = 0;
@@ -33,17 +30,17 @@ String AFolderFile[21][31] = { {}, {} }; // ตัวแปรอเรย์ 20
 String ASong[100];
 int TotalASong = 0;int ATotalASong[100];String S_info = "Check info";
 bool LOpenURL = true;
+
+String OldFolderName = "Old";
+String FolderName = "FolderName";
 int AFolderSong  = 0;
 int NFolder,NFile = 0; 
-String OldFolderName = "Old";
 int NAutoFolder = 1;
 int NumberFile = 1;
 
 int N = 1;
 String ASpeech[] = {"","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
 int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
-
-// int Check_SDcard(int);
 
 void PlayAuto() { if (NAutoFolder == 3 or NAutoFolder == 4 or NAutoFolder == 5) {NAutoFolder = 6;NumberFile = 1;} // ไม่เปิดนำนังสมาธิ
   String Autofile = AFolderFile[NAutoFolder][NumberFile];Serial.print("Autofile = ");Serial.println(Autofile);
@@ -64,15 +61,15 @@ void printDirectory(File dir, int numTabs) {
     if (Number <= 20) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
       if (Fname.endsWith(".mp3")||Fname.endsWith(".aac")||Fname.endsWith(".wav")||Fname.endsWith(".m4a")) {  // ||Fname.endsWith(".flac")
         FolderName = Fname.substring(0,Fname.lastIndexOf("/")); AFolderFile[NFolder][0] = FolderName; 
-        if (OldFolderName != FolderName) {Serial.println(AFolderFile[NFolder][0]);} OldFolderName = FolderName;
-        
+        // if (OldFolderName != FolderName) {Serial.println(AFolderFile[NFolder][0]);} //OldFolderName = FolderName;
         Serial.print("NFolder = ");Serial.print(NFolder);Serial.print(" NFile = ");Serial.print(NFile); 
-        AFolderFile[NFolder][NFile] = Fname; Serial.println(" "+ AFolderFile[NFolder][NFile]);  
+        AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; Serial.println(" "+ AFolderFile[NFolder][NFile]);  
         NFile++; 
       }
 
-      if (entry.isDirectory()) {NFolder++; NFile=1;
-        printDirectory(entry, numTabs + 1); 
+      if (entry.isDirectory()) { NFile=1;
+        OldFolderName = entry.name();
+        printDirectory(entry, numTabs + 1); NFolder++;
       } else {
         // Serial.print("\t\t");Serial.println(entry.size(), DEC); // files have sizes, directories do not
       }

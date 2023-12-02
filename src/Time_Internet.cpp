@@ -3,9 +3,6 @@
 #include "Audio.h"
 #include <time.h>
 
-// bool GetLocalTime(struct tm * , uint32_t);
-// int DayofWeek(int,int,int);
-// void talk_time_current(void);
 //....................................... Get Date Time from Internet ...........................................//
 void GetTimeInternet(void) { 
   if (Wifi_Connect == true) {

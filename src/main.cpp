@@ -21,12 +21,19 @@
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 
+String MonthNameEng[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+String wdayNameEng[] = {"Blank","Mon","Tue","Wed","Thr","Fri","Sat","Sun"};
+String mdayName[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+String monthName[] = {"",".มกราคม", ".กุมภาพันธ์", ".มีนาคม", ".เมษายน", ".พฤษภาคม", ".มิถุนายน",".กรกฎาคม", ".สิงหาคม", ".กันยายน", ".ตุลาคม", ".พฤศจิกายน", ".ธันวาคม"};
+String wdayName[] = {"","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัส","วันศุกร์","วันเสาร์","วันอาทิตย์"};
+String yearName[] = {"2565","2566","2567","2568","2569","2570","2571","2572","2573","2574"};
+
 //#include <time.h>
 //...... Get Date Time from Internet
 long timezone = 7;  // 2;
 byte daysavetime = 0; // 1;
 String CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
-String CDay,CMon,CYear,CWday,CDateTime,wdayName,CWdayThai,monthName = "";
+String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay,Nmdaymonyear,NDoW = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
@@ -98,7 +105,7 @@ char chbuf[100];
 //................... ตัวแปร เก็บใน SPIFFS (in Ram of Board) ...........................//
 String CSound,CPlay_Test = "";
 bool Wifi_Connect,Lconfirm,LScheduled,LReplace_Config,LConnect_internet_Auto,LStartSong,LTime_Schedu,LPlayAuto,LTalk_Everytime = false;
-int NVolume = 10;
+int NVolume = 4;
 int volume_old = NVolume;
 String ATime[40][2];String Ascheduled[30][3];
 const char * Replace_Config;
@@ -119,6 +126,27 @@ int every_minute,NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
 //... กด # ควบคุมบอร์ดอื่น ควมคุมบอร์ดตัวเอง หรือ ทำให้ตัวเลขที่กดผ่านมาว่างเปล่า 
 String timerelay,FolderNumber,FolderFileNumber,Str_FileNumber,Cevery_minute = ""; 
 int colon_pos = 0;
+// const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
+// String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
+// // File root;
+// bool LFirst_Song,Leof_mp3,Lspeech,LSDcard = false;
+// String OldFolder = "Old";String FolderName = "FolderName";
+
+// unsigned long last_timer,last_Stopsong = millis();
+// int count = 0;
+// String AFolderFile[21][31] = { {}, {} }; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
+// String ASong[100];
+// int TotalASong = 0;int ATotalASong[100];String S_info = "Check info";
+// bool LOpenURL = true;
+// int AFolderSong  = 0;
+// int NFolder,NFile = 0; 
+// String OldFolderName = "Old";
+// int NAutoFolder = 1;
+// int NumberFile = 1;
+
+// int N = 1;
+// String ASpeech[] = {"","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
+// int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 
 void addnumber() {
   // เพิ่มตัวเลขให้ ตัวแปร start_time_relay
@@ -137,19 +165,6 @@ void addnumber() {
       }
     }
     LPlayAuto = false;N = TotalASpeech+1;
-//     if (Wifi_Connect == true) {
-//       if (start_time_relay.startsWith("0") and start_time_relay.toInt() >= 1){audio.stopSong();
-//         //.......................... กดเลข 0 นำหน้า ตามด้วยตัวเลข .....................................//
-//         if (start_time_relay.toInt() == 1){audio.connecttospeech("ควบคุม Plug ไฟ", "th");LcontrolBoard = true;Control_Board = "ควบคุม Plug ไฟ";}
-//         if (start_time_relay.toInt() == 2){audio.connecttospeech("อ่านข้อมูลจาก Config", "th");readFile(SPIFFS, "/mydir/config.txt");} //readWord(SPIFFS, "/mydir/config.txt");
-//         if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("every_minute = 2");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
-// //        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("LTalk_Everytime=false");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
-          
-//         if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
-//         start_time_relay = "";      
-//         //.........................................................................................//
-//       }      
-//     }
     Check();
   }
 }
@@ -179,13 +194,16 @@ void ControlBoard() {
       }
       if (start_time_relay.isEmpty()){  // ถ้ากด OK โดย start_time_relay = "" ว่างเปล่า
         LPlayAuto = !LPlayAuto; // ยกเลิก หรือ เล่น LPlayAuto
-        audio.pauseResume();    // Pause , Resume
+        NFile = 0;  audio.pauseResume();    // Pause , Resume
         Serial.print("PauseResume");Serial.print(" , LPlayAuto = ");Serial.println(LPlayAuto);N = TotalASpeech+1;return;  
       }
 
       if (start_time_relay.length() > 1) {
         if(Leof_speech == true) {Leof_speech = false;}else{audio.stopSong();}
         FolderPlay = start_time_relay.substring(0,1).toInt(); FilePlay = start_time_relay.substring(1,2).toInt();
+        Serial.print("FolderPlay = ");Serial.println(FolderPlay);
+        Serial.println(AFolderFile[FolderPlay][FilePlay].c_str());
+        // audio.connecttoSD("/08 Music Popular/007 Unstoppable.mp3");
         audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );
       }else { 
         if(Leof_speech == true) {Leof_speech = false;}else{
