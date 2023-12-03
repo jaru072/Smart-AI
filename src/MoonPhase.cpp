@@ -68,8 +68,8 @@ int MoonPhase(int NYear_Time_Now,int NMonth_Time_Now,int NDay_Time_Now) {
   }
   return NYear_Time_Now,NMonth_Time_Now,NDay_Time_Now;
 }
-void MonkDay(void);
-void MonkDay(void) { String Last_MoonPhaseThai = CMoonPhaseThai;String C_Moon;audio.stopSong();
+
+void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;String C_Moon;audio.stopSong();
   String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
   int NMoonPhase = C_MoonPhaseThai.toInt();
   if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ "+CMoonPhaseThai;audio.connecttospeech(C_Moon.c_str(), "th");}

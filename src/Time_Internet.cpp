@@ -34,30 +34,3 @@ bool GetLocalTime(struct tm * info, uint32_t ms) {uint32_t count = ms / 10; time
   if (info->tm_year > (2016 - 1900)) {return true;}
   while (count--) {delay(10);time(&now);localtime_r(&now, info);if (info->tm_year > (2016 - 1900)) {return true;}}return false;
 }
-//............................................ บอกเวลาเป็นเสียงพูด เวลาปัจจุบัน ....................................//
-void talk_time_current(void) {
-  if (hour == 0 && minute == 0) {
-    Serial.println("Not Talk Time if hour = 0 and minute = 0");
-  }else {
-    if (Wifi_Connect == true) {
-      if (NYear > 1970) {
-        Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d\n",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
-      }
-      // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
-      if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
-          audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
-      }else{        
-        if(start_time_relay.startsWith("**"))  {
-          String String_Time = (" เวลา "+CDateTime.substring(11,16));
-          CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai+String_Time);
-        } 
-        if(start_time_relay.startsWith("***")) {CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai);} 
-        if(start_time_relay.startsWith("****")){CString = (" วันที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+" "+String(tmstruct.tm_year + 1900+543)+ " เวลา "+CDateTime.substring(11,16));}       
-        if (NYear > 1970) {
-          Serial.println(CString);
-        }
-        audio.stopSong();audio.connecttospeech(CString.c_str(), "th");          
-      }
-    }
-  }
-}

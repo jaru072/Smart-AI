@@ -29,6 +29,7 @@ extern byte daysavetime;
 // extern int RECV_PIN;
 // extern IRrecv irrecv(RECV_PIN);
 // extern decode_results results;
+// extern void Time_Between(int,int,int,int,int);
 extern void Time_SammaArahang(int ,int );
 extern void SammaArahang_Between(bool,int,int,int,int);
 extern void MonkDay();

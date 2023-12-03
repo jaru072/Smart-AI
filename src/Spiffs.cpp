@@ -214,7 +214,7 @@ void Check_Delete_SPIFFS(const char* Replace_Config) {
 }
 void Check_SPIFFS() {  
   if(!SPIFFS.begin()){Serial.println("Card Mount Failed");return;}
-
+  createDir(SPIFFS, "/mydir");
   listDir(SPIFFS, "/", 0);//    readFile(SPIFFS, "/mydir/config.txt");//    removeDir(SPIFFS, "/mydir");//    createDir(SPIFFS, "/mydir");
   deleteFile(SPIFFS, "/mydir/config.txt");
   
