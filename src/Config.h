@@ -30,6 +30,7 @@ extern byte daysavetime;
 // extern IRrecv irrecv(RECV_PIN);
 // extern decode_results results;
 // extern void Time_Between(int,int,int,int,int);
+extern void talk_everytime(int ,int );
 extern void Time_SammaArahang(int ,int );
 extern void SammaArahang_Between(bool,int,int,int,int);
 extern void MonkDay();
@@ -55,6 +56,7 @@ extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong
 extern int NPlayAuto,FolderPlay,FilePlay,NSongMode;
 extern bool LNumber_Sound,Leof_speech;
 //... ตัวแปร Time
+extern int total_every_minute,old_every_minute,every_hour,every_minute;
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern int NAlarmClock,every_minute,NYear,NMonth,NDay,Nmdaymonyear,NDoW;
