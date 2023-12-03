@@ -106,4 +106,21 @@ extern int NSammaArahang;
 #define R_RPT 16750695 //   ---space
 #define R_U_SD 16756815  // ---space
 
+#define ir_one 16753245   // ค่าปุ่มกด 0-9 * # OK สามเหลี่ยม บน ขวา ล่าง ซ้าย
+#define ir_two 16736925
+#define ir_three 16769565
+#define ir_four 16720605
+#define ir_five 16712445
+#define ir_six 16761405
+#define ir_seven 16769055
+#define ir_eight 16754775
+#define ir_nine 16748655
+#define ir_zero 16750695
+#define ir_star 16738455
+#define ir_sharp 16756815
+#define ir_ok 16726215
+#define ir_top 16718055
+#define ir_right 16734885
+#define ir_bottom 16730805
+#define ir_left 16716015
 

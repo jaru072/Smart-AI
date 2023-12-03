@@ -12,13 +12,6 @@
 #define I2S_BCLK      27
 #define I2S_LRC       26
 
-// //Cria o objeto que representará o áudio
-// Audio audio;
-
-// //Cria o objeto que representará o Wi-Fi
-// WiFiMulti wifiMulti;
-
-// int NVolume = 4;
 const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
 String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
 File root;
@@ -95,7 +88,6 @@ void Check_SDcard(int NCount) {
       if (NCount != 0 or TotalASpeech == 0) {printDirectory(root, 0);} //Serial.print("Root Directory = ");Serial.println(root);}
     }
   }
-  // return NCount;
 }
 
 //........................................ Void for Control Audio .............................................//
@@ -157,28 +149,3 @@ void audio_eof_speech(const char *info)
   Lspeech = true;
   Serial.print("eof_speech test "); Serial.println(info);
 }
-
-
-// void loop() {
-//   if (millis() - last_timer > 4000) {last_timer = millis();
-//     Check_SDcard(1); // เช็ค SD Card 
-//     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
-//   }
-//   if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
-//     // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
-//     audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
-//   }
-//   if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
-//     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
-//     audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
-//   }
-
-//   if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
-
-//   if ((Leof_mp3 == true or Lspeech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Lspeech = false;
-//     PlayAuto();LStartSong = true;
-//   }
-//   if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
-
-//   audio.loop(); //Executa o loop interno da biblioteca audio
-// }

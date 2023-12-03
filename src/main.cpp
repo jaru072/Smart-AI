@@ -1,23 +1,6 @@
 #include <Arduino.h>
 #include <Config.h>
 
-#define ir_one 16753245   // ค่าปุ่มกด 0-9 * # OK สามเหลี่ยม บน ขวา ล่าง ซ้าย
-#define ir_two 16736925
-#define ir_three 16769565
-#define ir_four 16720605
-#define ir_five 16712445
-#define ir_six 16761405
-#define ir_seven 16769055
-#define ir_eight 16754775
-#define ir_nine 16748655
-#define ir_zero 16750695
-#define ir_star 16738455
-#define ir_sharp 16756815
-#define ir_ok 16726215
-#define ir_top 16718055
-#define ir_right 16734885
-#define ir_bottom 16730805
-#define ir_left 16716015
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 
@@ -91,9 +74,6 @@ void sendDHT(void) {
 
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 
-// put function declarations here:
-int myFunction(int, int);
-
 uint8_t hour    = 6;
 uint8_t minute  = 59;
 uint8_t sec     = 45;
@@ -115,7 +95,7 @@ int NSammaArahang = 0;
 int RECV_PIN = 32;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
-unsigned long last_Remote,last,last_Sleep = millis();
+unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 
 bool LcontrolBoard,Leof_speech = false;
 bool LNumber_Sound = true;
@@ -126,27 +106,6 @@ int every_minute,NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
 //... กด # ควบคุมบอร์ดอื่น ควมคุมบอร์ดตัวเอง หรือ ทำให้ตัวเลขที่กดผ่านมาว่างเปล่า 
 String timerelay,FolderNumber,FolderFileNumber,Str_FileNumber,Cevery_minute = ""; 
 int colon_pos = 0;
-// const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
-// String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
-// // File root;
-// bool LFirst_Song,Leof_mp3,Lspeech,LSDcard = false;
-// String OldFolder = "Old";String FolderName = "FolderName";
-
-// unsigned long last_timer,last_Stopsong = millis();
-// int count = 0;
-// String AFolderFile[21][31] = { {}, {} }; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
-// String ASong[100];
-// int TotalASong = 0;int ATotalASong[100];String S_info = "Check info";
-// bool LOpenURL = true;
-// int AFolderSong  = 0;
-// int NFolder,NFile = 0; 
-// String OldFolderName = "Old";
-// int NAutoFolder = 1;
-// int NumberFile = 1;
-
-// int N = 1;
-// String ASpeech[] = {"","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
-// int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 
 void addnumber() {
   // เพิ่มตัวเลขให้ ตัวแปร start_time_relay
@@ -349,6 +308,11 @@ void setup() {
   irrecv.enableIRIn(); //..... Start the receiver ...............//
 }
 
+//.......................................... Check Wifi ....................................................//
+void Check_Wifi() {
+  if (WiFi.status() != WL_CONNECTED) { connectInternet(15); // ทำการเชื่อมต่อเน็ต 15 ครั้ง 
+  }else {Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;}
+}
 
 void loop() {
   ir_remote();    // ใช้ Remote Control 
@@ -357,8 +321,17 @@ void loop() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
+  if (millis() - last_Wifi > 20000) {last_Wifi = millis();
+    if (LConnect_internet_Auto == true) {Check_Wifi();}
+    // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
+    // if (Wifi_Connect == true) {configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} 
+  }  
 
-  // sendDHT();  // Send values Tempurature and Humidity
+  if (millis() - last_timer > 2000) {last_timer = millis();
+    if (Wifi_Connect == true){GetTimeInternet();Serial.println("");}
+    // Serial.print(" NEvery_Min_Future = ");Serial.print(NEvery_Min_Future);
+    // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้น
+  }
 
   if (millis() - last_timer > 4000) {last_timer = millis();
     Check_SDcard(1); // เช็ค SD Card 
