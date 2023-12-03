@@ -1,17 +1,12 @@
 #include <Arduino.h>
 #include <Config.h>
+#include <LITTLEFS.h>
 
 /* You only need to format LITTLEFS the first time you run a
    test or else use the LITTLEFS plugin to create a partition
    https://github.com/lorol/arduino-esp32littlefs-plugin */
 #define FORMAT_LITTLEFS_IF_FAILED true
 #define SPIFFS LITTLEFS
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  // Test
-  return x + y+5;
-}
 
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
     Serial.printf("Listing directory: %s\n", dirname);

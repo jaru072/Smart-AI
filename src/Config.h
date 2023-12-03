@@ -1,5 +1,4 @@
 #include "FS.h"
-#include <LITTLEFS.h>
 #include "WiFi.h"    
 #include "Audio.h"
 #include <vfs_api.h>
@@ -30,7 +29,9 @@ extern byte daysavetime;
 // extern int RECV_PIN;
 // extern IRrecv irrecv(RECV_PIN);
 // extern decode_results results;
-
+extern void Time_SammaArahang(int ,int );
+extern void SammaArahang_Between(bool,int,int,int,int);
+extern void MonkDay();
 extern void PlayAuto();
 extern void Check_SDcard(int);
 extern void talk_time_current(void);

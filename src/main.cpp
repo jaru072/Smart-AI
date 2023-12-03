@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Config.h>
-
+#include <LITTLEFS.h>
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 
@@ -20,7 +20,8 @@ String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay,Nmdaymonyear,NDoW = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
-bool LTime_Between,Ltalk_Firsttime,LFirstOnly = false;
+bool Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
+int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 
 // Audio audio;
@@ -85,7 +86,7 @@ char chbuf[100];
 //................... ตัวแปร เก็บใน SPIFFS (in Ram of Board) ...........................//
 String CSound,CPlay_Test = "";
 bool Wifi_Connect,Lconfirm,LScheduled,LReplace_Config,LConnect_internet_Auto,LStartSong,LTime_Schedu,LPlayAuto,LTalk_Everytime = false;
-int NVolume = 4;
+int NVolume = 6;
 int volume_old = NVolume;
 String ATime[40][2];String Ascheduled[30][3];
 const char * Replace_Config;
@@ -280,21 +281,21 @@ void ir_remote() {
 //....................... SETUP ...........................//
 void setup() {
   Serial.begin(115200); Serial.println("initializing...");
+  irrecv.enableIRIn(); //..... Start the receiver ...............//
   pinMode(Relay1, OUTPUT);pinMode(Relay2, OUTPUT);pinMode(Relay3, OUTPUT);pinMode(Relay4, OUTPUT);
-  //... Load data from Spiffs file /mydir/config.txt (Ram on board)
-  // Start_Config();
-  List_Config();  
   //... Set Audio
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
   SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI);
   SPI.setFrequency(1000000);
+  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+  audio.setVolume(NVolume); 
 
   Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
-  
-  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  audio.setVolume(NVolume); delay(1000);
 
+  //... Load data from Spiffs file /mydir/config.txt (Ram on board)
+  // Start_Config();
+    List_Config();  
   //........... Start Wifi .............//
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -305,13 +306,58 @@ void setup() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
   }
-  irrecv.enableIRIn(); //..... Start the receiver ...............//
 }
-
-//.......................................... Check Wifi ....................................................//
 void Check_Wifi() {
   if (WiFi.status() != WL_CONNECTED) { connectInternet(15); // ทำการเชื่อมต่อเน็ต 15 ครั้ง 
   }else {Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;}
+}
+
+void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
+  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+    audio.stopSong();audio.connecttospeech(CSawasdee.c_str(), "th");
+  }
+}
+
+void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
+  SammaArahang_Between(false,8,30,11,0);
+  SammaArahang_Between(false,13,0,17,0);
+  if (LTime_SammaArahang == false) {return;}
+  
+  NSongMode = 0;start_time_relay = "";
+  if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
+  if (NEvery_Min_Future == minute) {
+    if (LFirstShow == false) {
+      LPlayAuto = false; LFirstShow = true; Serial.println("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที");
+      audio.stopSong(); audio.connecttospeech("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที", "th");     
+    }
+  }else{LFirstShow = false;
+    if (NEvery_Min_Future <= minute) {
+      NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
+    } 
+    if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
+    if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
+    if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
+  }
+}
+void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
+  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+    LTime_SammaArahang = true;
+  }else{
+    LTime_SammaArahang = false;
+  }
+}
+
+void Play_Speech() {
+  Sawasdee(4,0,10,59,"สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(11,0,11,59,"สวัสดีตอนเพล, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(12,0,12,59,"สวัสดีตอนเที่ยง, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(13,0,15,59,"สวัสดีตอนบ่าย, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(16,0,17,59,"สวัสดีตอนเย็น, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(18,0,18,30,"สวัสดีตอนพลบค่ำ, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(18,31,23,59,"สวัสดีตอนค่ำ, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
+  Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
+  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
 }
 
 void loop() {
@@ -337,22 +383,35 @@ void loop() {
     Check_SDcard(1); // เช็ค SD Card 
     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
   }
-  if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
-    // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
-    audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+  // if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
+  //   // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
+  //   audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+  // }
+  // if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
+  //   Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
+  //   audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
+  // }
+
+  // if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
+
+  // if ((Leof_mp3 == true or Lspeech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Lspeech = false;
+  //   PlayAuto();LStartSong = true;
+  // }
+  // if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
+  if (LFirst_Song == false and Leof_speech == true and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Leof_speech = false;
+    Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
   }
-  if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
+  if (Leof_speech == true and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Leof_speech = false;  Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
     audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
   }
 
-  if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
+  if (LOpenURL == false ) {LOpenURL = true;Leof_speech = true;audio.stopSong();PlayAuto();}
 
-  if ((Leof_mp3 == true or Lspeech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Lspeech = false;
+  if ((Leof_mp3 == true or Leof_speech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Leof_speech = false;
     PlayAuto();LStartSong = true;
   }
-  if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
+  if ((millis() - last_Stopsong > NPlayAuto) and NPlayAuto != 0) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
 
   audio.loop(); //Executa o loop interno da biblioteca audio
 }
-
