@@ -13,7 +13,8 @@ String yearName[] = {"2565","2566","2567","2568","2569","2570","2571","2572","25
 
 //#include <time.h>
 //...... Get Date Time from Internet
-int total_every_minute,old_every_minute,every_hour,every_minute = 0;
+int every_minute = 5;
+int total_every_minute,old_every_minute,every_hour = 0;
 int minute_past,New_hour,New_minute,NDoW,Nmdaymonyear = 0;
 long timezone = 7;  // 2;
 byte daysavetime = 0; // 1;
@@ -279,44 +280,6 @@ void ir_remote() {
     }     
   }  
 }
-// //............................................ บอกเวลาเป็นเสียงพูด เวลาปัจจุบัน ....................................//
-// void talk_time_current() {
-//   if (hour == 0 && minute == 0) {
-//     Serial.println("Not Talk Time if hour = 0 and minute = 0");
-//   }else {
-//     if (Wifi_Connect == true) {
-//       Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d\n",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
-//       // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
-//       if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
-//           audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
-//       }else{        
-//         if(start_time_relay.startsWith("**"))  {
-//           String String_Time = (" เวลา "+CDateTime.substring(11,16));
-//           CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai+String_Time);
-//         } 
-//         if(start_time_relay.startsWith("***")) {CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai);} 
-//         if(start_time_relay.startsWith("****")){CString = (" วันที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+" "+String(tmstruct.tm_year + 1900+543)+ " เวลา "+CDateTime.substring(11,16));}       
-//         Serial.println(CString);audio.stopSong();audio.connecttospeech(CString.c_str(), "th");          
-//       }
-//     }
-//   }
-// }
-
-// // //................................. บอกเวลาเป็นเสียงพูด ทุกกี่นาที ระหว่างเวลาตี 5 ถึง  4 ทุ่ม ....................................//
-// void talk_everytime(int every_hour,int every_minute){
-//   if ((hour >= 5 and hour < 22) and old_every_minute != minute) {old_every_minute = minute;
-//     if (LTalk_Everytime == true){total_every_minute++ ;
-//       Serial.print("total_every_minute = ");Serial.println(total_every_minute); 
-//       if (every_hour == 0) {
-//         if (total_every_minute >= every_minute){Serial.print("talk_everytime Minute = ");Serial.println(every_minute);total_every_minute=0;
-//           CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
-//         }
-//       } else {Serial.println("talk_everytime Hour");
-//           CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
-//       }
-//     }  
-//   }
-// }
 
 //....................... SETUP ...........................//
 void setup() {
@@ -334,7 +297,7 @@ void setup() {
   Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
 
   //... Load data from Spiffs file /mydir/config.txt (Ram on board)
-  // Start_Config();
+    // Start_Config();
     List_Config();  
   //........... Start Wifi .............//
   WiFi.mode(WIFI_STA);
@@ -346,81 +309,6 @@ void setup() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
   }
-}
-
-void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
-  SammaArahang_Between(false,8,30,11,0);
-  SammaArahang_Between(false,13,0,17,0);
-  if (LTime_SammaArahang == false) {return;}
-  
-  NSongMode = 0;start_time_relay = "";
-  if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
-  if (NEvery_Min_Future == minute) {
-    if (LFirstShow == false) {
-      LPlayAuto = false; LFirstShow = true; Serial.println("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที");
-      audio.stopSong(); audio.connecttospeech("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที", "th");     
-    }
-  }else{LFirstShow = false;
-    if (NEvery_Min_Future <= minute) {
-      NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
-    } 
-    if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
-    if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
-    if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
-  }
-}
-
-void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {LTime_Between = true;
-    if (LTime_Between == true and LFirstOnly == false) {
-      Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
-      audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
-    }    
-  }else{
-    Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
-  }
-}
-
-void Time_Schedu(){
-  //..... Scheduled ตารางเวลาประจำวัน 4 เวลา ค่าพื้นฐาน Nhour_schedu1=6;Nhour_schedu2=13;Nhour_schedu3=18;Nhour_schedu4=22; ......//
-  if(LTime_Schedu == true and minute_past != minute) {minute_past = minute;
-    if (Leof_speech == true) {LTime_Between = true;}
-    for (int i = 1; i <= 20; i++){
-      Time_Between(i,Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt(),Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt()+1);
-    }    
-  }
-}
-
-void Check_Wifi(int NConnect_Time) {
-  if (WiFi.status() != WL_CONNECTED) { connectInternet(NConnect_Time); // ทำการเชื่อมต่อเน็ต 15 ครั้ง 
-  }else {Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;}
-}
-
-void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
-    audio.stopSong();audio.connecttospeech(CSawasdee.c_str(), "th");
-  }
-}
-
-void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
-    LTime_SammaArahang = true;
-  }else{
-    LTime_SammaArahang = false;
-  }
-}
-
-void Play_Speech() {
-  Sawasdee(4,0,10,59,"สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(11,0,11,59,"สวัสดีตอนเพล, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(12,0,12,59,"สวัสดีตอนเที่ยง, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(13,0,15,59,"สวัสดีตอนบ่าย, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(16,0,17,59,"สวัสดีตอนเย็น, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(18,0,18,30,"สวัสดีตอนพลบค่ำ, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(18,31,23,59,"สวัสดีตอนค่ำ, วันนี้ฉันมีความสุขมาก");    
-  Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
-  Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
-  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
 }
 
 void loop() {
@@ -453,7 +341,8 @@ void loop() {
   }
   if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
     // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
-    audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+    // audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+    Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
   }
   if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
@@ -466,21 +355,6 @@ void loop() {
     PlayAuto();LStartSong = true;
   }
   if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
-
-  // if (LFirst_Song == false and Leof_speech == true and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Leof_speech = false;
-  //   Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
-  // }
-  // if (Leof_speech == true and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Leof_speech = false;  Serial.println(TotalASpeech);
-  //   Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
-  //   audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
-  // }
-
-  // if (LOpenURL == false ) {LOpenURL = true;Leof_speech = true;audio.stopSong();PlayAuto();}
-
-  // if ((Leof_mp3 == true or Leof_speech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Leof_speech = false;
-  //   PlayAuto();LStartSong = true;
-  // }
-  // if ((millis() - last_Stopsong > NPlayAuto) and NPlayAuto != 0) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
 
   audio.loop(); //Executa o loop interno da biblioteca audio
 }

@@ -26,10 +26,11 @@ extern char chbuf[100];
 extern long timezone;  
 extern byte daysavetime; 
 
-// extern int RECV_PIN;
-// extern IRrecv irrecv(RECV_PIN);
-// extern decode_results results;
-// extern void Time_Between(int,int,int,int,int);
+extern void Check_Wifi(int );
+extern void Play_Speech();
+extern void Sawasdee(int ,int ,int ,int ,String );
+extern void Time_Between(int ,int ,int ,int ,int );
+extern void Time_Schedu();
 extern void talk_everytime(int ,int );
 extern void Time_SammaArahang(int ,int );
 extern void SammaArahang_Between(bool,int,int,int,int);
@@ -56,14 +57,14 @@ extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong
 extern int NPlayAuto,FolderPlay,FilePlay,NSongMode;
 extern bool LNumber_Sound,Leof_speech;
 //... ตัวแปร Time
-extern int total_every_minute,old_every_minute,every_hour,every_minute;
+extern int minute_past,NEvery_Min_Future,total_every_minute,old_every_minute,every_hour,every_minute;
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern int NAlarmClock,every_minute,NYear,NMonth,NDay,Nmdaymonyear,NDoW;
 extern String CDay,CMon,CYear,CWday,CDateTime,CWdayThai;
 extern String wdayName[],monthName [];
 extern int MoonPhase(int ,int ,int );   
-extern bool LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
+extern bool LTime_SammaArahang,LFirstShow,LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
 extern String CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
 //... ตัวแปร อุณหภูมิ ความชื้น
 extern float h,t;

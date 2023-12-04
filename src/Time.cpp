@@ -39,3 +39,72 @@ void talk_everytime(int every_hour,int every_minute){
     }  
   }
 }
+void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
+  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+    audio.stopSong();audio.connecttospeech(CSawasdee.c_str(), "th");
+  }
+}
+
+void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
+  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+    LTime_SammaArahang = true;
+  }else{
+    LTime_SammaArahang = false;
+  }
+}
+
+void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
+  SammaArahang_Between(false,8,30,11,0);
+  SammaArahang_Between(false,13,0,17,0);
+  if (LTime_SammaArahang == false) {return;}
+  
+  NSongMode = 0;start_time_relay = "";
+  if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
+  if (NEvery_Min_Future == minute) {
+    if (LFirstShow == false) {
+      LPlayAuto = false; LFirstShow = true; Serial.println("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที");
+      audio.stopSong(); audio.connecttospeech("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที", "th");     
+    }
+  }else{LFirstShow = false;
+    if (NEvery_Min_Future <= minute) {
+      NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
+    } 
+    if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
+    if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
+    if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
+  }
+}
+
+void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
+  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {LTime_Between = true;
+    if (LTime_Between == true and LFirstOnly == false) {
+      Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
+      audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+    }    
+  }else{
+    Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
+  }
+}
+
+void Time_Schedu(){
+  //..... Scheduled ตารางเวลาประจำวัน 4 เวลา ค่าพื้นฐาน Nhour_schedu1=6;Nhour_schedu2=13;Nhour_schedu3=18;Nhour_schedu4=22; ......//
+  if(LTime_Schedu == true and minute_past != minute) {minute_past = minute;
+    if (Leof_speech == true) {LTime_Between = true;}
+    for (int i = 1; i <= 20; i++){
+      Time_Between(i,Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt(),Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt()+1);
+    }    
+  }
+}
+
+void Play_Speech() {
+  Sawasdee(4,0,10,59,"สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(11,0,11,59,"สวัสดีตอนเพล, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(12,0,12,59,"สวัสดีตอนเที่ยง, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(13,0,15,59,"สวัสดีตอนบ่าย, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(16,0,17,59,"สวัสดีตอนเย็น, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(18,0,18,30,"สวัสดีตอนพลบค่ำ, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(18,31,23,59,"สวัสดีตอนค่ำ, วันนี้ฉันมีความสุขมาก");    
+  Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
+  Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
+  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
+}
