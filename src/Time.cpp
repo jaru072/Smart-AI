@@ -40,7 +40,8 @@ void talk_everytime(int every_hour,int every_minute){
   }
 }
 void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {
+    Serial.println("สวัสดี ...");
     audio.stopSong();audio.connecttospeech(CSawasdee.c_str(), "th");
   }
 }

@@ -299,10 +299,7 @@ void setup() {
   //... Load data from Spiffs file /mydir/config.txt (Ram on board)
     // Start_Config();
     List_Config();  
-  //........... Start Wifi .............//
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
-  delay(100);
+  //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
   connectInternet(20);  
   if (Wifi_Connect == true) {
@@ -334,7 +331,7 @@ void loop() {
     // Serial.print(" NEvery_Min_Future = ");Serial.print(NEvery_Min_Future);
     // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้น
   }
-
+  
   if (millis() - last_timer > 4000) {last_timer = millis();
     Check_SDcard(1); // เช็ค SD Card 
     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}

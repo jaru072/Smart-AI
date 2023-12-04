@@ -21,20 +21,25 @@ void connectInternet(int TotalconnectCount) {
   }
 }
 
-void check_ssid(void){
+void check_ssid(void) {
+  WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
   int n = WiFi.scanNetworks();
-  if (n == 0) {
-    Serial.println("No networks found , scanNetworks again");
-    int n = WiFi.scanNetworks();
-    if (n > 0) {goto EXT1;}else{Serial.println("Stop scanNetworks");}
-  } else {EXT1:
-    Serial.print(n);Serial.println(" Networks found");
+  if (n == 0) {Serial.println("No networks found");} else {Serial.print(n);Serial.println(" Networks found");
     for (int i = 0; i < n; ++i) {Serial.print(i + 1);Serial.print(": ");Serial.print(WiFi.SSID(i));Serial.print(" (");Serial.print(WiFi.RSSI(i));ssid = WiFi.SSID(i);}
   }
   Serial.println(""); delay(500);  
 }
 
 void Check_Wifi(int NConnect_Time) {
-  if (WiFi.status() != WL_CONNECTED) { connectInternet(NConnect_Time); // ทำการเชื่อมต่อเน็ต 15 ครั้ง 
-  }else {Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;}
+  // Serial.print(WiFi.status());
+  // Serial.println(" localIP = "+WiFi.localIP().toString());
+  if (WiFi.status() != WL_CONNECTED) {check_ssid(); }
+
+  if (WiFi.localIP().toString() == "0.0.0.0") {
+    connectInternet(NConnect_Time); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
+    if (WiFi.localIP().toString() != "0.0.0.0") {
+      Wifi_Connect = true ; //Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
+    }
+  }
+
 }
