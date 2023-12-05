@@ -14,10 +14,14 @@ void GetTimeInternet(void) {
     if (NYear > 1970) {
       Serial.print(" "+CWdayThai);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
     }
-    if (Ltalk_Firsttime == 0) {MoonPhase(NYear+543,NMonth,NDay);start_time_relay = "**";  // กำหนดค่า start_time_relay = "**" เพื่อส่งผลไปยัง talk_time_current() 
+    if (Ltalk_Firsttime == 0 or CMoonPhaseThai == "") {MoonPhase(NYear+543,NMonth,NDay);start_time_relay = "**";  // กำหนดค่า start_time_relay = "**" เพื่อส่งผลไปยัง talk_time_current() 
       Nmdaymonyear = (String(NYear)+CMon+CDay+String(NDoW)).toInt();
-      Serial.println("***** talk_time First *****"); Ltalk_Firsttime = 1; talk_time_current();start_time_relay = "";  // บอกเวลาครั้งแรก ครั้งเดียว  
-    } // คำนวณข้างขึ้น ข้างแรม ครั้งเดียว Ltalk_Firsttime = 1;
+      // คำนวณข้างขึ้น ข้างแรม ครั้งเดียว Ltalk_Firsttime = 1
+      if (CMoonPhaseThai != "") { 
+        Serial.print("*** คำนวณ ข้างขึ้น ข้างแรม *** "); Serial.println(CMoonPhaseThai); 
+        Ltalk_Firsttime = 1; talk_time_current();start_time_relay = "";  // บอกเวลาครั้งแรก ครั้งเดียว  
+      }
+    } 
   }
 }
 

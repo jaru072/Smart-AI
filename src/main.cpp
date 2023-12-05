@@ -302,9 +302,10 @@ void setup() {
   //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
   connectInternet(20);  
-  if (Wifi_Connect == true) {
+  if (Wifi_Connect == true) {EXIT2:
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
+    if (CMoonPhaseThai == "") {goto EXIT2;}
   }
 }
 
