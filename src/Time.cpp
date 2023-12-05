@@ -10,9 +10,10 @@ void talk_time_current() {
       Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d\n",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
       // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
       if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
-          audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
+          // audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
+          audio.connecttospeech((CMoonPhaseThai).c_str(), "th");
       }else{        
-        if(start_time_relay.startsWith("**"))  {
+        if(start_time_relay.startsWith("**"))  {Serial.print("CMoonPhaseThai = ");Serial.println(CMoonPhaseThai);
           String String_Time = (" เวลา "+CDateTime.substring(11,16));
           CString = (CWdayThai+" ที่ "+String(tmstruct.tm_mday)+monthName[tmstruct.tm_mon + 1]+CMoonPhaseThai+String_Time);
         } 
