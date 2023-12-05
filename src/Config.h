@@ -26,6 +26,7 @@ extern char chbuf[100];
 extern long timezone;  
 extern byte daysavetime; 
 
+extern int hourmin(int ,int );
 extern void Check_Wifi(int );
 extern void Play_Speech();
 extern void Sawasdee(int ,int ,int ,int ,String );
@@ -65,7 +66,7 @@ extern String CDay,CMon,CYear,CWday,CDateTime,CWdayThai;
 extern String wdayName[],monthName [];
 extern int MoonPhase(int ,int ,int );   
 extern bool LTime_SammaArahang,LFirstShow,LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
-extern String CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
+extern String C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
 //... ตัวแปร อุณหภูมิ ความชื้น
 extern float h,t;
 //... ตัวแปร Remote

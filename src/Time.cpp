@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <Config.h>
 
+int hourmin(int hourmin_h,int hourmin_m) {
+  int hourmin = (hourmin_h*60)+hourmin_m;
+  return hourmin;
+}
 //............................................ บอกเวลาเป็นเสียงพูด เวลาปัจจุบัน ....................................//
 void talk_time_current() {
   if (hour == 0 && minute == 0) {
@@ -11,7 +15,7 @@ void talk_time_current() {
       // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
       if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
           // audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
-          audio.connecttospeech((CMoonPhaseThai).c_str(), "th");
+          if (C_Moon == "") {audio.connecttospeech((CMoonPhaseThai).c_str(), "th");}else{audio.connecttospeech((C_Moon).c_str(), "th");}
       }else{        
         if(start_time_relay.startsWith("**"))  {Serial.print("CMoonPhaseThai = ");Serial.println(CMoonPhaseThai);
           String String_Time = (" เวลา "+CDateTime.substring(11,16));
@@ -41,9 +45,12 @@ void talk_everytime(int every_hour,int every_minute){
   }
 }
 void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
-  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {
-    Serial.println("สวัสดี ...");
-    audio.stopSong();audio.connecttospeech(CSawasdee.c_str(), "th");
+  int Nstart = hourmin(Bhour_Start, Bmin_Start);
+  int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
+  int Nhourmin = hourmin(hour, minute);
+  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
+    Serial.println(CSawasdee);  //audio.stopSong();
+    audio.connecttospeech(CSawasdee.c_str(), "th");
   }
 }
 
@@ -109,4 +116,5 @@ void Play_Speech() {
   Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
   Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
   MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
+  LFirst_Song = true; Lspeech = false; Leof_mp3 = false;
 }

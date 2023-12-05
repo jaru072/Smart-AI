@@ -18,7 +18,7 @@ int total_every_minute,old_every_minute,every_hour = 0;
 int minute_past,New_hour,New_minute,NDoW,Nmdaymonyear = 0;
 long timezone = 7;  // 2;
 byte daysavetime = 0; // 1;
-String CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
+String C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
 String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
@@ -337,7 +337,7 @@ void loop() {
     Check_SDcard(1); // เช็ค SD Card 
     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
   }
-  if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
+  if (LFirst_Song == false and Wifi_Connect == true) {
     // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
     // audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
     Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
