@@ -338,8 +338,8 @@ void loop() {
   }
   if (LFirst_Song == false and Wifi_Connect == true) {LFirst_Song = true; Leof_mp3 = false;Lspeech = false;
     // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
-    // audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
-    Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
+    audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
+    // Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
   }
   if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);

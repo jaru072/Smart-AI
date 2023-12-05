@@ -47,7 +47,7 @@ void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String
 }
 
 void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {
+  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {
     LTime_SammaArahang = true;
   }else{
     LTime_SammaArahang = false;
@@ -77,7 +77,7 @@ void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
 }
 
 void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start <= minute and Bhour_Stop >= hour and Bmin_Stop >= minute) {LTime_Between = true;
+  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {LTime_Between = true;
     if (LTime_Between == true and LFirstOnly == false) {
       Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
       audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");

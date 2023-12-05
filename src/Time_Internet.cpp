@@ -12,10 +12,8 @@ void GetTimeInternet(void) {
     NYear = (tmstruct.tm_year + 1900); NMonth = (tmstruct.tm_mon + 1); NDay = (tmstruct.tm_mday);
     CYear = String(NYear);if(NMonth < 10){CMon = ("0"+String(NMonth));}else{CMon = String(NMonth);} if(NDay < 10){CDay = ("0"+String(NDay));}else{CDay = String(NDay);}  DayofWeek(NDay,NMonth,NYear); // while (tmstruct.tm_year < 100);
     if (NYear > 1970) {
-      Serial.print(" "+CWday);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
+      Serial.print(" "+CWdayThai);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
     }
-//    Serial.print(" LPlayFinish ");Serial.print(LPlayFinish);LPlayFinish = 0;Serial.print(" Ltalk_Everytime = ");Serial.print(Ltalk_Everytime);
-//    Serial.print(" N = ");Serial.print(N);Serial.print(" Leof_mp3 = ");Serial.print(Leof_mp3);Serial.print(" Leof_speech = ");Serial.println(Leof_speech);
     if (Ltalk_Firsttime == 0) {MoonPhase(NYear+543,NMonth,NDay);start_time_relay = "**";  // กำหนดค่า start_time_relay = "**" เพื่อส่งผลไปยัง talk_time_current() 
       Nmdaymonyear = (String(NYear)+CMon+CDay+String(NDoW)).toInt();
       Serial.println("***** talk_time First *****"); Ltalk_Firsttime = 1; talk_time_current();start_time_relay = "";  // บอกเวลาครั้งแรก ครั้งเดียว  
