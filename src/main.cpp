@@ -305,7 +305,7 @@ void setup() {
   if (Wifi_Connect == true) {EXIT2:
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
-    if (CMoonPhaseThai == "") {goto EXIT2;}
+    if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
   }
 }
 
@@ -316,10 +316,10 @@ void loop() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
+  // Check_Wifi(5) 5 time everytime 20 Second
   if (millis() - last_Wifi > 20000) {last_Wifi = millis();
     if (LConnect_internet_Auto == true) {Check_Wifi(5);}
-    // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
-    // if (Wifi_Connect == true) {configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} 
+    // if (Wifi_Connect == true) {configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
   }  
 
   if (Wifi_Connect == true) {

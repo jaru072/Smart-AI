@@ -54,8 +54,12 @@ void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String
   }
 }
 
-void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {
+void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
+  Serial.println("OK void SammaArahang_Between");
+  int Nstart = hourmin(Bhour_Start, Bmin_Start);
+  int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
+  int Nhourmin = hourmin(hour, minute);
+  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
     LTime_SammaArahang = true;
   }else{
     LTime_SammaArahang = false;
@@ -63,10 +67,14 @@ void SammaArahang_Between(bool LTime_SammaArahang,int Bhour_Start,int Bmin_Start
 }
 
 void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
-  SammaArahang_Between(false,8,30,11,0);
-  SammaArahang_Between(false,13,0,17,0);
+  // Serial.println("OK void Time_SammaArahang");
+  SammaArahang_Between(8,30,11,0);
+
+  int Nhourmin = hourmin(hour, minute);
+  if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}
+
   if (LTime_SammaArahang == false) {return;}
-  
+  Serial.println("LTime_SammaArahang == true");  
   NSongMode = 0;start_time_relay = "";
   if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
   if (NEvery_Min_Future == minute) {
@@ -85,8 +93,11 @@ void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
 }
 
 void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  if (Bhour_Start <= hour and Bmin_Start >= minute and Bhour_Stop <= hour and Bmin_Stop <= minute) {LTime_Between = true;
-    if (LTime_Between == true and LFirstOnly == false) {
+  int Nstart = hourmin(Bhour_Start, Bmin_Start);
+  int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
+  int Nhourmin = hourmin(hour, minute);
+  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
+    if (LTime_Between == true) {
       Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
       audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
     }    
