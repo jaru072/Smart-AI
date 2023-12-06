@@ -55,7 +55,7 @@ void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String
 }
 
 void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  Serial.println("OK void SammaArahang_Between");
+  // Serial.println("OK void SammaArahang_Between");
   int Nstart = hourmin(Bhour_Start, Bmin_Start);
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
   int Nhourmin = hourmin(hour, minute);
@@ -74,7 +74,6 @@ void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
   if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}
 
   if (LTime_SammaArahang == false) {return;}
-  Serial.println("LTime_SammaArahang == true");  
   NSongMode = 0;start_time_relay = "";
   if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
   if (NEvery_Min_Future == minute) {
@@ -85,6 +84,7 @@ void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
   }else{LFirstShow = false;
     if (NEvery_Min_Future <= minute) {
       NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
+      Serial.print("สัมมา อะระหัง นาทีที่ ");Serial.println(NEvery_Min_Future);  
     } 
     if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
     if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
