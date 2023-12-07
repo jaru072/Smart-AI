@@ -47,7 +47,8 @@ extern void Add_Zero(int);
 extern void Start_Config(void);
 extern void check_ssid(void);
 extern void connectInternet(int);
-
+//... ตัวแปร SETUP
+extern int NZero_Extra;
 //... ตัวแปร Audio and Sdcard
 extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;

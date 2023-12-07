@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Config.h>
 
+int NZero_Extra = 0;
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 
@@ -130,6 +131,18 @@ void addnumber() {
     }
     LPlayAuto = false;N = TotalASpeech+1;
     Check();
+  }
+}
+// กด 0 นำหน้า เข้า void Zero_Extra()
+void Zero_Extra() {
+  addnumber();  //ใส่ตัวเลข
+  //...........................................กด OK ลูกศร บน ล่าง ซ้าย ขวา ...........................................//
+  if (results.value == ir_ok) {start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
+    if (NZero_Extra == 8){every_minute = start_time_relay.toInt();
+      audio.connecttospeech(("บอกเวลาทุก "+String(every_minute)+" นาที").c_str(), "th");      
+      Serial.print("every_minute = ");Serial.println(every_minute);
+    }
+    start_time_relay = "";NZero_Extra = 0;
   }
 }
 
@@ -273,7 +286,11 @@ void ir_remote() {
           // Change_Value_Remote();
         } 
         if (Total_last_Sleep == 2000) {Total_last_Sleep = 30000;NSleep = 0;}  //คืนค่าเวลาหลับ เมื่อกดปุ่มรีโมทอันใดอันหนึ่ง จะตั้งค่า Total_last_Sleep = 30000
-        ControlBoard();
+        if (NZero_Extra == 0){  
+          ControlBoard();
+        }else{
+          Zero_Extra(); // กด 0 นำหน้าเข้าสู่โหมดพิเศษ
+        }
       }
       EXT:
       irrecv.resume(); // Receive the next value  
@@ -330,6 +347,7 @@ void loop() {
 
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
+      Serial.print("  NZero_Extra = ");Serial.print(NZero_Extra);
       Serial.print("  Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }
