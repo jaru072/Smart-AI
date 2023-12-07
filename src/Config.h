@@ -50,9 +50,9 @@ extern void connectInternet(int);
 
 //... ตัวแปร Audio and Sdcard
 extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,Lspeech,LSDcard;
-extern unsigned long last_Remote,last_timer,last_Stopsong;
+extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
 extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
-extern String OldFolder,FolderName,S_info,OldFolderName;
+extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
 extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
 //... ตัวแปร Play Song
 extern int NPlayAuto,FolderPlay,FilePlay,NSongMode;

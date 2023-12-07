@@ -13,6 +13,8 @@ String yearName[] = {"2565","2566","2567","2568","2569","2570","2571","2572","25
 
 //#include <time.h>
 //...... Get Date Time from Internet
+struct tm tmstruct ;
+
 int every_minute = 5;
 int total_every_minute,old_every_minute,every_hour = 0;
 int minute_past,New_hour,New_minute,NDoW,Nmdaymonyear = 0;
@@ -26,9 +28,9 @@ int NYear = 1970;
 bool Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
-
-// Audio audio;
-struct tm tmstruct ;
+uint8_t hour    = 6;
+uint8_t minute  = 59;
+uint8_t sec     = 45;
 
 File file;
 const char filename[] = "/recording.wav";
@@ -64,24 +66,6 @@ void sendDHT(void) {
   Serial.print("  Humidity : ");Serial.println(h);
 }
 
-#include <driver/i2s.h>
-#define I2S_WS 15
-#define I2S_SD 32
-#define I2S_SCK 14
-#define I2S_PORT I2S_NUM_0
-#define I2S_SAMPLE_RATE   (16000)
-#define I2S_SAMPLE_BITS   (16)
-#define I2S_READ_LEN      (16 * 1024)
-#define RECORD_TIME       (20) //Seconds
-#define I2S_CHANNEL_NUM   (1)
-#define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
-
-#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-
-uint8_t hour    = 6;
-uint8_t minute  = 59;
-uint8_t sec     = 45;
-
 bool f_time     = false;
 int8_t timefile = -1;
 char chbuf[100];
@@ -94,23 +78,40 @@ int volume_old = NVolume;
 String ATime[40][2];String Ascheduled[30][3];
 const char * Replace_Config;
 int NSammaArahang = 0;
-
+//............. Driver and Varible Control Remote ....................//
 #include <IRremote.h>
 int RECV_PIN = 32;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 
-bool LcontrolBoard,Leof_speech = false;
+//............. Driver and Varible Control Audio ....................//
+#include <driver/i2s.h>
+#define I2S_WS 15
+#define I2S_SD 32
+#define I2S_SCK 14
+#define I2S_PORT I2S_NUM_0
+#define I2S_SAMPLE_RATE   (16000)
+#define I2S_SAMPLE_BITS   (16)
+#define I2S_READ_LEN      (16 * 1024)
+#define RECORD_TIME       (20) //Seconds
+#define I2S_CHANNEL_NUM   (1)
+#define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+bool Leof_speech = false;
+bool Leof_mp3 = true;
+bool LFirst_Song,Lspeech,LSDcard = false;
 bool LNumber_Sound = true;
-String Control_Board = "";
-int NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
-//........................................ Remote Control .................................................//
+//................ Varible Control SDcard ....................//
 //... กดตัวเลขแล้วตามด้วย * เล่นเพลงอัตโนมัติโฟลเดอร์นั้น เช่น 5* 
 //... กด # ควบคุมบอร์ดอื่น ควมคุมบอร์ดตัวเอง หรือ ทำให้ตัวเลขที่กดผ่านมาว่างเปล่า 
+int NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
 String timerelay,FolderNumber,FolderFileNumber,Str_FileNumber,Cevery_minute = ""; 
 int colon_pos = 0;
+bool LcontrolBoard = false;
+String syncword,Control_Board = "";
 
+//............................................................//
 void addnumber() {
   // เพิ่มตัวเลขให้ ตัวแปร start_time_relay
   if (results.value == ir_zero) {start_time_relay = (start_time_relay+"0");}if (results.value == ir_one) {start_time_relay = (start_time_relay+"1");}if (results.value == ir_two) {start_time_relay = (start_time_relay+"2");}if (results.value == ir_three) {start_time_relay =(start_time_relay+"3");}if (results.value == ir_four) {start_time_relay = (start_time_relay+"4");}if (results.value == ir_five) {start_time_relay = (start_time_relay+"5");}if (results.value == ir_six) {start_time_relay = (start_time_relay+"6");}if (results.value == ir_seven) {start_time_relay = (start_time_relay+"7");}if (results.value == ir_eight) {start_time_relay = (start_time_relay+"8");}if (results.value == ir_nine) {start_time_relay = (start_time_relay+"9");}if (results.value == ir_star) {start_time_relay = (start_time_relay+"*");} 
@@ -162,7 +163,7 @@ void ControlBoard() {
       }
 
       if (start_time_relay.length() > 1) {
-        if(Leof_speech == true) {Leof_speech = false;}else{audio.stopSong();}
+        // if(Leof_speech == true) {Leof_speech = false;}else{audio.stopSong();}
         FolderPlay = start_time_relay.substring(0,1).toInt(); FilePlay = start_time_relay.substring(1,2).toInt();
         Serial.print("FolderPlay = ");Serial.println(FolderPlay);
         Serial.println(AFolderFile[FolderPlay][FilePlay].c_str());
@@ -328,9 +329,11 @@ void loop() {
   Time_Schedu(); // ตารางเวลาประจำวัน 4 เวลา 6:00 , 13:00 , 18:00 , 22:00
 
   if (millis() - last_timer > 2000) {last_timer = millis();
-    if (Wifi_Connect == true){GetTimeInternet();Serial.println("");}
-    // Serial.print(" NEvery_Min_Future = ");Serial.print(NEvery_Min_Future);
-    // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้น
+    if (Wifi_Connect == true){ GetTimeInternet();
+      Serial.print("  Leof_speech = ");Serial.print(Leof_speech);
+      Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
+    }
+    // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้นSerial.println(" ");
   }
   
   if (millis() - last_timer > 4000) {last_timer = millis();
@@ -342,17 +345,17 @@ void loop() {
     // audio.connecttospeech("สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก", "th");
     Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
   }
-  if ((Leof_mp3 == true or Lspeech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Leof_mp3 = false;Lspeech = false;  Serial.println(TotalASpeech);
+  if ((Leof_speech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
-    audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
+    Leof_speech = false;audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
   }
 
   if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
 
-  if ((Leof_mp3 == true or Lspeech == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Leof_mp3 = false;Lspeech = false;
-    PlayAuto();LStartSong = true;
+  if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Lspeech = false;
+    Leof_mp3 = false;PlayAuto();LStartSong = true;
   }
   if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
 
-  audio.loop(); //Executa o loop interno da biblioteca audio
+  audio.loop(); 
 }

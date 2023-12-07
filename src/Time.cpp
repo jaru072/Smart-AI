@@ -31,17 +31,19 @@ void talk_time_current() {
 
 // //................................. บอกเวลาเป็นเสียงพูด ทุกกี่นาที ระหว่างเวลาตี 5 ถึง  4 ทุ่ม ....................................//
 void talk_everytime(int every_hour,int every_minute){
-  if ((hour >= 5 and hour < 22) and old_every_minute != minute) {old_every_minute = minute;
-    if (LTalk_Everytime == true){total_every_minute++ ;
-      Serial.print("total_every_minute = ");Serial.println(total_every_minute); 
-      if (every_hour == 0) {
-        if (total_every_minute >= every_minute){Serial.print("talk_everytime Minute = ");Serial.println(every_minute);total_every_minute=0;
-          CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
+  if (Leof_speech == true and Leof_mp3 == true) {
+    if ((hour >= 5 and hour < 22) and old_every_minute != minute) {old_every_minute = minute;
+      if (LTalk_Everytime == true){total_every_minute++ ;
+        Serial.print("total_every_minute = ");Serial.println(total_every_minute); 
+        if (every_hour == 0) {
+          if (total_every_minute >= every_minute){Serial.print("talk_everytime Minute = ");Serial.println(every_minute);total_every_minute=0;
+            CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
+          }
+        } else {Serial.println("talk_everytime Hour");
+            CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
         }
-      } else {Serial.println("talk_everytime Hour");
-          CString = ("เวลา "+CDateTime.substring(11,16));audio.connecttospeech(CString.c_str(), "th");
-      }
-    }  
+      }  
+    }
   }
 }
 void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
@@ -127,5 +129,5 @@ void Play_Speech() {
   Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
   Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
   MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
-  LFirst_Song = true; Lspeech = false; Leof_mp3 = false;
+  LFirst_Song = true; //Lspeech = false; Leof_mp3 = false;
 }

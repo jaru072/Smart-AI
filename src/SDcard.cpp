@@ -15,7 +15,6 @@
 const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
 String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
 File root;
-bool LFirst_Song,Leof_mp3,Lspeech,LSDcard = false;
 
 unsigned long last_timer,last_Stopsong = millis();
 int count = 0;
@@ -91,61 +90,38 @@ void Check_SDcard(int NCount) {
 }
 
 //........................................ Void for Control Audio .............................................//
-void audio_info(const char *info)
-{
-  Serial.print("info        "); Serial.println(info);String String_info = info;
-  if (String_info.endsWith("failed!")) {Serial.println("Can not open URL");LOpenURL = false;}
-  if (String_info.endsWith("with PSRAM!")) {Leof_mp3 = true;}
+void audio_info(const char *info) {
+  if (info != "syncword not found") { syncword = ""; //if(Total_last_Sleep != 7000) {Leof_mp3 = false;}
+    Serial.print("info        "); Serial.println(info);String Strinfo = info;
+    if (Strinfo.endsWith("failed!") or Strinfo.endsWith("Bad Request")) {Serial.println("Can not open URL");LOpenURL = false;Leof_speech = true;}
+    if (Strinfo.endsWith("with PSRAM!")) {Leof_mp3 = true;}    
+  }else{if(syncword == "") {syncword = "syncword not found";Serial.println(info);}}
 }
 
-void audio_id3data(const char *info)
-{ //id3 metadata
-  Serial.print("id3data     "); Serial.println(info);
-}
+void audio_id3data(const char *info) {Serial.print("id3data     "); Serial.println(info);}  //id3 metadata
 
-void audio_eof_mp3(const char *info)
-{ //end of file
-  Leof_mp3 = true;
+void audio_eof_mp3(const char *info){ //end of file
+  Leof_mp3 = true;last_Sleep=millis();
   Serial.print("Leof_mp3 = ");Serial.print(Leof_mp3); Serial.print(" eof_mp3     "); Serial.println(info);
 }
 
-void audio_showstation(const char *info)
-{
-  Serial.print("station     "); Serial.println(info);
-}
+void audio_showstation(const char *info) {Serial.print("station     "); Serial.println(info);}
 
-void audio_showstreaminfo(const char *info)
-{
-  Serial.print("streaminfo  "); Serial.println(info);
-}
+void audio_showstreaminfo(const char *info) {Serial.print("streaminfo  "); Serial.println(info);}
 
-void audio_showstreamtitle(const char *info)
-{
-  Serial.print("streamtitle "); Serial.println(info);
-}
+void audio_showstreamtitle(const char *info) {Serial.print("streamtitle "); Serial.println(info);}
 
-void audio_bitrate(const char *info)
-{
-  Serial.print("bitrate     "); Serial.println(info);
-}
+void audio_bitrate(const char *info) {Serial.print("bitrate     "); Serial.println(info);}
 
-void audio_commercial(const char *info)
-{ //duração
-  Serial.print("commercial  "); Serial.println(info);
-}
+void audio_commercial(const char *info) {Serial.print("commercial  "); Serial.println(info);} //commercial
 
-void audio_icyurl(const char *info)
-{ //homepage
-  Serial.print("icyurl      "); Serial.println(info);
-}
+void audio_icyurl(const char *info){ Serial.print("icyurl      "); Serial.println(info);} //homepage
 
-void audio_lasthost(const char *info)
-{ //stream URL played
+void audio_lasthost(const char *info) { //stream URL played
   Serial.print("lasthost    "); Serial.println(info);
 }
 
-void audio_eof_speech(const char *info)
-{
-  Lspeech = true;
-  Serial.print("eof_speech test "); Serial.println(info);
+void audio_eof_speech(const char *info){
+  Lspeech = true;Leof_speech = true;last_Sleep=millis();
+  Serial.print("eof_speech "); Serial.println(info);
 }
