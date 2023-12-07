@@ -49,7 +49,7 @@ extern void check_ssid(void);
 extern void connectInternet(int);
 
 //... ตัวแปร Audio and Sdcard
-extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,Lspeech,LSDcard;
+extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
 extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;

@@ -98,9 +98,9 @@ unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 #define I2S_CHANNEL_NUM   (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-bool Leof_speech = false;
+bool Leof_speech = false; // จำเป็นต้องเป็น false เพราะต้องเข้า Play_Speech(); ก่อน
 bool Leof_mp3 = true;
-bool LFirst_Song,Lspeech,LSDcard = false;
+bool LFirst_Song,LSDcard = false;
 bool LNumber_Sound = true;
 //................ Varible Control SDcard ....................//
 //... กดตัวเลขแล้วตามด้วย * เล่นเพลงอัตโนมัติโฟลเดอร์นั้น เช่น 5* 
@@ -350,9 +350,9 @@ void loop() {
     Leof_speech = false;audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
   }
 
-  if (LOpenURL == false ) {LOpenURL = true;Lspeech = true;audio.stopSong();PlayAuto();}
+  if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}
 
-  if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {Lspeech = false;
+  if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {
     Leof_mp3 = false;PlayAuto();LStartSong = true;
   }
   if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป

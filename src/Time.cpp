@@ -129,5 +129,5 @@ void Play_Speech() {
   Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
   Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
   MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
-  LFirst_Song = true; //Lspeech = false; Leof_mp3 = false;
+  LFirst_Song = true; 
 }
