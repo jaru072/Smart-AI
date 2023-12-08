@@ -138,11 +138,18 @@ void Zero_Extra() {
   addnumber();  //ใส่ตัวเลข
   //...........................................กด OK ลูกศร บน ล่าง ซ้าย ขวา ...........................................//
   if (results.value == ir_ok) {start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
+    if (NZero_Extra == 7){NSammaArahang = start_time_relay.toInt();
+      audio.connecttospeech(("สัมมา อะระหังทุก "+String(NSammaArahang)+" นาที").c_str(), "th");      
+      Serial.print("NSammaArahang = ");Serial.println(NSammaArahang);
+    }
     if (NZero_Extra == 8){every_minute = start_time_relay.toInt();
       audio.connecttospeech(("บอกเวลาทุก "+String(every_minute)+" นาที").c_str(), "th");      
       Serial.print("every_minute = ");Serial.println(every_minute);
     }
     start_time_relay = "";NZero_Extra = 0;
+  }
+  if (results.value == ir_sharp) {
+    start_time_relay = "";Serial.println(" start_time_relay = EMPTY ");audio.connecttoSD("/99 Control Sound/006 Empty.mp3");
   }
 }
 
@@ -154,7 +161,7 @@ void ControlBoard() {
       if (start_time_relay.startsWith("99")) { ; // AutoPlay Folder
         String CloopFolder = start_time_relay.substring(2,4);int NloopFolder = CloopFolder.toInt();
       }  
-
+// Serial.println("go ControlBoard ");
       if (start_time_relay.startsWith("*")) {
         NSongMode = 0;Serial.println(CWday+" "+CDay+"/"+CMon+"/"+CYear);//mp3.playMp3FolderTrack((CMon+CDay).toInt());if(CDay.toInt() < 10){waitMilliseconds(6000);}else{waitMilliseconds(7000);} myData.z = 0;
         if (Wifi_Connect == true) {audio.stopSong();

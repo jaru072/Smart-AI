@@ -70,10 +70,8 @@ void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin
 
 void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
   // Serial.println("OK void Time_SammaArahang");
-  SammaArahang_Between(8,30,11,0);
-
   int Nhourmin = hourmin(hour, minute);
-  if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}
+  if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}else{SammaArahang_Between(8,30,11,0);}
 
   if (LTime_SammaArahang == false) {return;}
   NSongMode = 0;start_time_relay = "";

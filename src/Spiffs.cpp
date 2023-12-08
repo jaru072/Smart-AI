@@ -103,7 +103,7 @@ void readWord(fs::FS &fs, const char * path){ String R_Text,Cwords,Cwords_value 
     if (ATime[i][1] == "Time_Schedu") {LTime_Schedu = ATime[i][2];} 
     if (ATime[i][1] == "PlayAuto") {LPlayAuto = ATime[i][2];}
     if (ATime[i][1] == "every_minute") {every_minute = ATime[i][2].toInt();}
-    if (ATime[i][1].startsWith("สัมมาอะระหัง")) {NSammaArahang = ATime[i][2].toInt();}
+    if (ATime[i][1].startsWith("SammaArahang")) {NSammaArahang = ATime[i][2].toInt();}
     if (ATime[i][1].startsWith("Talk_Everytime")) {LTalk_Everytime = ATime[i][2];}
     // ................................................................................................//
     R_Text = R_Text.substring(AT_Comma,10000);  // ตัดประโยค ที่รับค่าแล้วออก  //Serial.println(R_Text);    
@@ -199,7 +199,6 @@ void ReplaceFile(fs::FS &fs, const char * path,String Creplace){
   }
   file.close();
 }
-//.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
 const char* Check_Replace_SPIFFS(const char* Replace_Config) {
   if(!SPIFFS.begin()){Serial.println("Card Mount Failed");}
   ReplaceFile(SPIFFS, "/mydir/config.txt",Replace_Config);
@@ -257,7 +256,7 @@ void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ต�
   }
   
   if(R_Text.indexOf("every_minute")) {int AT_Word = R_Text.indexOf("every_minute");
-   Serial.print("every_minute = "); //Serial.println(every_minute);
+   Serial.print("every_minute = "); Serial.println(every_minute);
     String Cevery_minute_Value = R_Text.substring(AT_Word+13,AT_Word+15);String Cevery_minute = String(every_minute);
     int Nevery_minute_Value = Cevery_minute_Value.toInt();
     Cevery_minute_Value = String(Nevery_minute_Value);  
@@ -266,6 +265,14 @@ void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ต�
     R_Text.replace("every_minute="+Cevery_minute_Value,"every_minute="+Cevery_minute);
     // Serial.println(R_Text);
   }
+  if(R_Text.indexOf("SammaArahang=")) {int AT_Word = R_Text.indexOf("SammaArahang=");
+    String CSammaArahang_Value = R_Text.substring(AT_Word+13,AT_Word+15);String CSammaArahang = String(NSammaArahang);
+    Serial.println(R_Text.substring(AT_Word+13,AT_Word+15));
+    Serial.print("NSammaArahang = ");Serial.println(CSammaArahang_Value);
+    int NSammaArahang_Value = CSammaArahang_Value.toInt();
+    CSammaArahang_Value = String(NSammaArahang_Value);  
+    R_Text.replace("SammaArahang="+CSammaArahang_Value,"SammaArahang="+CSammaArahang);
+  }else{Serial.println("Not found NSammaArahang=");}
 
   if(CPlay_Test == "on") {R_Text.replace("Play_Test=off","Play_Test=on");}else{R_Text.replace("Play_Test=on","Play_Test=off");}
   if(CSound == "on") {R_Text.replace("Sound=off","Sound=on");}else{R_Text.replace("Sound=on","Sound=off");}
@@ -289,8 +296,9 @@ void Check() {
         //.......................... กดเลข 0 นำหน้า ตามด้วยตัวเลข .....................................//
         if (start_time_relay.toInt() == 1){audio.connecttospeech("ควบคุม Plug ไฟ", "th");LcontrolBoard = true;Control_Board = "ควบคุม Plug ไฟ";}
         if (start_time_relay.toInt() == 2){audio.connecttospeech("อ่านข้อมูลจาก Config", "th");readFile(SPIFFS, "/mydir/config.txt");readWord(SPIFFS, "/mydir/config.txt");} 
-        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("every_minute = 2");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
-        // if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("LTalk_Everytime=false");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
+        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("SammaArahang = 7");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
+        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("NSammaArahang=7");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
+        if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  
         if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
         start_time_relay = "";      
