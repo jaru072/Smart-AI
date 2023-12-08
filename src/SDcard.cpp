@@ -37,7 +37,6 @@ int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 void PlayAuto() { if (NAutoFolder == 3 or NAutoFolder == 4 or NAutoFolder == 5) {NAutoFolder = 6;NumberFile = 1;} // ไม่เปิดนำนังสมาธิ
   String Autofile = AFolderFile[NAutoFolder][NumberFile];Serial.print("Autofile = ");Serial.println(Autofile);
   if (Autofile == "") {NAutoFolder= 1;NumberFile = 1;Autofile = AFolderFile[NAutoFolder][NumberFile];}
-  
   audio.connecttoSD( Autofile.c_str() ); NumberFile++;  //audio.loop();
 
   if (AFolderFile[NAutoFolder][NumberFile] == ""){ 
@@ -98,10 +97,13 @@ void audio_info(const char *info) {
   }else{if(syncword == "") {syncword = "syncword not found";Serial.println(info);}}
 }
 
-void audio_id3data(const char *info) {Serial.print("id3data     "); Serial.println(info);}  //id3 metadata
+void audio_id3data(const char *info) {
+  Serial.print("id3data     "); Serial.println(info);
+  Leof_mp3 = false;
+}  //id3 metadata
 
-void audio_eof_mp3(const char *info){ //end of file
-  Leof_mp3 = true;last_Sleep=millis();
+void audio_eof_mp3(const char *info){ last_Sleep=millis();
+  Leof_mp3 = true;Leof_speech = true;
   Serial.print("Leof_mp3 = ");Serial.print(Leof_mp3); Serial.print(" eof_mp3     "); Serial.println(info);
 }
 
@@ -119,9 +121,10 @@ void audio_icyurl(const char *info){ Serial.print("icyurl      "); Serial.printl
 
 void audio_lasthost(const char *info) { //stream URL played
   Serial.print("lasthost    "); Serial.println(info);
+  Leof_speech = false;
 }
 
-void audio_eof_speech(const char *info){
-  Leof_speech = true;last_Sleep=millis();
+void audio_eof_speech(const char *info){last_Sleep=millis();
+  Leof_mp3 = true;Leof_speech = true;
   Serial.print("eof_speech "); Serial.println(info);
 }

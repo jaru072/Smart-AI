@@ -190,9 +190,9 @@ void ControlBoard() {
         // audio.connecttoSD("/08 Music Popular/007 Unstoppable.mp3");
         audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );
       }else { 
-        if(Leof_speech == true) {Leof_speech = false;}else{
-          // audio.stopSong();
-        }  
+        // if(Leof_speech == true) {Leof_speech = false;}else{
+        //   // audio.stopSong();
+        // }  
         FilePlay = start_time_relay.substring(0,1).toInt();
         if (FilePlay > 0 and FilePlay < 7) {audio.connecttoSD( AFolderFile[1][FilePlay].c_str() );}
         if (FilePlay == 7){NAlarmClock = 0;LConnect_internet_Auto = !LConnect_internet_Auto;Serial.print("LConnect_internet_Auto = ");Serial.print(LConnect_internet_Auto);  //SetSendReceive(); Serial.println(" and SetSendReceive Again");
@@ -378,7 +378,7 @@ void loop() {
   if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}
 
   if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {
-    Leof_mp3 = false;PlayAuto();LStartSong = true;
+    PlayAuto();LStartSong = true;
   }
   if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
 
