@@ -212,6 +212,7 @@ void Check_Delete_SPIFFS(const char* Replace_Config) {
   readFile(SPIFFS, "/mydir/config.txt");
   readWord(SPIFFS, "/mydir/config.txt");
 }
+// เขียนค่า Config เริ่มต้นลง Rom ภายในบอร์ด
 void Check_SPIFFS() {  
   if(!SPIFFS.begin()){Serial.println("Card Mount Failed");return;}
   createDir(SPIFFS, "/mydir");
@@ -235,14 +236,16 @@ void List_Config() {
 }
 
 void Start_Config(void) {  
-  Check_SPIFFS();   // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("19:31 = นั่งสมาธิ");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("04:50 = ทำวัตรเช้า");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("Time_Schedu=true");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("StartSong = true");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("Connect_internet_Auto=true");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("สัมมาอะระหัง ทุก 30 นาที");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
-  Check_Replace_SPIFFS("Talk_Everytime = false");  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม  
+  Check_SPIFFS();   // เขียนค่า Config เริ่มต้นลง Rom ภายในบอร์ด
+  Check_Replace_SPIFFS("19:31 = นั่งสมาธิ");    
+  Check_Replace_SPIFFS("04:50 = ทำวัตรเช้า");    
+  Check_Replace_SPIFFS("Time_Schedu=true");    
+  Check_Replace_SPIFFS("StartSong = true");    
+  Check_Replace_SPIFFS("Connect_internet_Auto=true");    
+  Check_Replace_SPIFFS("สัมมาอะระหัง ทุก 30 นาที");    
+  Check_Replace_SPIFFS("Talk_Everytime = false");    
+  Check_Replace_SPIFFS("every_minute = 5");
+  Check_Replace_SPIFFS("SammaArahang = 7");
 }
 
 //.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
