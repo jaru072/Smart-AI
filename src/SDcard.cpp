@@ -30,9 +30,9 @@ int NFolder,NFile = 0;
 int NAutoFolder = 1;
 int NumberFile = 1;
 
-int N = 1;
-String ASpeech[] = {"","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
-int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
+// int N = 1;
+// String ASpeech[] = {"1","2","3","4","5","6","7","8","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
+// int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 
 void PlayAuto() { if (NAutoFolder == 3 or NAutoFolder == 4 or NAutoFolder == 5) {NAutoFolder = 6;NumberFile = 1;} // ไม่เปิดนำนังสมาธิ
   String Autofile = AFolderFile[NAutoFolder][NumberFile];Serial.print("Autofile = ");Serial.println(Autofile);

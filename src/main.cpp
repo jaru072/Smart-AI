@@ -4,6 +4,10 @@
 int NZero_Extra = 0;
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
+String CAscheduled = ",''";
+int N = 1;
+String ASpeech[] = {"1","2","3","4","5","6","7","8","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
+int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 
 String MonthNameEng[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 String wdayNameEng[] = {"Blank","Mon","Tue","Wed","Thr","Fri","Sat","Sun"};
@@ -318,7 +322,10 @@ void setup() {
   SPI.setFrequency(1000000);
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(NVolume); 
-
+  
+  Read_Ascheduled();
+  String ASpeech[] = {CAscheduled};
+  int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0]));
   Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
 
   //... Load data from Spiffs file /mydir/config.txt (Ram on board)
@@ -372,7 +379,13 @@ void loop() {
   }
   if ((Leof_speech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
-    Leof_speech = false;audio.connecttospeech(ASpeech[N].c_str(), "th"); if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
+    Leof_speech = false;
+    if (Ascheduled[N][1].isEmpty() == false) { 
+      String Str_Speech = "เวลา "+Ascheduled[N][1]+":"+Ascheduled[N][2]+"  "+Ascheduled[N][3];
+      // audio.connecttospeech(ASpeech[N].c_str(), "th"); 
+      audio.connecttospeech(Str_Speech.c_str(), "th"); 
+      if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
+    }
   }
 
   if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}

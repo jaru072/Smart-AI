@@ -87,7 +87,7 @@ void readWord(fs::FS &fs, const char * path){ String R_Text,Cwords,Cwords_value 
     Cwords_value = R_Text.substring(AT_Equal+1,AT_Comma); // ค่าของตัวแปรที่ได้รับ
     ATime[i][1] = Cwords; ATime[i][1].replace(" ","");Cwords_value.replace(",","");ATime[i][2] = Cwords_value; // เอาทั้งชื่อและค่าของตัวแปรเก็บในตัวแปร Array ATime[i][1] , ATime[i][2]
     if (R_Text.startsWith(",time")){
-      Ascheduled[N][1] = ATime[i][1].substring(0,2).toInt(); Ascheduled[N][2] = ATime[i][1].substring(3,5).toInt();Ascheduled[N][3] = ATime[i][2];N = N+1;
+      Ascheduled[N][1] = ATime[i][1].substring(0,2); Ascheduled[N][2] = ATime[i][1].substring(3,5);Ascheduled[N][3] = ATime[i][2];N = N+1;
 //      Serial.print(Ascheduled[N][1]);Serial.print(":");Serial.print(Ascheduled[N][2]);Serial.print(" ");Serial.println(Ascheduled[N][3]);
     }  
     Serial.print("Read Word: ");      
@@ -237,7 +237,7 @@ void List_Config() {
 
 void Start_Config(void) {  
   Check_SPIFFS();   // เขียนค่า Config เริ่มต้นลง Rom ภายในบอร์ด
-  Check_Replace_SPIFFS("19:31 = นั่งสมาธิ");    
+  Check_Replace_SPIFFS("19:30 = นั่งสมาธิ");    
   Check_Replace_SPIFFS("04:50 = ทำวัตรเช้า");    
   Check_Replace_SPIFFS("Time_Schedu=true");    
   Check_Replace_SPIFFS("StartSong = true");    
@@ -293,14 +293,26 @@ void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ต�
   readWord(SPIFFS, "/mydir/config.txt");
 }
 
+void Read_Ascheduled() {
+  CAscheduled = ",''";
+  for (int i = 1; i <= 31; i++){
+    if (Ascheduled[i][1].isEmpty() == false) {  
+      Serial.print(Ascheduled[i][1]+":");Serial.print(Ascheduled[i][2]+" ");Serial.println(Ascheduled[i][3]);
+      CAscheduled = CAscheduled+",''";
+    }else{break;}
+  }
+   CAscheduled = CAscheduled.substring(1,CAscheduled.length()-1);
+}
+
 void Check() {
     if (Wifi_Connect == true) {
       if (start_time_relay.startsWith("0") and start_time_relay.toInt() > 0){audio.stopSong();
         //.......................... กดเลข 0 นำหน้า ตามด้วยตัวเลข .....................................//
         if (start_time_relay.toInt() == 1){audio.connecttospeech("ควบคุม Plug ไฟ", "th");LcontrolBoard = true;Control_Board = "ควบคุม Plug ไฟ";}
         if (start_time_relay.toInt() == 2){audio.connecttospeech("อ่านข้อมูลจาก Config", "th");readFile(SPIFFS, "/mydir/config.txt");readWord(SPIFFS, "/mydir/config.txt");} 
-        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("SammaArahang = 7");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
-        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("NSammaArahang=7");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
+        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("19:30=นั่งสมาธิ");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
+        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("19:31=นั่งสมาธิ");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
+        if (start_time_relay.toInt() == 5){audio.connecttospeech("อ่านตารางเวลา กิจวัตรประจำวัน", "th");Read_Ascheduled();} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
         if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  
         if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
