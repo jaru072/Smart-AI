@@ -53,7 +53,7 @@ extern int NZero_Extra;
 //... ตัวแปร Audio and Sdcard
 extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
-extern String CAscheduled,ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
+extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
 extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
 //... ตัวแปร Play Song

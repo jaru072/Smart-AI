@@ -220,7 +220,7 @@ void Check_SPIFFS() {
   deleteFile(SPIFFS, "/mydir/config.txt");
   
   const char* Str_Config    = ",Volume=5,Sound=on,Play_Test=on,Scheduled=true";
-  const char* Str_Scheduled1 = ",time 04:00=ตื่นนอน ออกกำลังกาย,time 04:50=สวดมนต์ ทำวัตรเช้า,time 05:22=เตรียมออกบิณฑบาต,time 07:30=ฉันภัตตาหารเช้า,time 09:00=นั่งสมาธิ,time 10:00=เขียนโปรแกรม,time 11:00=ฉันเพล,time 14:00=นั่งสมาธิ,time 15:00=ทำความสะอาดกุฏิ,time 17:00=เดินเล่น ออกกำลังกาย,time 18:00=สรงน้ำ,time 19:00=สวดมนต์ ทำวัตรเย็น นั่งสมาธิ,time 21:00=จำวัตร,";
+  const char* Str_Scheduled1 = ",time 04:00=ตื่นนอน ออกกำลังกาย,time 04:50=สวดมนต์ ทำวัตรเช้า,time 05:22=เตรียมออกบิณฑบาต,time 07:30=ฉันภัตตาหารเช้า,time 09:00=นั่งสมาธิ,time 10:00=เขียนโปรแกรม,time 11:00=ฉันเพล,time 14:00=นั่งสมาธิ,time 15:00=ทำความสะอาดกุฏิ,time 17:00=เดินเล่น ออกกำลังกาย,time 18:00=สรงน้ำ,time 19:00=สวดมนต์ ทำวัตรเย็น,time 19:30=นั่งสมาธิ,time 21:00=จำวัตร,";
   
   writeFile(SPIFFS, "/mydir/config.txt", Str_Config);
   appendFile(SPIFFS, "/mydir/config.txt", Str_Scheduled1);
@@ -237,15 +237,13 @@ void List_Config() {
 
 void Start_Config(void) {  
   Check_SPIFFS();   // เขียนค่า Config เริ่มต้นลง Rom ภายในบอร์ด
-  Check_Replace_SPIFFS("19:30 = นั่งสมาธิ");    
   Check_Replace_SPIFFS("04:50 = ทำวัตรเช้า");    
   Check_Replace_SPIFFS("Time_Schedu=true");    
   Check_Replace_SPIFFS("StartSong = true");    
   Check_Replace_SPIFFS("Connect_internet_Auto=true");    
-  Check_Replace_SPIFFS("สัมมาอะระหัง ทุก 30 นาที");    
   Check_Replace_SPIFFS("Talk_Everytime = false");    
   Check_Replace_SPIFFS("every_minute = 5");
-  Check_Replace_SPIFFS("SammaArahang = 7");
+  Check_Replace_SPIFFS("SammaArahang = 29");
 }
 
 //.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
@@ -294,14 +292,12 @@ void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ต�
 }
 
 void Read_Ascheduled() {
-  CAscheduled = ",''";
   for (int i = 1; i <= 31; i++){
     if (Ascheduled[i][1].isEmpty() == false) {  
       Serial.print(Ascheduled[i][1]+":");Serial.print(Ascheduled[i][2]+" ");Serial.println(Ascheduled[i][3]);
-      CAscheduled = CAscheduled+",''";
+      TotalASpeech = i;
     }else{break;}
   }
-   CAscheduled = CAscheduled.substring(1,CAscheduled.length()-1);
 }
 
 void Check() {
@@ -310,9 +306,10 @@ void Check() {
         //.......................... กดเลข 0 นำหน้า ตามด้วยตัวเลข .....................................//
         if (start_time_relay.toInt() == 1){audio.connecttospeech("ควบคุม Plug ไฟ", "th");LcontrolBoard = true;Control_Board = "ควบคุม Plug ไฟ";}
         if (start_time_relay.toInt() == 2){audio.connecttospeech("อ่านข้อมูลจาก Config", "th");readFile(SPIFFS, "/mydir/config.txt");readWord(SPIFFS, "/mydir/config.txt");} 
-        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("19:30=นั่งสมาธิ");}  // อ่านค่าจาก Rom ภายในบอร์ด แล้ว แทนที่ หรือ เพิ่ม        
-        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("19:31=นั่งสมาธิ");} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
-        if (start_time_relay.toInt() == 5){audio.connecttospeech("อ่านตารางเวลา กิจวัตรประจำวัน", "th");Read_Ascheduled();} // อ่านค่าจาก Rom ภายในบอร์ด แล้ว ลบออก       
+        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("19:30=นั่งสมาธิ");}        
+        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("19:31=นั่งสมาธิ");}      
+        if (start_time_relay.toInt() == 5){audio.connecttospeech("อ่านตารางเวลา กิจวัตรประจำวัน", "th");Read_Ascheduled();}       
+        if (start_time_relay.toInt() == 6){audio.connecttospeech("ตั้งค่า Config เป็น Default ค่าเริ่มต้น", "th");Start_Config();}       
         if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  
         if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
