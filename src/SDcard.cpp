@@ -71,7 +71,7 @@ void printDirectory(File dir, int numTabs) {
 
 void Check_SDcard(int NCount) {
   if (!SD.begin(SD_CS)) {LSDcard = false; //root = false;
-    if (NCount > 1) {Serial.println("initialization failed. Things to check:");Serial.println("Please insert SD Card");}
+    Serial.println("initialization failed. Things to check:");Serial.println("Please insert SD Card");
     for (int i=1;i <= NCount;i++) { 
       if (!SD.begin(SD_CS)){
         Serial.print(".");delay(1000);
