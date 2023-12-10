@@ -51,7 +51,7 @@ void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
   int Nhourmin = hourmin(hour, minute);
   if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
-    Serial.println(CSawasdee); // delay(1000); //audio.stopSong();
+    Serial.println(CSawasdee); 
     audio.connecttospeech(CSawasdee.c_str(), "th");
   }
 }
