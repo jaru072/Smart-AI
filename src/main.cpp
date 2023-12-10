@@ -388,7 +388,7 @@ void loop() {
     // }
   }
 
-  if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}
+  // if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}
 
   if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {
     PlayAuto();LStartSong = true;
