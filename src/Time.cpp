@@ -51,13 +51,12 @@ void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
   int Nhourmin = hourmin(hour, minute);
   if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
-    Serial.println(CSawasdee); delay(1000); //audio.stopSong();
+    Serial.println(CSawasdee); // delay(1000); //audio.stopSong();
     audio.connecttospeech(CSawasdee.c_str(), "th");
   }
 }
 
 void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
-  // Serial.println("OK void SammaArahang_Between");
   int Nstart = hourmin(Bhour_Start, Bmin_Start);
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
   int Nhourmin = hourmin(hour, minute);
@@ -69,7 +68,6 @@ void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin
 }
 
 void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
-  // Serial.println("OK void Time_SammaArahang");
   int Nhourmin = hourmin(hour, minute);
   if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}else{SammaArahang_Between(8,30,11,0);}
 
@@ -126,6 +124,6 @@ void Play_Speech() {
   Sawasdee(18,31,23,59,"สวัสดีตอนค่ำ, วันนี้ฉันมีความสุขมาก");    
   Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
   Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
-  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
+  // MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
   LFirst_Song = true; 
 }
