@@ -4,11 +4,10 @@
 int NZero_Extra = 0;
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
-String CAscheduled = ",''";
 int N = 1;
 // String ASpeech[] = {"1","2","3","4","5","6","7","8","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
 // int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
-int TotalASpeech = 2;
+int TotalASpeech = 30;
 String MonthNameEng[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 String wdayNameEng[] = {"Blank","Mon","Tue","Wed","Thr","Fri","Sat","Sun"};
 String mdayName[] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
@@ -103,7 +102,7 @@ unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 #define I2S_CHANNEL_NUM   (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
-bool Leof_speech = false; // จำเป็นต้องเป็น false เพราะต้องเข้า Play_Speech(); ก่อน
+bool Leof_speech = false; // จำเป็นต้องเป็น false เพราะไม่ให้เข้า บอกกิจวัตรประจำวัน แต่ให้เข้า Play_Speech(); ก่อน
 bool Leof_mp3 = true;
 bool LFirst_Song,LSDcard = false;
 bool LNumber_Sound = true;
