@@ -69,7 +69,7 @@ void printDirectory(File dir, int numTabs) {
   }
 }
 
-void Check_SDcard(int NCount) {
+void Check_SDcard(int NCount) { //BEGIN1:
   if (!SD.begin(SD_CS)) {LSDcard = false; //root = false;
     Serial.println("initialization failed. Things to check:");Serial.println("Please insert SD Card");
     for (int i=1;i <= NCount;i++) { 
@@ -80,7 +80,16 @@ void Check_SDcard(int NCount) {
         if (NCount != 0 or TotalASpeech == 0) {printDirectory(root, 0); Serial.println("Directory SD-Card done!");Serial.print("Root Directory = ");Serial.println(root);break;}
       }
     }
-  } else{ // Serial.println(root);
+  } else{   Serial.println(root);
+    // if (SD.exists("/Covid19 No Money.mp3") == 0){
+    if (SD.exists(AFolderFile[1][1].c_str()) == 0){
+      // if (NCount < 3) {  
+        Serial.println("Not found file Please check SD card");
+      //   NCount++; goto BEGIN1;
+      // }
+    }else{
+      Serial.println("... SD Card Ready ...");
+    }
     if (root == 0) {
       Serial.println("initialization done.");LSDcard = true;root = SD.open("/");  
       if (NCount != 0 or TotalASpeech == 0) {printDirectory(root, 0);} //Serial.print("Root Directory = ");Serial.println(root);}

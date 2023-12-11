@@ -180,7 +180,7 @@ void ControlBoard() {
         start_time_relay = ""; return;
       }
       if (start_time_relay.isEmpty()){  // ถ้ากด OK โดย start_time_relay = "" ว่างเปล่า
-        LPlayAuto = !LPlayAuto; // ยกเลิก หรือ เล่น LPlayAuto
+        // LPlayAuto = !LPlayAuto; // ยกเลิก หรือ เล่น LPlayAuto
         NFile = 0;  audio.pauseResume();    // Pause , Resume
         Serial.print("PauseResume");Serial.print(" , LPlayAuto = ");Serial.println(LPlayAuto);N = TotalASpeech+1;return;  
       }
@@ -246,8 +246,8 @@ void ControlBoard() {
       } 
       // myData.z = 0;
       // Play Auto Loop Folder ตัวเลขที่อยู่หน้า *
-      if (start_time_relay.substring(0,2).toInt() > 0 and start_time_relay.length() > 1) {LPlayAuto = true;NumberFile = 1;NPlayAuto = 0;
-        NAutoFolder = start_time_relay.substring(0,2).toInt(); audio.connecttoSD( AFolderFile[NAutoFolder][NumberFile].c_str());
+      if (start_time_relay.substring(0,2).toInt() > 0 and start_time_relay.length() > 1 and Leof_mp3 == true) {LPlayAuto = true;NumberFile = 1;NPlayAuto = 0;
+        NAutoFolder = start_time_relay.substring(0,2).toInt();Leof_mp3 = false; audio.connecttoSD( AFolderFile[NAutoFolder][NumberFile].c_str());
         start_time_relay = "";FolderPlay = NAutoFolder;FilePlay = NumberFile;
       }
     }  
@@ -314,6 +314,9 @@ void setup() {
   Serial.begin(115200); Serial.println("initializing...");
   irrecv.enableIRIn(); //..... Start the receiver ...............//
   pinMode(Relay1, OUTPUT);pinMode(Relay2, OUTPUT);pinMode(Relay3, OUTPUT);pinMode(Relay4, OUTPUT);
+  //... Load data from Spiffs file /mydir/config.txt (Ram on board)
+    // Start_Config();
+    List_Config();  
   //... Set Audio
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
@@ -327,9 +330,6 @@ void setup() {
   // int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])+1);
   Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
 
-  //... Load data from Spiffs file /mydir/config.txt (Ram on board)
-    // Start_Config();
-    List_Config();  
   //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
   connectInternet(20);  

@@ -35,7 +35,7 @@ void Check_Wifi(int NConnect_Time) {
   // Serial.println(" localIP = "+WiFi.localIP().toString());
   if (WiFi.status() != WL_CONNECTED) {check_ssid(); }
 
-  if (WiFi.localIP().toString() == "0.0.0.0") {
+  if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED) {
     connectInternet(NConnect_Time); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
     if (WiFi.localIP().toString() != "0.0.0.0") {
       Wifi_Connect = true ; //Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
