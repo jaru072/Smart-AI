@@ -40,7 +40,7 @@ void PlayAuto() { if (NAutoFolder == 3 or NAutoFolder == 4 or NAutoFolder == 5) 
   audio.connecttoSD( Autofile.c_str() ); NumberFile++;  //audio.loop();
 
   if (AFolderFile[NAutoFolder][NumberFile] == ""){ 
-    NumberFile = 1; NAutoFolder++;
+    NumberFile = 1; LPlayAuto = false;  // Auto เฉพาะในโฟลเดอร์ที่เลือกเท่านั้น NAutoFolder++;
   }
 }
 
@@ -80,7 +80,7 @@ void Check_SDcard(int NCount) { //BEGIN1:
         if (NCount != 0 or TotalASpeech == 0) {printDirectory(root, 0); Serial.println("Directory SD-Card done!");Serial.print("Root Directory = ");Serial.println(root);break;}
       }
     }
-  } else{   Serial.println(root);
+  } else{   // Serial.println(root);
     // if (SD.exists("/Covid19 No Money.mp3") == 0){
     if (SD.exists(AFolderFile[1][1].c_str()) == 0){
       // if (NCount < 3) {  
