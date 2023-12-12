@@ -112,7 +112,7 @@ void audio_id3data(const char *info) {
 }  //id3 metadata
 
 void audio_eof_mp3(const char *info){ last_Sleep=millis();
-  Leof_mp3 = true;Leof_speech = true;
+  Leof_mp3 = true;Leof_speech = true;Lwait_Speech = false;
   Serial.print("Leof_mp3 = ");Serial.print(Leof_mp3); Serial.print(" eof_mp3     "); Serial.println(info);
 }
 

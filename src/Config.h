@@ -25,8 +25,11 @@ extern char chbuf[100];
 //...... Get Date Time from Internet
 extern long timezone;  
 extern byte daysavetime; 
+extern String Question;
+extern bool LSend_Serial;
 
 extern int hourmin(int ,int );
+extern void Send_SerialMonitor();
 extern void Read_Ascheduled();
 extern void Check_Wifi(int );
 extern void Play_Speech();
@@ -51,7 +54,7 @@ extern void connectInternet(int);
 //... ตัวแปร SETUP
 extern int NZero_Extra;
 //... ตัวแปร Audio and Sdcard
-extern bool LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
+extern bool Lwait_MonkDay,Lwait_Speech,LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
 extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
@@ -66,7 +69,7 @@ extern int DayofWeek(int,int,int);
 extern int NAlarmClock,every_minute,NYear,NMonth,NDay,Nmdaymonyear,NDoW;
 extern String CDay,CMon,CYear,CWday,CDateTime,CWdayThai;
 extern String wdayName[],monthName [];
-extern int MoonPhase(int ,int ,int );   
+extern int NMoonPhase,MoonPhase(int ,int ,int );   
 extern bool LTime_SammaArahang,LFirstShow,LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
 extern String C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
 //... ตัวแปร อุณหภูมิ ความชื้น

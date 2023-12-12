@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Config.h>
 
-int NZero_Extra = 0;
+int NMoonPhase,NZero_Extra = 0;
 
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 int N = 1;
@@ -29,7 +29,7 @@ String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
-bool Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
+bool LSend_Serial,Lwait_MonkDay,Lwait_Speech,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 uint8_t hour    = 6;
@@ -168,6 +168,7 @@ void ControlBoard() {
       if (start_time_relay.startsWith("*")) {
         NSongMode = 0;Serial.println(CWday+" "+CDay+"/"+CMon+"/"+CYear);//mp3.playMp3FolderTrack((CMon+CDay).toInt());if(CDay.toInt() < 10){waitMilliseconds(6000);}else{waitMilliseconds(7000);} myData.z = 0;
         if (Wifi_Connect == true) {audio.stopSong();
+          MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
           audio.connecttospeech(CMoonPhaseThai.c_str(), "th");
         }else{ 
           int NWaxing = (CMoonPhase.substring(6,9)).toInt();
@@ -338,6 +339,7 @@ void setup() {
     delay(1000);GetTimeInternet();
     if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
   }
+  Read_Ascheduled();
 }
 
 void loop() {
@@ -355,13 +357,16 @@ void loop() {
   }  
 
   if (Wifi_Connect == true) {
+    if (LSend_Serial == true and Leof_speech == true){Send_SerialMonitor();}  // ส่งค่าตัวแปรผ่าน Serial Monitor
     talk_everytime(every_hour,every_minute);  // บอกเวลาเป็นเสียงพูดทุกกี่ชั่วโมง หรือ นาที (0,1) = ทุก ๆ 1 นาที
   }
+  
   Time_Schedu(); // ตารางเวลาประจำวัน 4 เวลา 6:00 , 13:00 , 18:00 , 22:00
 
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
-      Serial.print("  NZero_Extra = ");Serial.print(NZero_Extra);
+      // แสดงผลใน Serial Monitor ทุก 2 วินาที
+      Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
       Serial.print("  Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }
@@ -374,7 +379,7 @@ void loop() {
   if (LFirst_Song == false and Wifi_Connect == true) {
     // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
     Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
-    Read_Ascheduled();
+    // Read_Ascheduled();
   }
   if ((Leof_speech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);

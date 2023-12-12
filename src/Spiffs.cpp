@@ -306,9 +306,9 @@ void Check() {
         //.......................... กดเลข 0 นำหน้า ตามด้วยตัวเลข .....................................//
         if (start_time_relay.toInt() == 1){audio.connecttospeech("ควบคุม Plug ไฟ", "th");LcontrolBoard = true;Control_Board = "ควบคุม Plug ไฟ";}
         if (start_time_relay.toInt() == 2){audio.connecttospeech("อ่านข้อมูลจาก Config", "th");readFile(SPIFFS, "/mydir/config.txt");readWord(SPIFFS, "/mydir/config.txt");} 
-        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("19:30=นั่งสมาธิ");}        
-        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("19:31=นั่งสมาธิ");}      
-        if (start_time_relay.toInt() == 5){audio.connecttospeech("อ่านตารางเวลา กิจวัตรประจำวัน", "th");Read_Ascheduled();}       
+        if (start_time_relay.toInt() == 3){audio.connecttospeech("เขียนข้อมูลลง Config", "th");Check_Replace_SPIFFS("21:30=จำวัตร");}        
+        if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("21:00=จำวัตร");}      
+        if (start_time_relay.toInt() == 5){Leof_speech = false;audio.connecttospeech("ส่งค่าตัวแปรผ่าน Serial Monitor", "th");LSend_Serial = true;} // ส่งค่าตัวแปรผ่าน Serial Monitor//อ่านตารางเวลา กิจวัตรประจำวัน Read_Ascheduled();
         if (start_time_relay.toInt() == 6){audio.connecttospeech("ตั้งค่า Config เป็น Default ค่าเริ่มต้น", "th");Start_Config();}       
         if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  

@@ -33,7 +33,7 @@ void check_ssid(void) {
 void Check_Wifi(int NConnect_Time) {
   // Serial.print(WiFi.status());
   // Serial.println(" localIP = "+WiFi.localIP().toString());
-  if (WiFi.status() != WL_CONNECTED) {check_ssid(); }
+  if (WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {check_ssid(); }
 
   if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED) {
     connectInternet(NConnect_Time); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 

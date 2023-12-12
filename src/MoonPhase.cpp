@@ -59,6 +59,8 @@ int MoonPhase(int NYear_Time_Now,int NMonth_Time_Now,int NDay_Time_Now) {
             CMoonPhase = ("Waxing "+String(c_u_day));
           }// แสดงวันข้างขื้น หรือข้างแรม
           CMoonPhaseThai = CMoonPhase+" ค่ำ"; CMoonPhaseThai.replace("Waxing"," ขึ้น"); CMoonPhaseThai.replace("Waning"," แรม");
+          String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
+          NMoonPhase = C_MoonPhaseThai.toInt();
           break;
         }
         // คำนวนวัน เดือน ปี ที่เพิ่มขึ้น
@@ -67,25 +69,4 @@ int MoonPhase(int NYear_Time_Now,int NMonth_Time_Now,int NDay_Time_Now) {
     }
   }
   return NYear_Time_Now,NMonth_Time_Now,NDay_Time_Now;
-}
-
-void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;  //String C_Moon = "";
-  // audio.stopSong();
-  String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
-  int NMoonPhase = C_MoonPhaseThai.toInt();
-  if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ แรม 8 ค่ำ";audio.connecttospeech(C_Moon.c_str(), "th");}
-  if (NMoonPhase == 8 or NMoonPhase == 15){C_Moon = "วันนี้วันพระ "+CMoonPhaseThai;audio.connecttospeech(C_Moon.c_str(), "th");}  
-  if (NMoonPhase == 13) { MoonPhase(NYear+543,NMonth,NDay+2);
-    String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); C_MoonPhaseThai.replace("ค่ำ",""); 
-    int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
-    if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 14 ค่ำ";}   
-    audio.connecttospeech(C_Moon.c_str(), "th");  
-    Serial.println(C_Moon); //delay(4000);
-  }
-  if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
-    String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
-    int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
-    if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
-    audio.connecttospeech(C_Moon.c_str(), "th");  
-  }
 }

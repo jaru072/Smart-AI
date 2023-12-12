@@ -47,12 +47,15 @@ void talk_everytime(int every_hour,int every_minute){
   }
 }
 void Sawasdee(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop,String CSawasdee) {
-  int Nstart = hourmin(Bhour_Start, Bmin_Start);
-  int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
-  int Nhourmin = hourmin(hour, minute);
-  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
-    Serial.println(CSawasdee); 
-    audio.connecttospeech(CSawasdee.c_str(), "th");
+  if (Leof_speech == true and Lwait_MonkDay == true) { 
+    int Nstart = hourmin(Bhour_Start, Bmin_Start);
+    int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
+    int Nhourmin = hourmin(hour, minute);
+    if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
+      Serial.println(CSawasdee); 
+      Leof_speech = false;audio.connecttospeech(CSawasdee.c_str(), "th");
+      LFirst_Song = true;
+    }
   }
 }
 
@@ -97,7 +100,12 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
   if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
     if (LTime_Between == true) {
       Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
-      audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+      if (Lwait_Speech == false) {audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");}
+      if (Ascheduled[Array_Number][3] == "สวดมนต์ ทำวัตรเช้า"){Lwait_Speech = true;
+        audio.connecttoSD( AFolderFile[1][1].c_str());
+      }else{
+        Lwait_Speech = false;
+      }
     }    
   }else{
     Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
@@ -108,13 +116,35 @@ void Time_Schedu(){
   //..... Scheduled ตารางเวลาประจำวัน 4 เวลา ค่าพื้นฐาน Nhour_schedu1=6;Nhour_schedu2=13;Nhour_schedu3=18;Nhour_schedu4=22; ......//
   if(LTime_Schedu == true and minute_past != minute) {minute_past = minute;
     if (Leof_speech == true) {LTime_Between = true;}
-    for (int i = 1; i <= 20; i++){
+    for (int i = 1; i <= TotalASpeech; i++){
       Time_Between(i,Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt(),Ascheduled[i][1].toInt(),Ascheduled[i][2].toInt()+1);
     }    
   }
 }
 
+void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;  
+  if (Leof_speech == true and Lwait_MonkDay == false) { 
+    if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ แรม 8 ค่ำ";Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");}
+    if (NMoonPhase == 8 or NMoonPhase == 15){C_Moon = "วันนี้วันพระ "+CMoonPhaseThai;Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");}  
+    if (NMoonPhase == 13) { MoonPhase(NYear+543,NMonth,NDay+2);
+      String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); C_MoonPhaseThai.replace("ค่ำ",""); 
+      int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+      if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 14 ค่ำ";}   
+      Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");  
+      Serial.println(C_Moon); //delay(4000);
+    }
+    if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
+      String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
+      int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+      if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
+      Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");  
+    }
+    Lwait_MonkDay = true;
+  }
+}
+
 void Play_Speech() {
+  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ 
   Sawasdee(4,0,10,59,"สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก");    
   Sawasdee(11,0,11,59,"สวัสดีตอนเพล, วันนี้ฉันมีความสุขมาก");    
   Sawasdee(12,0,12,59,"สวัสดีตอนเที่ยง, วันนี้ฉันมีความสุขมาก");    
@@ -123,7 +153,6 @@ void Play_Speech() {
   Sawasdee(18,0,18,30,"สวัสดีตอนพลบค่ำ, วันนี้ฉันมีความสุขมาก");    
   Sawasdee(18,31,23,59,"สวัสดีตอนค่ำ, วันนี้ฉันมีความสุขมาก");    
   Sawasdee(0,0,0,10,"สวัสดีตอนเที่ยงคืน, ทำไมวันนี้อยู่ดึกจัง");    
-  Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");  
-  // MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
-  LFirst_Song = true; 
+  Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ"); 
+  // LFirst_Song = true;
 }
