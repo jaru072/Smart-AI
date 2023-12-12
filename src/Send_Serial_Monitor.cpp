@@ -23,3 +23,17 @@ void Send_SerialMonitor(){
     audio.connecttospeech("สิ้นสุด คำถาม", "th");
   }
 }
+
+// void utf8AsciiConvert(char* src, char*des)                 
+// {       int k=0;
+//        char c;
+//        for (int i=0; src[i]; i++){
+//             c = utf8Ascii(src[i]);
+//             if (c!='\0') //if (c!=0)
+//             des[k++]=c;
+//        }
+//        des[k]='\0';  //des[k]=0;
+// }
+
+// char msgDisplay[100] = "olá cão";
+// utf8AsciiConvert(msgDisplay,msgDisplay);  //return olá cão

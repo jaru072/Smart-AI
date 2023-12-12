@@ -121,17 +121,7 @@ void Time_Schedu(){
     }    
   }
 }
-void Slogan() {
-  if (Leof_speech == true and Lwait_Slogan == false) { 
-    // for (int i = 1; i <= TotalASpeech; i++){
-    //   if (ASpeech[i].isEmpty()) {break;}
-    //   if (Leof_speech == true) {  
-        Leof_speech = false;audio.connecttospeech(ASpeech[0].c_str(), "th");
-    //   }
-    // }
-    Lwait_Slogan = true;LFirst_Song = true;    
-  }
-}
+
 void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;  
   if (Leof_speech == true and Lwait_MonkDay == false) { 
     if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ แรม 8 ค่ำ";Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");}
@@ -153,6 +143,19 @@ void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;
   }
 }
 
+void Slogan1() {
+  if (Leof_speech == true and Lwait_Slogan1 == false) { 
+    Leof_speech = false;audio.connecttospeech(ASpeech[0].c_str(), "th");
+    Lwait_Slogan1 = true;   
+  }
+}
+void Slogan2() {
+  if (Leof_speech == true and Lwait_Slogan2 == false) { 
+    Leof_speech = false;audio.connecttospeech(ASpeech[1].c_str(), "th");
+    Lwait_Slogan2 = true;LFirst_Song = true;    
+  }
+}
+
 void Play_Speech() {
   MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ 
   if (Lwait_MonkDay == true) {
@@ -167,6 +170,7 @@ void Play_Speech() {
     Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");
   } 
   if (Lwait_MonkDay == true and Lwait_Sawasdee == true) { // คำขวัญประจำวัน
-    Slogan(); 
-  }  
+    Slogan1(); 
+    if (Lwait_Slogan1 == true ) {Slogan2();}
+  }
 }

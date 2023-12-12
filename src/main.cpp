@@ -6,7 +6,7 @@ int NMoonPhase,NZero_Extra = 0;
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 int N = 1;
 int TotalASpeech = 30;
-String ASpeech[] = {"โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่"};
+String ASpeech[] = {"โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","Good morning"};
 // int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 String MonthNameEng[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 String wdayNameEng[] = {"Blank","Mon","Tue","Wed","Thr","Fri","Sat","Sun"};
@@ -29,7 +29,7 @@ String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
-bool Lwait_Sawasdee,Lwait_Slogan,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
+bool Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 uint8_t hour    = 6;
@@ -382,7 +382,7 @@ void loop() {
     Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
     // Read_Ascheduled();
   }
-  if ((Leof_speech == true and Lwait_Slogan == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
+  if ((Leof_speech == true and Lwait_Slogan2 == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
     Leof_speech = false;
     // if (Ascheduled[N][1].isEmpty() == false) { 
