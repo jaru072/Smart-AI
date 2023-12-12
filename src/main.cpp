@@ -6,7 +6,7 @@ int NMoonPhase,NZero_Extra = 0;
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 int N = 1;
 int TotalASpeech = 30;
-// String ASpeech[] = {"1","2","3","4","5","6","7","8","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
+String ASpeech[] = {"โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่"};
 // int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
 String MonthNameEng[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 String wdayNameEng[] = {"Blank","Mon","Tue","Wed","Thr","Fri","Sat","Sun"};
@@ -29,7 +29,7 @@ String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
-bool LSend_Serial,Lwait_MonkDay,Lwait_Speech,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
+bool Lwait_Sawasdee,Lwait_Slogan,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 uint8_t hour    = 6;
@@ -168,6 +168,7 @@ void ControlBoard() {
       if (start_time_relay.startsWith("*")) {
         NSongMode = 0;Serial.println(CWday+" "+CDay+"/"+CMon+"/"+CYear);//mp3.playMp3FolderTrack((CMon+CDay).toInt());if(CDay.toInt() < 10){waitMilliseconds(6000);}else{waitMilliseconds(7000);} myData.z = 0;
         if (Wifi_Connect == true) {audio.stopSong();
+          Lwait_MonkDay = false;Leof_speech = true;
           MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ
           audio.connecttospeech(CMoonPhaseThai.c_str(), "th");
         }else{ 
@@ -381,7 +382,7 @@ void loop() {
     Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
     // Read_Ascheduled();
   }
-  if ((Leof_speech == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
+  if ((Leof_speech == true and Lwait_Slogan == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
     Leof_speech = false;
     // if (Ascheduled[N][1].isEmpty() == false) { 

@@ -54,7 +54,7 @@ extern void connectInternet(int);
 //... ตัวแปร SETUP
 extern int NZero_Extra;
 //... ตัวแปร Audio and Sdcard
-extern bool Lwait_MonkDay,Lwait_Speech,LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
+extern bool Lwait_Sawasdee,Lwait_Slogan,Lwait_MonkDay,Lwait_Speech,LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
 extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
