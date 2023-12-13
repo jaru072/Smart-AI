@@ -97,17 +97,25 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
   int Nstart = hourmin(Bhour_Start, Bmin_Start);
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
   int Nhourmin = hourmin(hour, minute);
-  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) {
+  if (Nstart <= Nhourmin and Nstop >= Nhourmin ) { 
     if (LTime_Between == true) {
-      Serial.println(Ascheduled[8][1]+" = "+Ascheduled[8][2]);LTime_Between = false;LFirstOnly = true;
-      if (Lwait_Speech == false) {audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");}
-      if (Ascheduled[Array_Number][3] == "สวดมนต์ ทำวัตรเช้า"){Lwait_Speech = true;
-        audio.connecttoSD( AFolderFile[1][1].c_str());
-      }else{
-        Lwait_Speech = false;
+      Serial.println(Ascheduled[3][1]+":"+Ascheduled[3][2]);Ascheduled[Array_Number][3];
+      
+      if (Lwait_Speech == false) {
+        audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+        Lwait_Speech = true;
+      }else{ 
+        if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเช้า") >=0){audio.connecttoSD( AFolderFile[1][1].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเย็น") >=0){audio.connecttoSD( AFolderFile[1][2].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("ฉันเพล") >=0){audio.connecttoSD( AFolderFile[1][3].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("นั่งสมาธิ") >=0){audio.connecttoSD( AFolderFile[2][1].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("ความสะอาด") >=0){audio.connecttoSD( AFolderFile[8][4].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("เดินเล่น ออกกำลังกาย") >=0){audio.connecttoSD( AFolderFile[8][3].c_str());}
+        Lwait_Speech = false;LTime_Between = false;LFirstOnly = true;
       }
     }    
   }else{
+    Lwait_Speech = false;
     Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
   }
 }
