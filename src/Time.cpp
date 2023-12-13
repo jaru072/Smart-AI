@@ -111,11 +111,12 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
         if (Ascheduled[Array_Number][3].indexOf("นั่งสมาธิ") >=0){audio.connecttoSD( AFolderFile[2][1].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("ความสะอาด") >=0){audio.connecttoSD( AFolderFile[8][4].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("เดินเล่น ออกกำลังกาย") >=0){audio.connecttoSD( AFolderFile[8][3].c_str());}
+        if (Ascheduled[Array_Number][3].indexOf("สรงน้ำ") >=0){audio.connecttoSD( AFolderFile[5][5].c_str());}
         Lwait_Speech = false;LTime_Between = false;LFirstOnly = true;
       }
     }    
   }else{
-    Lwait_Speech = false;
+    // Lwait_Speech = false;
     Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
   }
 }
