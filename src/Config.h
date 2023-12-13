@@ -28,7 +28,14 @@ extern byte daysavetime;
 extern String Question;
 extern bool LSend_Serial;
 
-extern int hourmin(int ,int );
+extern int count1,count2;
+extern TaskHandle_t task1Handle;
+extern TaskHandle_t task2Handle;
+extern void RTOS_Setup();
+extern void task2(void * );
+extern void task1(void * );
+extern void uploadToAWS(void * );
+extern void toggleLED(void * );
 extern void Send_SerialMonitor();
 extern void Read_Ascheduled();
 extern void Check_Wifi(int );
@@ -53,6 +60,7 @@ extern void check_ssid(void);
 extern void connectInternet(int);
 //... ตัวแปร SETUP
 extern int NZero_Extra;
+extern int hourmin(int ,int );
 //... ตัวแปร Audio and Sdcard
 extern bool Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_Slogan,Lwait_MonkDay,Lwait_Speech,LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;

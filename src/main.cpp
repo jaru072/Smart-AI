@@ -2,7 +2,6 @@
 #include <Config.h>
 
 int NMoonPhase,NZero_Extra = 0;
-
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 int N = 1;
 int TotalASpeech = 30;
@@ -114,39 +113,6 @@ String timerelay,FolderNumber,FolderFileNumber,Str_FileNumber,Cevery_minute = ""
 int colon_pos = 0;
 bool LcontrolBoard = false;
 String syncword,Control_Board = "";
-
-void toggleLED(void * parameter){
-  for(;;){ 
-    digitalWrite(LED_BUILTIN, HIGH);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task for 500ms
-    digitalWrite(LED_BUILTIN, LOW);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task again for 500ms
-  }
-}
-
-void uploadToAWS(void * parameter){
-    // Implement your custom logic here
-    // When you're done, call vTaskDelete. Don't forget this!
-    vTaskDelete(NULL);
-}
-
-// This TaskHandle will allow 
-TaskHandle_t task1Handle = NULL;
-void task1(void * parameter){
-  for(;;){
-    // Serial.print("Task 1 counter"); Serial.println(count1++);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-  }
-}
-
-// This TaskHandle will allow 
-TaskHandle_t task2Handle = NULL;
-void task2(void * parameter){
-  for(;;){
-    // Serial.print("Task 2 counter");Serial.println(count2++);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-  }
-}
 
 //............................................................//
 void addnumber() {
@@ -361,6 +327,7 @@ void setup() {
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(NVolume); 
   
+  RTOS_Setup(); // xTaskCreate
   Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
 
   //... Start Wifi and Connect Internet and get time from internet .............//
@@ -372,13 +339,6 @@ void setup() {
     if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
   }
   Read_Ascheduled();
-  //............... Setup RTOS xTaskCreate ................//
-  xTaskCreate(task1, "Task 1", 1000, NULL, 1, &task1Handle);
-  xTaskCreate(task2, "Task 2", 1000, NULL, 1, &task2Handle);
-  // Function that should be called// Name of the task (for debugging)// Stack size (bytes)// Parameter to pass// Task priority// Task handle
-  xTaskCreate(toggleLED, "Toggle LED", 1000, NULL, 1, NULL);  
-  xTaskCreate(uploadToAWS, "Upload to AWS", 1000, NULL, 1, NULL);
-  // vTaskDelete(NULL);
 }
 
 void loop() {
@@ -405,7 +365,9 @@ void loop() {
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
-      Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
+      // Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
+      Serial.print(" Task 1 counter "); Serial.print(count1);
+      Serial.print(" Task 2 counter "); Serial.print(count2);
       Serial.print("  Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }
