@@ -327,8 +327,7 @@ void setup() {
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(NVolume); 
   
-  RTOS_Setup(); // xTaskCreate
-  Check_SDcard(); // xTaskCreate
+  // RTOS_Setup(); // xTaskCreate
 
   //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
@@ -339,6 +338,7 @@ void setup() {
     if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
   }
   Read_Ascheduled();
+  Check_SDcard(); // xTaskCreate
 }
 
 void loop() {
@@ -366,9 +366,9 @@ void loop() {
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
       // Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
-      Serial.print(" Task 1 counter "); Serial.print(count1);
-      Serial.print(" Task 2 counter "); Serial.print(count2);
-      Serial.print("  Leof_speech = ");Serial.print(Leof_speech);
+      Serial.print(" Task1 counter "); Serial.print(count1);
+      Serial.print(" Task2 counter "); Serial.print(count2);
+      Serial.print(" Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }
     // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้นSerial.println(" ");

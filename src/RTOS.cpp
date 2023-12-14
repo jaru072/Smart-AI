@@ -29,12 +29,8 @@ int NFolder,NFile = 0;
 int NAutoFolder = 1;
 int NumberFile = 1;
 
-// int N = 1;
-// String ASpeech[] = {"1","2","3","4","5","6","7","8","โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","ฉันตื่นนอน ตีห้า, ทำวัตรเช้า ตีห้าครึ่ง","6 โมงเช้า ออกกำลังกาย, นั่งสมาธิ","7 โมง ทำความสะอาดกุฏิ , ดูข่าว","8 โมงเช้า ไปรับภัตตาหาร, ฉันเช้า 9 โมง"};
-// int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;
-
 int count1,count2 = 0;
-
+//..................Task Control SD Card ...........................//
 void printDirectory(File dir, int numTabs) {
   while (true) {File entry =  dir.openNextFile(); 
     if (! entry) {break;}
@@ -43,9 +39,8 @@ void printDirectory(File dir, int numTabs) {
     if (Number <= 20) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
       if (Fname.endsWith(".mp3")||Fname.endsWith(".aac")||Fname.endsWith(".wav")||Fname.endsWith(".m4a")) {  // ||Fname.endsWith(".flac")
         FolderName = Fname.substring(0,Fname.lastIndexOf("/")); AFolderFile[NFolder][0] = FolderName; 
-        // if (OldFolderName != FolderName) {Serial.println(AFolderFile[NFolder][0]);} //OldFolderName = FolderName;
-        Serial.print("NFolder = ");Serial.print(NFolder);Serial.print(" NFile = ");Serial.print(NFile); 
-        AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; Serial.println(" "+ AFolderFile[NFolder][NFile]);  
+        // Serial.print("NFolder = ");Serial.print(NFolder);Serial.print(" NFile = ");Serial.print(NFile); 
+        AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; //Serial.println(" "+ AFolderFile[NFolder][NFile]);  
         NFile++; 
       }
 
@@ -55,25 +50,13 @@ void printDirectory(File dir, int numTabs) {
       } else {
         // Serial.print("\t\t");Serial.println(entry.size(), DEC); // files have sizes, directories do not
       }
-    }else{Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); break;}
+    }else{
+      // Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); 
+      break;
+    }
     entry.close();
   }
 }
-
-void toggleLED(void * parameter){
-  for(;;){ 
-    digitalWrite(LED_BUILTIN, HIGH);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task for 500ms
-    digitalWrite(LED_BUILTIN, LOW);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task again for 500ms
-  }
-}
-void uploadToAWS(void * parameter){
-    // Implement your custom logic here
-    // When you're done, call vTaskDelete. Don't forget this!
-    vTaskDelete(NULL);
-}
-// This TaskHandle will allow 
 TaskHandle_t task_Check_SDcardHandle = NULL;
 void task_Check_SDcard(void * parameter){
   if (!SD.begin(SD_CS)) {LSDcard = false; //root = false;
@@ -84,7 +67,7 @@ void task_Check_SDcard(void * parameter){
           Serial.print(".");vTaskDelay(1000 / portTICK_PERIOD_MS);
         } else {
           Serial.println("initialization done.");LSDcard = true;root = SD.open("/"); Serial.println(root); 
-          if (10 != 0 or TotalASpeech == 0) {printDirectory(root, 0); Serial.println("Directory SD-Card done!");Serial.print("Root Directory = ");Serial.println(root);break;}
+          printDirectory(root, 0); Serial.println("Directory SD-Card done!");Serial.print("Root Directory = ");Serial.println(root);break;
         }
       }
     }
@@ -102,7 +85,22 @@ void task_Check_SDcard(void * parameter){
   }
   vTaskDelete(NULL);
 }
-// This TaskHandle will allow 
+//............. Task Control Led blink every 500 ms ................//
+void toggleLED(void * parameter){
+  for(;;){ 
+    digitalWrite(LED_BUILTIN, HIGH);
+    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task for 500ms
+    digitalWrite(LED_BUILTIN, LOW);
+    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task again for 500ms
+  }
+}
+//................... Task Control uploadToAWS.....................//
+void uploadToAWS(void * parameter){
+    // Implement your custom logic here
+    // When you're done, call vTaskDelete. Don't forget this!
+    vTaskDelete(NULL);
+}
+//....................... Task Control task2 ......................//
 TaskHandle_t task2Handle = NULL;
 void task2(void * parameter){
   for(;;){count2++;
@@ -110,17 +108,16 @@ void task2(void * parameter){
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
-
+//........................ xTaskCreate Main ........................//
 void RTOS_Setup() {
   //............... Setup RTOS xTaskCreate ................//
-  // xTaskCreate(task_Check_SDcard, "Task 1", 5000, NULL, 1, &task_Check_SDcardHandle);
   xTaskCreate(task2, "Task 2", 1000, NULL, 1, &task2Handle);
   // Function that should be called// Name of the task (for debugging)// Stack size (bytes)// Parameter to pass// Task priority// Task handle
   xTaskCreate(toggleLED, "Toggle LED", 1000, NULL, 1, NULL);  
   xTaskCreate(uploadToAWS, "Upload to AWS", 1000, NULL, 1, NULL);
   // vTaskDelete(NULL);
 }
-
+//.................. xTaskCreate Check_SDcard only .................//
 void Check_SDcard() {  
   xTaskCreate(task_Check_SDcard, "Check_SDcard", 5000, NULL, 1, &task_Check_SDcardHandle);
 }
