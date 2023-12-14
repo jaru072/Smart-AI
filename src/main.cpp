@@ -328,7 +328,7 @@ void setup() {
   audio.setVolume(NVolume); 
   
   RTOS_Setup(); // xTaskCreate
-  Check_SDcard(10); // เช็ค SD Card ซ้ำ 10 ครั้ง
+  Check_SDcard(); // xTaskCreate
 
   //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
@@ -350,7 +350,7 @@ void loop() {
   }
   // Check_Wifi(5) 5 time everytime 20 Second
   if (millis() - last_Wifi > 20000) {last_Wifi = millis();
-    Check_SDcard(1); // เช็ค SD Card 
+    Check_SDcard(); // xTaskCreate // เช็ค SD Card 
     if (LConnect_internet_Auto == true) {Check_Wifi(5);}
     // if (Wifi_Connect == true) {configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
   }  

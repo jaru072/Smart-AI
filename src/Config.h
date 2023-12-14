@@ -31,6 +31,8 @@ extern bool LSend_Serial;
 extern int count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
+
+extern void printDirectory();
 extern void RTOS_Setup();
 extern void task2(void * );
 extern void task1(void * );
@@ -48,7 +50,7 @@ extern void Time_SammaArahang(int ,int );
 extern void SammaArahang_Between(int,int,int,int);
 extern void MonkDay();
 extern void PlayAuto();
-extern void Check_SDcard(int);
+extern void Check_SDcard();
 extern void talk_time_current(void);
 extern void GetTimeInternet(void);
 extern void IRrecv_void();
