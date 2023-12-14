@@ -22,12 +22,15 @@ int TotalconnectCount = 20;
 // }
 
 void check_ssid() {
-  WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
+  // WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
   int n = WiFi.scanNetworks();
-  if (n == 0) {Serial.println("No networks found");} else {Serial.print(n);Serial.println(" Networks found");
+  if (n <= 0) {
+    Serial.println("No networks found");LscanNetworks = false;
+  } else {
+    LscanNetworks = true;Serial.print(n);Serial.println(" Networks found");
     for (int i = 0; i < n; ++i) {Serial.print(i + 1);Serial.print(": ");Serial.print(WiFi.SSID(i));Serial.print(" (");Serial.print(WiFi.RSSI(i));ssid = WiFi.SSID(i);}
   }
-  Serial.println(""); delay(500);  
+  // Serial.println(""); delay(500);  
 }
 
 // void Check_Wifi(int NConnect_Time) {

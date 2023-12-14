@@ -28,7 +28,7 @@ String CDay,CMon,CYear,CWday,CDateTime,CWdayThai = "";
 int NAlarmClock,NMonth,NDay = 0;
 int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
-bool Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
+bool LscanNetworks,Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
 uint8_t hour    = 6;
@@ -330,6 +330,7 @@ void setup() {
   // RTOS_Setup(); // xTaskCreate
 
   //... Start Wifi and Connect Internet and get time from internet .............//
+  WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
   check_ssid();
   connectInternet();  
   if (Wifi_Connect == true) {EXIT2:

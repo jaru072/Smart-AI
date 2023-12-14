@@ -35,19 +35,20 @@ int NumberFile = 1;
 //******************************************INTERNET CONNECT****************************************//
 TaskHandle_t Task_connectInternetHandle = NULL;
 void Task_connectInternet(void * parameter) { 
-  int connectCount = 0;  // Scan หาไวไฟ
+  if (LscanNetworks == true) {  
+    int connectCount = 0;  // Scan หาไวไฟ  
+    WiFi.mode(WIFI_STA);WiFi.begin(ssid.c_str(), pass.c_str()); // 
 
-  WiFi.mode(WIFI_STA);WiFi.begin(ssid.c_str(), pass.c_str()); // 
+    while (WiFi.status() != WL_CONNECTED) {connectCount++;Serial.print(".");
+      vTaskDelay(500 / portTICK_PERIOD_MS);
+      if (connectCount > TotalconnectCount) {Wifi_Connect = false ;break;}
+    }
 
-  while (WiFi.status() != WL_CONNECTED) {connectCount++;Serial.print(".");
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    if (connectCount > TotalconnectCount) {Wifi_Connect = false ;break;}
-  }
-
-  if (WiFi.status() == WL_CONNECTED) { Wifi_Connect = true ;
-    Serial.println(""); Serial.print("WiFi connected IP address: "); Serial.print(WiFi.localIP());Serial.print(" , MAC Address: ");Serial.println(WiFi.macAddress()); 
-  }else{
-    Serial.println("Wifi_Connect = false");Wifi_Connect = false; // SetSendReceive(); // Setup ส่ง-รับ ผ่าน Mac Address 
+    if (WiFi.status() == WL_CONNECTED) { Wifi_Connect = true ;
+      Serial.println(""); Serial.print("WiFi connected IP address: "); Serial.print(WiFi.localIP());Serial.print(" , MAC Address: ");Serial.println(WiFi.macAddress()); 
+    }else{
+      Serial.println("Wifi_Connect = false");Wifi_Connect = false; // SetSendReceive(); // Setup ส่ง-รับ ผ่าน Mac Address 
+    }
   }
   vTaskDelete(NULL); 
 }

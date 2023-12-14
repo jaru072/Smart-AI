@@ -31,6 +31,7 @@ extern bool LSend_Serial;
 extern String ssid,pass;
 extern int TotalconnectCount;
 
+extern bool LscanNetworks;
 extern int count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
