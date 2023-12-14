@@ -331,7 +331,7 @@ void setup() {
 
   //... Start Wifi and Connect Internet and get time from internet .............//
   check_ssid();
-  connectInternet(20);  
+  connectInternet();  
   if (Wifi_Connect == true) {EXIT2:
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
@@ -348,7 +348,6 @@ void loop() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
-  // Check_Wifi(5) 5 time everytime 20 Second
   if (millis() - last_Wifi > 20000) {last_Wifi = millis();
     Check_SDcard(); // xTaskCreate // เช็ค SD Card 
     if (LConnect_internet_Auto == true) {Check_Wifi(5);}
@@ -366,8 +365,8 @@ void loop() {
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
       // Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
-      Serial.print(" Task1 counter "); Serial.print(count1);
-      Serial.print(" Task2 counter "); Serial.print(count2);
+      // Serial.print(" Task1 counter "); Serial.print(count1);
+      // Serial.print(" Task2 counter "); Serial.print(count2);
       Serial.print(" Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }

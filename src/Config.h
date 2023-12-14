@@ -28,10 +28,12 @@ extern byte daysavetime;
 extern String Question;
 extern bool LSend_Serial;
 
+extern String ssid,pass;
+extern int TotalconnectCount;
+
 extern int count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
-
 extern void printDirectory();
 extern void RTOS_Setup();
 extern void task2(void * );
@@ -51,6 +53,8 @@ extern void SammaArahang_Between(int,int,int,int);
 extern void MonkDay();
 extern void PlayAuto();
 extern void Check_SDcard();
+extern void check_ssid();
+extern void connectInternet();
 extern void talk_time_current(void);
 extern void GetTimeInternet(void);
 extern void IRrecv_void();
@@ -58,8 +62,6 @@ extern void List_Config(void);
 extern void Check();
 extern void Add_Zero(int);
 extern void Start_Config(void);
-extern void check_ssid(void);
-extern void connectInternet(int);
 //... ตัวแปร SETUP
 extern int NZero_Extra;
 extern int hourmin(int ,int );

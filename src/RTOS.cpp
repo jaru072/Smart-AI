@@ -29,6 +29,58 @@ int NFolder,NFile = 0;
 int NAutoFolder = 1;
 int NumberFile = 1;
 
+// String ssid = "HUAWEI MediaPad T3 10";
+// String pass = "00000000";
+// int TotalconnectCount = 20;
+//******************************************INTERNET CONNECT****************************************//
+TaskHandle_t Task_connectInternetHandle = NULL;
+void Task_connectInternet(void * parameter) { 
+  int connectCount = 0;  // Scan หาไวไฟ
+
+  WiFi.mode(WIFI_STA);WiFi.begin(ssid.c_str(), pass.c_str()); // 
+
+  while (WiFi.status() != WL_CONNECTED) {connectCount++;Serial.print(".");
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    if (connectCount > TotalconnectCount) {Wifi_Connect = false ;break;}
+  }
+
+  if (WiFi.status() == WL_CONNECTED) { Wifi_Connect = true ;
+    Serial.println(""); Serial.print("WiFi connected IP address: "); Serial.print(WiFi.localIP());Serial.print(" , MAC Address: ");Serial.println(WiFi.macAddress()); 
+  }else{
+    Serial.println("Wifi_Connect = false");Wifi_Connect = false; // SetSendReceive(); // Setup ส่ง-รับ ผ่าน Mac Address 
+  }
+  vTaskDelete(NULL); 
+}
+
+// TaskHandle_t Task_check_ssidHandle = NULL;
+// void Task_check_ssid(void * parameter) {
+//   WiFi.mode(WIFI_STA);WiFi.disconnect();vTaskDelay(100 / portTICK_PERIOD_MS);
+//   for (int ii = 0; ii < 10; ii++) { 
+//     int n = WiFi.scanNetworks();
+//     if (n <= 0) {Serial.println("No networks found");
+//       vTaskDelay(200 / portTICK_PERIOD_MS);
+//     } else {
+//       Serial.print(n);Serial.println(" Networks found");
+//       for (int i = 0; i < n; ++i) {Serial.print(i + 1);Serial.print(": ");Serial.print(WiFi.SSID(i));Serial.print(" (");Serial.print(WiFi.RSSI(i));ssid = WiFi.SSID(i);}
+//       break;
+//     }
+//   }
+//   Serial.println(""); vTaskDelay(500 / portTICK_PERIOD_MS);
+//   vTaskDelete(NULL); 
+// }
+
+void Check_Wifi(int NConnect_Time) {
+  // Serial.print(WiFi.status());Serial.println(" localIP = "+WiFi.localIP().toString());
+  if (WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {check_ssid(); }
+
+  if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED) {
+    connectInternet(); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
+    if (WiFi.localIP().toString() != "0.0.0.0") {
+      Wifi_Connect = true ; //Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
+    }
+  }
+}
+
 int count1,count2 = 0;
 //..................Task Control SD Card ...........................//
 void printDirectory(File dir, int numTabs) {
@@ -119,5 +171,12 @@ void RTOS_Setup() {
 }
 //.................. xTaskCreate Check_SDcard only .................//
 void Check_SDcard() {  
-  xTaskCreate(task_Check_SDcard, "Check_SDcard", 5000, NULL, 1, &task_Check_SDcardHandle);
+  xTaskCreate(task_Check_SDcard, "Check SDcard", 5000, NULL, 1, &task_Check_SDcardHandle);
 }
+
+void connectInternet() {
+  xTaskCreate(Task_connectInternet, "connectInternet", 5000, NULL, 1, &Task_connectInternetHandle);
+}
+// void check_ssid() {
+//   xTaskCreate(Task_check_ssid, "check ssid", 4000, NULL, 1, &Task_check_ssidHandle);
+// }
