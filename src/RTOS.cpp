@@ -92,8 +92,10 @@ void printDirectory(File dir, int numTabs) {
     if (Number <= 20) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
       if (Fname.endsWith(".mp3")||Fname.endsWith(".aac")||Fname.endsWith(".wav")||Fname.endsWith(".m4a")) {  // ||Fname.endsWith(".flac")
         FolderName = Fname.substring(0,Fname.lastIndexOf("/")); AFolderFile[NFolder][0] = FolderName; 
+        // if (OldFolderName != FolderName) {Serial.println(AFolderFile[NFolder][0]);} //OldFolderName = FolderName;
+        AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; 
         // Serial.print("NFolder = ");Serial.print(NFolder);Serial.print(" NFile = ");Serial.print(NFile); 
-        AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; //Serial.println(" "+ AFolderFile[NFolder][NFile]);  
+        // Serial.println(" "+ AFolderFile[NFolder][NFile]);  
         NFile++; 
       }
 
@@ -103,10 +105,7 @@ void printDirectory(File dir, int numTabs) {
       } else {
         // Serial.print("\t\t");Serial.println(entry.size(), DEC); // files have sizes, directories do not
       }
-    }else{
-      // Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); 
-      break;
-    }
+    }else{Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); break;}
     entry.close();
   }
 }
@@ -176,7 +175,7 @@ void Check_SDcard() {
 }
 
 void connectInternet() {
-  xTaskCreate(Task_connectInternet, "connectInternet", 5000, NULL, 1, &Task_connectInternetHandle);
+  xTaskCreate(Task_connectInternet, "connectInternet", 5500, NULL, 1, &Task_connectInternetHandle);
 }
 // void check_ssid() {
 //   xTaskCreate(Task_check_ssid, "check ssid", 4000, NULL, 1, &Task_check_ssidHandle);

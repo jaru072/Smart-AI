@@ -35,7 +35,7 @@ extern bool LscanNetworks;
 extern int count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
-extern void printDirectory();
+extern void printDirectory(File , int );
 extern void RTOS_Setup();
 extern void task2(void * );
 extern void task1(void * );

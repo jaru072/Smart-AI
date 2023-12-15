@@ -18,6 +18,7 @@ void audio_id3data(const char *info) {
 void audio_eof_mp3(const char *info){ last_Sleep=millis();
   Leof_mp3 = true;Leof_speech = true;Lwait_Speech = false;
   Serial.print("Leof_mp3 = ");Serial.print(Leof_mp3); Serial.print(" eof_mp3     "); Serial.println(info);
+  audio.setVolume(NVolume);
 }
 
 void audio_showstation(const char *info) {Serial.print("station     "); Serial.println(info);}
@@ -35,6 +36,7 @@ void audio_icyurl(const char *info){ Serial.print("icyurl      "); Serial.printl
 void audio_lasthost(const char *info) { //stream URL played
   Serial.print("lasthost    "); Serial.println(info);
   Leof_speech = false;
+  audio.setVolume(NVolume);//Serial.println("Volume = "+String(NVolume));
 }
 
 void audio_eof_speech(const char *info){last_Sleep=millis();

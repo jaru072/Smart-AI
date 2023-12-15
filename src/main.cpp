@@ -328,6 +328,7 @@ void setup() {
   audio.setVolume(NVolume); 
   
   // RTOS_Setup(); // xTaskCreate
+  Check_SDcard(); // xTaskCreate
 
   //... Start Wifi and Connect Internet and get time from internet .............//
   WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
@@ -339,7 +340,6 @@ void setup() {
     if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
   }
   Read_Ascheduled();
-  Check_SDcard(); // xTaskCreate
 }
 
 void loop() {
