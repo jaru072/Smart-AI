@@ -29,9 +29,9 @@ int NFolder,NFile = 0;
 int NAutoFolder = 1;
 int NumberFile = 1;
 
-// String ssid = "HUAWEI MediaPad T3 10";
-// String pass = "00000000";
-// int TotalconnectCount = 20;
+String ssid = "HUAWEI MediaPad T3 10";
+String pass = "00000000";
+int TotalconnectCount = 20;
 //******************************************INTERNET CONNECT****************************************//
 TaskHandle_t Task_connectInternetHandle = NULL;
 void Task_connectInternet(void * parameter) { 
@@ -87,26 +87,19 @@ int count1,count2 = 0;
 void printDirectory(File dir, int numTabs) {
   while (true) {File entry =  dir.openNextFile(); 
     if (! entry) {break;}
-    // for (uint8_t i = 0; i < numTabs; i++) {Serial.print('\t');}
     String Fname = entry.name(); int Number = Fname.substring(1,3).toInt();
     if (Number <= 20) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
       if (Fname.endsWith(".mp3")||Fname.endsWith(".aac")||Fname.endsWith(".wav")||Fname.endsWith(".m4a")) {  // ||Fname.endsWith(".flac")
         FolderName = Fname.substring(0,Fname.lastIndexOf("/")); AFolderFile[NFolder][0] = FolderName; 
-        // if (OldFolderName != FolderName) {Serial.println(AFolderFile[NFolder][0]);} //OldFolderName = FolderName;
         AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; 
-        // Serial.print("NFolder = ");Serial.print(NFolder);Serial.print(" NFile = ");Serial.print(NFile); 
-        // Serial.println(" "+ AFolderFile[NFolder][NFile]);  
         NFile++; 
       }
 
       if (entry.isDirectory()) { NFile=1;
         OldFolderName = entry.name();
         printDirectory(entry, numTabs + 1); NFolder++;
-      } else {
-        // Serial.print("\t\t");Serial.println(entry.size(), DEC); // files have sizes, directories do not
-      }
+      } 
     }else{
-      // Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); 
       break;
     }
     entry.close();
@@ -174,12 +167,12 @@ void RTOS_Setup() {
 }
 //.................. xTaskCreate Check_SDcard only .................//
 void Check_SDcard() {  
-  xTaskCreate(task_Check_SDcard, "Check SDcard", 5000, NULL, 1, &task_Check_SDcardHandle);
+  xTaskCreate(task_Check_SDcard, "Check SDcard", 3000, NULL, 1, &task_Check_SDcardHandle);
 }
 
 void connectInternet() {
-  xTaskCreate(Task_connectInternet, "connectInternet", 5500, NULL, 1, &Task_connectInternetHandle);
+  xTaskCreate(Task_connectInternet, "connectInternet", 2500, NULL, 1, &Task_connectInternetHandle);
 }
 void check_ssid() {
-  xTaskCreate(Task_check_ssid, "check ssid", 4000, NULL, 1, &Task_check_ssidHandle);
+  xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 1, &Task_check_ssidHandle);
 }

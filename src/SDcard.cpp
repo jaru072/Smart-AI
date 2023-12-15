@@ -1,16 +1,16 @@
 #include <Arduino.h>
 #include <Config.h>
 
-//Pinos de conexão do ESP32 e o módulo de cartão SD
-#define SD_CS          5
-#define SPI_MOSI      23
-#define SPI_MISO      19
-#define SPI_SCK       18
+// //Pinos de conexão do ESP32 e o módulo de cartão SD
+// #define SD_CS          5
+// #define SPI_MOSI      23
+// #define SPI_MISO      19
+// #define SPI_SCK       18
 
-//Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
-#define I2S_DOUT      25
-#define I2S_BCLK      27
-#define I2S_LRC       26
+// //Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
+// #define I2S_DOUT      25
+// #define I2S_BCLK      27
+// #define I2S_LRC       26
 
 // const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
 // String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
