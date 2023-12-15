@@ -53,31 +53,31 @@ void Task_connectInternet(void * parameter) {
   vTaskDelete(NULL); 
 }
 
-// TaskHandle_t Task_check_ssidHandle = NULL;
-// void Task_check_ssid(void * parameter) {
-//   WiFi.mode(WIFI_STA);WiFi.disconnect();vTaskDelay(100 / portTICK_PERIOD_MS);
-//   for (int ii = 0; ii < 10; ii++) { 
-//     int n = WiFi.scanNetworks();
-//     if (n <= 0) {Serial.println("No networks found");
-//       vTaskDelay(200 / portTICK_PERIOD_MS);
-//     } else {
-//       Serial.print(n);Serial.println(" Networks found");
-//       for (int i = 0; i < n; ++i) {Serial.print(i + 1);Serial.print(": ");Serial.print(WiFi.SSID(i));Serial.print(" (");Serial.print(WiFi.RSSI(i));ssid = WiFi.SSID(i);}
-//       break;
-//     }
-//   }
-//   Serial.println(""); vTaskDelay(500 / portTICK_PERIOD_MS);
-//   vTaskDelete(NULL); 
-// }
+TaskHandle_t Task_check_ssidHandle = NULL;
+void Task_check_ssid(void * parameter) {
+  // WiFi.mode(WIFI_STA);WiFi.disconnect();vTaskDelay(100 / portTICK_PERIOD_MS);
+  for (int ii = 0; ii < 10; ii++) { 
+    int n = WiFi.scanNetworks();
+    if (n <= 0) {if(ii == 9){Serial.println("No networks found");}LscanNetworks = false;
+      // vTaskDelay(200 / portTICK_PERIOD_MS);
+    } else {
+      Serial.print(n);Serial.println(" Networks found");LscanNetworks = true;
+      for (int i = 0; i < n; ++i) {Serial.print(i + 1);Serial.print(": ");Serial.print(WiFi.SSID(i));Serial.print(" (");Serial.print(WiFi.RSSI(i));ssid = WiFi.SSID(i);}
+      break;
+    }
+  }
+  //Serial.println(""); vTaskDelay(500 / portTICK_PERIOD_MS);
+  vTaskDelete(NULL); 
+}
 
 void Check_Wifi(int NConnect_Time) {
   // Serial.print(WiFi.status());Serial.println(" localIP = "+WiFi.localIP().toString());
   if (WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {check_ssid(); }
 
-  if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED) {
+  if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {
     connectInternet(); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
     if (WiFi.localIP().toString() != "0.0.0.0") {
-      Wifi_Connect = true ; //Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
+      Wifi_Connect = true ; Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
     }
   }
 }
@@ -105,7 +105,10 @@ void printDirectory(File dir, int numTabs) {
       } else {
         // Serial.print("\t\t");Serial.println(entry.size(), DEC); // files have sizes, directories do not
       }
-    }else{Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); break;}
+    }else{
+      // Serial.print("--Break--"); Serial.println(Fname.substring(1,2).toInt()); 
+      break;
+    }
     entry.close();
   }
 }
@@ -177,6 +180,6 @@ void Check_SDcard() {
 void connectInternet() {
   xTaskCreate(Task_connectInternet, "connectInternet", 5500, NULL, 1, &Task_connectInternetHandle);
 }
-// void check_ssid() {
-//   xTaskCreate(Task_check_ssid, "check ssid", 4000, NULL, 1, &Task_check_ssidHandle);
-// }
+void check_ssid() {
+  xTaskCreate(Task_check_ssid, "check ssid", 4000, NULL, 1, &Task_check_ssidHandle);
+}

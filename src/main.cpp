@@ -192,7 +192,7 @@ void ControlBoard() {
         Serial.print("FolderPlay = ");Serial.println(FolderPlay);
         Serial.println(AFolderFile[FolderPlay][FilePlay].c_str());
         // audio.connecttoSD("/08 Music Popular/007 Unstoppable.mp3");
-        audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );
+        Leof_mp3 = false; audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );
       }else { 
         // if(Leof_speech == true) {Leof_speech = false;}else{
         //   // audio.stopSong();
