@@ -26,7 +26,7 @@ extern char chbuf[100];
 extern long timezone;  
 extern byte daysavetime; 
 // ตัวแปร Send_Serial_Monitor
-extern String Question;
+// extern String Question;
 extern String AI_Word[2][10];
 extern bool LSend_Serial;
 
@@ -37,6 +37,7 @@ extern bool LscanNetworks;
 extern int NFolder_Meditation,NFile_Meditation,count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
+extern void Save_Config(fs::FS &fs, const char * );
 extern void Check_Replace_SPIFFS(const char* );
 extern void Check_Delete_SPIFFS(const char* );
 extern void printDirectory(File , int );
