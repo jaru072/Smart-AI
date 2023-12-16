@@ -108,7 +108,7 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
         if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเช้า") >=0){audio.setVolume(7);audio.connecttoSD( AFolderFile[1][1].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเย็น") >=0){audio.setVolume(7);audio.connecttoSD( AFolderFile[1][2].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("ฉันเพล") >=0){audio.setVolume(5);audio.connecttoSD( AFolderFile[1][3].c_str());}
-        if (Ascheduled[Array_Number][3].indexOf("นั่งสมาธิ") >=0){audio.connecttoSD( AFolderFile[2][1].c_str());
+        if (Ascheduled[Array_Number][3].indexOf("นั่งสมาธิ") >=0){audio.connecttoSD( AFolderFile[NFolder_Meditation][NFile_Meditation].c_str());
           audio.setVolume(10);Serial.print("Volume = 10");
         }
         if (Ascheduled[Array_Number][3].indexOf("ความสะอาด") >=0){audio.connecttoSD( AFolderFile[8][4].c_str());}

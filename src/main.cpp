@@ -4,6 +4,7 @@
 int NMoonPhase,NZero_Extra = 0;
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;
 int N = 1;
+int NFolder_Meditation,NFile_Meditation = 0;
 int TotalASpeech = 30;
 String ASpeech[] = {"โชคดีที่รอดมาอีก 1 วัน, ขอสรรพสัตว์ทั้งหลายจงมีความสุข","อันตัวเรานั้น ตายแน่ ตายแน่","Good morning"};
 // int TotalASpeech = (sizeof(ASpeech) / sizeof(ASpeech[0])) - 1;

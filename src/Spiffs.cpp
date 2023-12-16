@@ -105,6 +105,9 @@ void readWord(fs::FS &fs, const char * path){ String R_Text,Cwords,Cwords_value 
     if (ATime[i][1] == "every_minute") {every_minute = ATime[i][2].toInt();}
     if (ATime[i][1].startsWith("SammaArahang")) {NSammaArahang = ATime[i][2].toInt();}
     if (ATime[i][1].startsWith("Talk_Everytime")) {LTalk_Everytime = ATime[i][2];}
+    if (ATime[i][1].startsWith("Folder_Meditation")) {NFolder_Meditation = ATime[i][2].toInt();}
+    if (ATime[i][1].startsWith("File_Meditation")) {NFile_Meditation = ATime[i][2].toInt();}
+
     // ................................................................................................//
     R_Text = R_Text.substring(AT_Comma,10000);  // ตัดประโยค ที่รับค่าแล้วออก  //Serial.println(R_Text);    
     if (R_Text.indexOf("=") == -1){break;}  // ถ้าตัดประโยคออกหมดแล้ว ให้ออกจาก for ดูจาก = มีค่าเท่ากับ -1
@@ -199,12 +202,12 @@ void ReplaceFile(fs::FS &fs, const char * path,String Creplace){
   }
   file.close();
 }
-const char* Check_Replace_SPIFFS(const char* Replace_Config) {
+void Check_Replace_SPIFFS(const char* Replace_Config) {
   if(!SPIFFS.begin()){Serial.println("Card Mount Failed");}
   ReplaceFile(SPIFFS, "/mydir/config.txt",Replace_Config);
   readFile(SPIFFS, "/mydir/config.txt");
   readWord(SPIFFS, "/mydir/config.txt");
-  return Replace_Config;
+  // return Replace_Config;
 }
 void Check_Delete_SPIFFS(const char* Replace_Config) {
   if(!SPIFFS.begin()){Serial.println("Card Mount Failed");return;}
@@ -266,25 +269,35 @@ void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ต�
     R_Text.replace("every_minute="+Cevery_minute_Value,"every_minute="+Cevery_minute);
     // Serial.println(R_Text);
   }
+  //................... แก้ไขค่าตัวแปร int ไม่เกิน 2 หลัก ..................//
   if(R_Text.indexOf("SammaArahang=")) {int AT_Word = R_Text.indexOf("SammaArahang=");
-    String CSammaArahang_Value = R_Text.substring(AT_Word+13,AT_Word+15);String CSammaArahang = String(NSammaArahang);
-    Serial.println(R_Text.substring(AT_Word+13,AT_Word+15));
-    Serial.print("NSammaArahang = ");Serial.println(CSammaArahang_Value);
-    int NSammaArahang_Value = CSammaArahang_Value.toInt();
-    CSammaArahang_Value = String(NSammaArahang_Value);  
-    R_Text.replace("SammaArahang="+CSammaArahang_Value,"SammaArahang="+CSammaArahang);
-  }else{Serial.println("Not found NSammaArahang=");}
-
+    String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NSammaArahang);
+    String_Value = String(String_Value.toInt());  
+    R_Text.replace("SammaArahang="+String_Value,"SammaArahang="+String_New_Value);
+  }
+  //..... Folder_Meditation .....//
+  if(R_Text.indexOf("Folder_Meditation=")) {int AT_Word = R_Text.indexOf("Folder_Meditation=");
+    String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NFolder_Meditation);
+    String_Value = String(String_Value.toInt());  
+    R_Text.replace("Folder_Meditation="+String_Value,"Folder_Meditation="+String_New_Value);
+  }
+  //..... File_Meditation .....//
+  if(R_Text.indexOf("File_Meditation=")) {int AT_Word = R_Text.indexOf("File_Meditation=");
+    String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NFile_Meditation);
+    String_Value = String(String_Value.toInt());  
+    R_Text.replace("File_Meditation="+String_Value,"File_Meditation="+String_New_Value);
+  }
+  //........................ แก้ไขค่าตัวแปร String ......................//
   if(CPlay_Test == "on") {R_Text.replace("Play_Test=off","Play_Test=on");}else{R_Text.replace("Play_Test=on","Play_Test=off");}
   if(CSound == "on") {R_Text.replace("Sound=off","Sound=on");}else{R_Text.replace("Sound=on","Sound=off");}
-
+  //........................ แก้ไขค่าตัวแปร Boolean .....................//
   if(LScheduled == true) {R_Text.replace("Scheduled=false","Scheduled=true");}else{R_Text.replace("Scheduled=true","Scheduled=false");}
   if(LConnect_internet_Auto == true) {R_Text.replace("Connect_internet_Auto=false","Connect_internet_Auto=true");}else{R_Text.replace("Connect_internet_Auto=true","Connect_internet_Auto=false");}
   if(LStartSong == true) {R_Text.replace("StartSong=false","StartSong=true");}else{R_Text.replace("StartSong=true","StartSong=false");}
   if(LTime_Schedu == true) {R_Text.replace("Time_Schedu=false","Time_Schedu=true");}else{R_Text.replace("Time_Schedu=true","Time_Schedu=false");}
   if(LPlayAuto == true) {R_Text.replace("PlayAuto=false","PlayAuto=true");}else{R_Text.replace("PlayAuto=true","PlayAuto=false");}
   if(LTalk_Everytime == true) {R_Text.replace("Talk_Everytime=false","Talk_Everytime=true");}else{R_Text.replace("Talk_Everytime=true","Talk_Everytime=false");}
-//    if (ATime[i][1].startsWith("สัมมาอะระหัง")) {NSammaArahang = ATime[i][2].toInt();}
+  //................... writeFile file.close() readWord ..............//
   writeFile(SPIFFS, "/mydir/config.txt", R_Text.c_str());
   file.close();
   // readFile(SPIFFS, "/mydir/config.txt");

@@ -32,9 +32,10 @@ extern String ssid,pass;
 extern int TotalconnectCount;
 
 extern bool LscanNetworks;
-extern int count1,count2;
+extern int NFolder_Meditation,NFile_Meditation,count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
+extern void Check_Replace_SPIFFS(const char* );
 extern void printDirectory(File , int );
 extern void RTOS_Setup();
 extern void task2(void * );

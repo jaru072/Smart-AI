@@ -167,12 +167,12 @@ void RTOS_Setup() {
 }
 //.................. xTaskCreate Check_SDcard only .................//
 void Check_SDcard() {  
-  xTaskCreate(task_Check_SDcard, "Check SDcard", 3000, NULL, 1, &task_Check_SDcardHandle);
+  xTaskCreate(task_Check_SDcard, "Check SDcard", 3000, NULL, 3, &task_Check_SDcardHandle);
 }
 
 void connectInternet() {
   xTaskCreate(Task_connectInternet, "connectInternet", 2500, NULL, 1, &Task_connectInternetHandle);
 }
 void check_ssid() {
-  xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 1, &Task_check_ssidHandle);
+  xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 2, &Task_check_ssidHandle);
 }
