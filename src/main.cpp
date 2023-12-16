@@ -79,7 +79,10 @@ String CSound,CPlay_Test = "";
 bool Wifi_Connect,Lconfirm,LScheduled,LReplace_Config,LConnect_internet_Auto,LStartSong,LTime_Schedu,LPlayAuto,LTalk_Everytime = false;
 int NVolume = 6;
 int volume_old = NVolume;
+
 String ATime[40][2];String Ascheduled[30][3];
+String AI_Word[2][10] = {{"","OK Wait a minute","OK Follow that","OK No problem"},{"","โอเค จัดไป","โอเค ตามนั้น","โอเค No problem"}};
+
 const char * Replace_Config;
 int NSammaArahang = 0;
 //............. Driver and Varible Control Remote ....................//
