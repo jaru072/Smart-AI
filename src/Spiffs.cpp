@@ -247,17 +247,18 @@ void Start_Config(void) {
   Check_Replace_SPIFFS("SammaArahang = 29");
 }
 
-String R_Text = "";
 void Send_Value(String Name_Config,int Config_Value) {
-  if(R_Text.indexOf(Name_Config)) {int AT_Word = R_Text.indexOf(Name_Config);
+  // Serial.print(R_Text);Serial.print(Name_Config);Serial.println(Config_Value);
+  if(R_Text.indexOf(Name_Config) >= 0) {int AT_Word = R_Text.indexOf(Name_Config);
     int Nlenght_Word = Name_Config.length();
     String String_Value = R_Text.substring(AT_Word+Nlenght_Word,AT_Word+Nlenght_Word+2);String String_New_Value = String(Config_Value);
     String_Value = String(String_Value.toInt());  
     R_Text.replace(Name_Config+String_Value,Name_Config+String_New_Value);
+    // Serial.print(Name_Config+String_Value);Serial.print(" ");Serial.println(Name_Config+String_New_Value);
   }
 }
 //.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
-void Save_Config(fs::FS &fs, const char * path){String R_Text = ""; // Save ตัวแปร Config ทั้งหมดลงกลับไปใน Ram
+void Save_Config(fs::FS &fs, const char * path){ //String R_Text = ""; // Save ตัวแปร Config ทั้งหมดลงกลับไปใน Ram
   File file = fs.open(path); if(!file){Serial.println("Failed to open file for reading"); return;}    
   while(file.available()){R_Text = R_Text+file.readString();}    
   // เก็บค่าลงในตัวแปร Config มาตราฐาน ยกเว้นตารางเวลา Scheduled เพราะเก็บในตัวแปร Array ATime[i][1] ,ATime[i][2] เรียบร้อยแล้ว
@@ -333,7 +334,8 @@ void Check() {
         if (start_time_relay.toInt() == 4){audio.connecttospeech("ลบคำสั่งใน Config", "th");Check_Delete_SPIFFS("21:00=จำวัตร");}      
         if (start_time_relay.toInt() == 5){Leof_speech = false;audio.connecttospeech("ฉันชื่อ จารุณี มีอะไรให้รับใช้", "th");LSend_Serial = true;} // ส่งค่าตัวแปรผ่าน Serial Monitor//อ่านตารางเวลา กิจวัตรประจำวัน Read_Ascheduled();
         if (start_time_relay.toInt() == 6){audio.connecttospeech("ตั้งค่า Config เป็น Default ค่าเริ่มต้น", "th");Start_Config();}       
-        if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
+        // if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
+        if (start_time_relay.toInt() == 7){audio.connecttospeech("หลวงพ่อนำนั่ง ง่ายแต่ลึก ต่อไป", "th");PlayNext_Meditation();}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  
         if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
         start_time_relay = "";      
@@ -345,9 +347,12 @@ void Check() {
 void PlayNext_Meditation() {
   if (AFolderFile[NFolder_Meditation][NFile_Meditation].isEmpty()){
     NFolder_Meditation++;NFile_Meditation = 1;
+    Serial.print("NFolder_Meditation = ");Serial.println(NFolder_Meditation);
+    Serial.print("NFile_Meditation = ");Serial.println(NFile_Meditation);
   }
   if (NFolder_Meditation == 5){NFolder_Meditation = 2;NFile_Meditation = 1;}
   audio.connecttoSD( AFolderFile[NFolder_Meditation][NFile_Meditation].c_str());
-  audio.setVolume(10);Serial.print("Volume = 10");
-  NFile_Meditation++;Save_Config(SPIFFS, "/mydir/config.txt");
+  audio.setVolume(10);Serial.println("Volume = 10");
+  NFile_Meditation++;Serial.print("NFile_Meditation = ");Serial.println(NFile_Meditation);
+  Save_Config(SPIFFS, "/mydir/config.txt");
 }

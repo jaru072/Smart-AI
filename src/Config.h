@@ -39,6 +39,8 @@ extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
 
 extern void PlayNext_Meditation();
+extern String R_Text;
+extern void Send_Value(String ,int );
 extern void Save_Config(fs::FS &fs, const char * path);
 extern void Check_Replace_SPIFFS(const char* );
 extern void Check_Delete_SPIFFS(const char* );
