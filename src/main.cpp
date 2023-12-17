@@ -84,7 +84,7 @@ String ATime[40][2];String Ascheduled[30][3];
 String AI_Word[2][10] = {{"","OK Wait a minute","OK Follow that","OK No problem"},{"","โอเค จัดไป","โอเค ตามนั้น","โอเค No problem"}};
 
 const char * Replace_Config;
-int NSammaArahang = 0;
+int NSammaArahang = 13;
 //............. Driver and Varible Control Remote ....................//
 #include <IRremote.h>
 int RECV_PIN = 32;
@@ -381,20 +381,20 @@ void loop() {
   if (millis() - last_timer > 4000) {last_timer = millis();
     if (WiFi.status() == WL_CONNECTED) {Wifi_Connect = true ;} else {LFirst_Song=true;Wifi_Connect=false ;TotalASpeech=0;LStartSong = true;}
   }
-  if (LFirst_Song == false and Wifi_Connect == true) {
-    // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
-    Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
-    // Read_Ascheduled();
-  }
+  if (Wifi_Connect == true) {
+    if (LFirst_Song == false) { // audio.connecttoSD("/07/015 -robot-repair-1407.mp3");
+      Play_Speech();  // ใช้เสียงจาก Google Speech audio.connecttospeech(ASpeech[N].c_str(), "th");
+    }
+  }else{Leof_speech = true;}
   if ((Leof_speech == true and Lwait_Slogan2 == true) and N <= TotalASpeech and Wifi_Connect == true)  {Serial.println(TotalASpeech);
     Serial.print(N);Serial.print(" TotalASpeech = ");Serial.print(TotalASpeech);Serial.print(" , TotalASong = ");Serial.println(TotalASong);
     Leof_speech = false;
-    // if (Ascheduled[N][1].isEmpty() == false) { 
+    if (Ascheduled[N][3].isEmpty() == false) { 
       String Str_Speech = "เวลา "+Ascheduled[N][1]+":"+Ascheduled[N][2]+"  "+Ascheduled[N][3];
       // audio.connecttospeech(ASpeech[N].c_str(), "th"); 
       audio.connecttospeech(Str_Speech.c_str(), "th"); 
       if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
-    // }
+    }
   }
 
   // if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}

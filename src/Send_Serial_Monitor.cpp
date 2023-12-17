@@ -10,7 +10,7 @@ void Set_Config(String Cupdate) {
       int AT_Word = Question.indexOf(Cupdate)+7;
       SetConfig_Question = Question.substring(AT_Word,Question.length()-1);
       Serial.println(SetConfig_Question);
-      String Question_Speech = AI_Word[1][1] +" Set Config "+SetConfig_Question;
+      String Question_Speech = AI_Word[1][1] +" Set "+Cupdate+" "+SetConfig_Question;
       Serial.println(Question_Speech);
       audio.connecttospeech(Question_Speech.c_str(), "th");
       Question = "";

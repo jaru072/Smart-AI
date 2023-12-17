@@ -37,10 +37,13 @@ extern bool LscanNetworks;
 extern int NFolder_Meditation,NFile_Meditation,count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
-extern void Save_Config(fs::FS &fs, const char * );
+
+extern void PlayNext_Meditation();
+extern void Save_Config(fs::FS &fs, const char * path);
 extern void Check_Replace_SPIFFS(const char* );
 extern void Check_Delete_SPIFFS(const char* );
 extern void printDirectory(File , int );
+
 extern void RTOS_Setup();
 extern void task2(void * );
 extern void task1(void * );

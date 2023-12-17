@@ -92,7 +92,11 @@ void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
     if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
   }
 }
-
+void Check_connecttospeech(int Array_Number){
+  if (Wifi_Connect == true) {
+    Leof_speech = false;audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+  }else{Leof_speech = true;}
+}
 void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin_Stop) {
   int Nstart = hourmin(Bhour_Start, Bmin_Start);
   int Nstop = hourmin(Bhour_Stop, Bmin_Stop);
@@ -102,19 +106,17 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
       Serial.println(Ascheduled[3][1]+":"+Ascheduled[3][2]);Ascheduled[Array_Number][3];
       
       if (Lwait_Speech == false) {
-        audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+        // if (Wifi_Connect == true) {
+        //   Leof_speech = false;audio.connecttospeech(Ascheduled[Array_Number][3].c_str(), "th");
+        // }else{Leof_speech = true;}
+        Check_connecttospeech(Array_Number);
         Lwait_Speech = true;
       }else{ 
         if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเช้า") >=0){audio.setVolume(7);audio.connecttoSD( AFolderFile[1][1].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("ทำวัตรเย็น") >=0){audio.setVolume(7);audio.connecttoSD( AFolderFile[1][2].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("ฉันเพล") >=0){audio.setVolume(5);audio.connecttoSD( AFolderFile[1][3].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("นั่งสมาธิ") >=0){
-          if (AFolderFile[NFolder_Meditation][NFile_Meditation].isEmpty()){
-            NFolder_Meditation++;NFile_Meditation = 1;
-          }
-          if (NFolder_Meditation == 5){NFolder_Meditation = 2;NFile_Meditation = 1;}
-          audio.connecttoSD( AFolderFile[NFolder_Meditation][NFile_Meditation].c_str());
-          audio.setVolume(10);Serial.print("Volume = 10");NFile_Meditation++;
+          PlayNext_Meditation();
         }
         if (Ascheduled[Array_Number][3].indexOf("ความสะอาด") >=0){audio.connecttoSD( AFolderFile[8][4].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("เดินเล่น ออกกำลังกาย") >=0){audio.connecttoSD( AFolderFile[8][3].c_str());}
