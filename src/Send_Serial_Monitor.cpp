@@ -7,7 +7,7 @@ String SetConfig_Question = "";
 void Set_Config(String Cupdate) {
     if (Question.indexOf(Cupdate) >= 0) {  
       Question.replace(" ","");
-      int AT_Word = Question.indexOf(Cupdate)+7;
+      int AT_Word = Question.indexOf(Cupdate)+Cupdate.length();  
       SetConfig_Question = Question.substring(AT_Word,Question.length()-1);
       Serial.println(SetConfig_Question);
       String Question_Speech = AI_Word[1][1] +" Set "+Cupdate+" "+SetConfig_Question;
@@ -29,7 +29,7 @@ void Send_SerialMonitor(){
   if (Question.indexOf("config") >= 0) {
     if (Question.indexOf("replace") >= 0) {Set_Config("replace");Check_Replace_SPIFFS(SetConfig_Question.c_str());} 
     if (Question.indexOf("delete") >= 0) {Set_Config("delete");Check_Delete_SPIFFS(SetConfig_Question.c_str());}
-    if (Question.indexOf("start") >= 0) {Start_Config();}
+    if (Question.indexOf("default") >= 0) {Set_Config("default");Start_Config();}
   }
 }
 

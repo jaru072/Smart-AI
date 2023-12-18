@@ -71,25 +71,32 @@ void SammaArahang_Between(int Bhour_Start,int Bmin_Start,int Bhour_Stop,int Bmin
 }
 
 void Time_SammaArahang(int NEvery_Min,int NDouble_Min) {
-  int Nhourmin = hourmin(hour, minute);
-  if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,17,0);}else{SammaArahang_Between(8,30,11,0);}
+  if (LMeditation == false) {  
+    int Nhourmin = hourmin(hour, minute);
+    if (13*60 <= Nhourmin) {SammaArahang_Between(13,0,19,0);}else{SammaArahang_Between(8,30,11,0);}
+    // if(LTime_SammaArahang == false) {SammaArahang_Between(8,30,11,0 );Serial.println("สัมมาอะระหัง 08:30-11:00");}
+    // if(LTime_SammaArahang == false) {SammaArahang_Between(13,0,13,59);Serial.println("สัมมาอะระหัง 13:00-13:59");}
+    // if(LTime_SammaArahang == false) {SammaArahang_Between(14,30,17,0);Serial.println("สัมมาอะระหัง 14:30-17:00");}
+    // if(LTime_SammaArahang == false) {SammaArahang_Between(18,2,18,59);Serial.println("สัมมาอะระหัง 18:02-18:59");}
 
-  if (LTime_SammaArahang == false) {return;}
-  NSongMode = 0;start_time_relay = "";
-  if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
-  if (NEvery_Min_Future == minute) {
-    if (LFirstShow == false) {
-      LPlayAuto = false; LFirstShow = true; Serial.println("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที");
-      audio.stopSong(); audio.connecttospeech("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที", "th");     
+    if (LTime_SammaArahang == false) {return;}
+    NSongMode = 0;start_time_relay = "";
+    if (LFirstOnly == false) {NEvery_Min_Future = NEvery_Min;LFirstOnly = true;}
+    if (NEvery_Min_Future == minute) {
+      if (LFirstShow == false) {
+        LPlayAuto = false; LFirstShow = true; Serial.println("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที");
+        audio.stopSong(); audio.connecttospeech("ได้เวลาหยุดนิ่ง สัมมาอะระหัง อย่างน้อย 1 นาที", "th");    
+        audio.connecttoSD( AFolderFile[1][9].c_str()); 
+      }
+    }else{LFirstShow = false;
+      if (NEvery_Min_Future <= minute) {
+        NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
+        Serial.print("สัมมา อะระหัง นาทีที่ ");Serial.println(NEvery_Min_Future);  
+      } 
+      if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
+      if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
+      if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
     }
-  }else{LFirstShow = false;
-    if (NEvery_Min_Future <= minute) {
-      NEvery_Min_Future = NEvery_Min_Future + NEvery_Min;
-      Serial.print("สัมมา อะระหัง นาทีที่ ");Serial.println(NEvery_Min_Future);  
-    } 
-    if (NEvery_Min_Future == 60 and minute == 0) {NEvery_Min_Future = 0;}
-    if (NEvery_Min_Future > 60) {NEvery_Min_Future = NEvery_Min;}
-    if (minute == 1) {NEvery_Min_Future = NEvery_Min;}
   }
 }
 void Check_connecttospeech(int Array_Number){
@@ -127,6 +134,7 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
     }    
   }else{
     // Lwait_Speech = false;
+    LMeditation = false;
     Time_SammaArahang(NSammaArahang,2); // ไม่ใช้ ,2 NDouble_Min ใช้ NEvery_Min แทน ใช้ + แทน *
   }
 }

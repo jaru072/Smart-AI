@@ -25,8 +25,11 @@ extern char chbuf[100];
 //...... Get Date Time from Internet
 extern long timezone;  
 extern byte daysavetime; 
-// ตัวแปร Send_Serial_Monitor
-// extern String Question;
+//................ Varible New .......................//
+extern String R_Text;
+extern bool LMeditation;
+
+// ตัวแปร Send_Serial_Monitor // extern String Question;
 extern String AI_Word[2][10];
 extern bool LSend_Serial;
 
@@ -39,7 +42,6 @@ extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
 
 extern void PlayNext_Meditation();
-extern String R_Text;
 extern void Send_Value(String ,int );
 extern void Save_Config(fs::FS &fs, const char * path);
 extern void Check_Replace_SPIFFS(const char* );

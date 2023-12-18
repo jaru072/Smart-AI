@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Config.h>
 
+bool LMeditation = false;
 String R_Text = "";
 int NMoonPhase,NZero_Extra = 0;
 int Relay1 = 4;int Relay2 = 13;int Relay3 = 0;int Relay4 = 4;

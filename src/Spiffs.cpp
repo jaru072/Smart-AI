@@ -221,7 +221,7 @@ void Check_SPIFFS() {
   deleteFile(SPIFFS, "/mydir/config.txt");
   
   const char* Str_Config    = ",Volume=5,Sound=on,Play_Test=on,Scheduled=true";
-  const char* Str_Scheduled1 = ",time 04:00=ตื่นนอน ออกกำลังกาย,time 04:50=สวดมนต์ ทำวัตรเช้า,time 05:22=เตรียมออกบิณฑบาต,time 07:30=ฉันภัตตาหารเช้า,time 09:00=นั่งสมาธิ,time 10:00=เขียนโปรแกรม,time 11:00=ฉันเพล,time 14:00=นั่งสมาธิ,time 15:00=ทำความสะอาดกุฏิ,time 17:00=เดินเล่น ออกกำลังกาย,time 18:00=สรงน้ำ,time 19:00=สวดมนต์ ทำวัตรเย็น,time 19:30=นั่งสมาธิ,time 21:00=จำวัตร,";
+  const char* Str_Scheduled1 = ",time 04:00=ตื่นนอน ออกกำลังกาย,time 04:50=สวดมนต์ ทำวัตรเช้า,time 05:22=เตรียมออกบิณฑบาต,time 07:30=ฉันภัตตาหารเช้า,time 09:00=นั่งสมาธิ,time 10:00=เขียนโปรแกรม,time 11:00=ฉันเพล,time 14:00=นั่งสมาธิ,time 15:00=ทำความสะอาดกุฏิ,time 17:00=เดินเล่น ออกกำลังกาย,time 18:00=สรงน้ำ,time 19:00=สวดมนต์ ทำวัตรเย็น,time 19:30=นั่งสมาธิ,time 21:30=จำวัตร,";
   
   writeFile(SPIFFS, "/mydir/config.txt", Str_Config);
   appendFile(SPIFFS, "/mydir/config.txt", Str_Scheduled1);
@@ -245,59 +245,29 @@ void Start_Config(void) {
   Check_Replace_SPIFFS("Talk_Everytime = false");    
   Check_Replace_SPIFFS("every_minute = 5");
   Check_Replace_SPIFFS("SammaArahang = 29");
+  Check_Replace_SPIFFS("Folder_Meditation = 2");
+  Check_Replace_SPIFFS("File_Meditation = 1");
 }
 
+// Name_Config ชื่อตัวแปรที่จะ Save , Config_Value ค่าตัวแปรที่จะ Save
 void Send_Value(String Name_Config,int Config_Value) {
-  // Serial.print(R_Text);Serial.print(Name_Config);Serial.println(Config_Value);
   if(R_Text.indexOf(Name_Config) >= 0) {int AT_Word = R_Text.indexOf(Name_Config);
     int Nlenght_Word = Name_Config.length();
     String String_Value = R_Text.substring(AT_Word+Nlenght_Word,AT_Word+Nlenght_Word+2);String String_New_Value = String(Config_Value);
     String_Value = String(String_Value.toInt());  
     R_Text.replace(Name_Config+String_Value,Name_Config+String_New_Value);
-    // Serial.print(Name_Config+String_Value);Serial.print(" ");Serial.println(Name_Config+String_New_Value);
   }
 }
 //.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
 void Save_Config(fs::FS &fs, const char * path){ //String R_Text = ""; // Save ตัวแปร Config ทั้งหมดลงกลับไปใน Ram
   File file = fs.open(path); if(!file){Serial.println("Failed to open file for reading"); return;}    
   while(file.available()){R_Text = R_Text+file.readString();}    
-  // เก็บค่าลงในตัวแปร Config มาตราฐาน ยกเว้นตารางเวลา Scheduled เพราะเก็บในตัวแปร Array ATime[i][1] ,ATime[i][2] เรียบร้อยแล้ว
-  // if(R_Text.indexOf("Volume")) {int AT_Word = R_Text.indexOf("Volume");
-  //   String CVolume_Value = R_Text.substring(AT_Word+7,AT_Word+8);String CVolume = String(NVolume);
-  //   R_Text.replace("Volume="+CVolume_Value,"Volume="+CVolume);
-  // }
-
   //................... Save ค่าตัวแปร int ไม่เกิน 2 หลัก ..................//
   Send_Value("Volume=" , NVolume);
   Send_Value("every_minute=" , every_minute);
   Send_Value("SammaArahang=" , NSammaArahang);
   Send_Value("Folder_Meditation=" , NFolder_Meditation);
   Send_Value("File_Meditation=" , NFile_Meditation);
-
-  // if(R_Text.indexOf("every_minute")) {int AT_Word = R_Text.indexOf("every_minute");
-  //  Serial.print("every_minute = "); Serial.println(every_minute);
-  //   String Cevery_minute_Value = R_Text.substring(AT_Word+13,AT_Word+15);String Cevery_minute = String(every_minute);
-  //   int Nevery_minute_Value = Cevery_minute_Value.toInt();
-  //   Cevery_minute_Value = String(Nevery_minute_Value);  
-  //   R_Text.replace("every_minute="+Cevery_minute_Value,"every_minute="+Cevery_minute);
-  // }
-  // if(R_Text.indexOf("SammaArahang=")) {int AT_Word = R_Text.indexOf("SammaArahang=");
-  //   String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NSammaArahang);
-  //   String_Value = String(String_Value.toInt());  
-  //   R_Text.replace("SammaArahang="+String_Value,"SammaArahang="+String_New_Value);
-  // }
-  //..... Folder_Meditation .....//
-  // if(R_Text.indexOf("Folder_Meditation=")) {int AT_Word = R_Text.indexOf("Folder_Meditation=");
-  //   String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NFolder_Meditation);
-  //   String_Value = String(String_Value.toInt());  
-  //   R_Text.replace("Folder_Meditation="+String_Value,"Folder_Meditation="+String_New_Value);
-  // }
-  // //..... File_Meditation .....//
-  // if(R_Text.indexOf("File_Meditation=")) {int AT_Word = R_Text.indexOf("File_Meditation=");
-  //   String String_Value = R_Text.substring(AT_Word+13,AT_Word+15);String String_New_Value = String(NFile_Meditation);
-  //   String_Value = String(String_Value.toInt());  
-  //   R_Text.replace("File_Meditation="+String_Value,"File_Meditation="+String_New_Value);
-  // }
   //........................ แก้ไขค่าตัวแปร String ......................//
   if(CPlay_Test == "on") {R_Text.replace("Play_Test=off","Play_Test=on");}else{R_Text.replace("Play_Test=on","Play_Test=off");}
   if(CSound == "on") {R_Text.replace("Sound=off","Sound=on");}else{R_Text.replace("Sound=on","Sound=off");}
@@ -311,7 +281,6 @@ void Save_Config(fs::FS &fs, const char * path){ //String R_Text = ""; // Save �
   //................... writeFile file.close() readWord ..............//
   writeFile(SPIFFS, "/mydir/config.txt", R_Text.c_str());
   file.close();
-  // readFile(SPIFFS, "/mydir/config.txt");
   readWord(SPIFFS, "/mydir/config.txt");
 }
 
@@ -352,7 +321,7 @@ void PlayNext_Meditation() {
   }
   if (NFolder_Meditation == 5){NFolder_Meditation = 2;NFile_Meditation = 1;}
   audio.connecttoSD( AFolderFile[NFolder_Meditation][NFile_Meditation].c_str());
-  audio.setVolume(10);Serial.println("Volume = 10");
+  audio.setVolume(10);Serial.println("Volume = 10");LMeditation = true;
   NFile_Meditation++;Serial.print("NFile_Meditation = ");Serial.println(NFile_Meditation);
   Save_Config(SPIFFS, "/mydir/config.txt");
 }
