@@ -101,6 +101,7 @@ void readWord(fs::FS &fs, const char * path){ String R_Text,Cwords,Cwords_value 
     if (ATime[i][1] == "StartSong") {LStartSong = ATime[i][2];} 
     if (ATime[i][1] == "Time_Schedu") {LTime_Schedu = ATime[i][2];} 
     if (ATime[i][1] == "PlayAuto") {LPlayAuto = ATime[i][2];}
+    if (ATime[i][1] == "PlayEvery") {NPlayEvery = ATime[i][2].toInt();}
     if (ATime[i][1] == "every_minute") {every_minute = ATime[i][2].toInt();}
     if (ATime[i][1].startsWith("SammaArahang")) {NSammaArahang = ATime[i][2].toInt();}
     if (ATime[i][1].startsWith("Talk_Everytime")) {LTalk_Everytime = ATime[i][2];}
@@ -265,6 +266,7 @@ void Save_Config(fs::FS &fs, const char * path){ //String R_Text = ""; // Save �
   //................... Save ค่าตัวแปร int ไม่เกิน 2 หลัก ..................//
   Send_Value("Volume=" , NVolume);
   Send_Value("every_minute=" , every_minute);
+  Send_Value("PlayAuto=" , NPlayAuto);
   Send_Value("SammaArahang=" , NSammaArahang);
   Send_Value("Folder_Meditation=" , NFolder_Meditation);
   Send_Value("File_Meditation=" , NFile_Meditation);

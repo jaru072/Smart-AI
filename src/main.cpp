@@ -114,7 +114,7 @@ bool LNumber_Sound = true;
 //................ Varible Control SDcard ....................//
 //... กดตัวเลขแล้วตามด้วย * เล่นเพลงอัตโนมัติโฟลเดอร์นั้น เช่น 5* 
 //... กด # ควบคุมบอร์ดอื่น ควมคุมบอร์ดตัวเอง หรือ ทำให้ตัวเลขที่กดผ่านมาว่างเปล่า 
-int NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
+int NPlayEvery,NPlayAuto,FolderPlay,FilePlay,NSongMode = 0;
 String timerelay,FolderNumber,FolderFileNumber,Str_FileNumber,Cevery_minute = ""; 
 int colon_pos = 0;
 bool LcontrolBoard = false;
@@ -371,8 +371,8 @@ void loop() {
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
-      Serial.print(" Lwait_MonkDay = ");Serial.print(Lwait_MonkDay);
-      Serial.print(" start_time_relay = "); Serial.print(start_time_relay);
+      // Serial.print(" Lwait_MonkDay = ");Serial.print(Lwait_MonkDay);
+      // Serial.print(" start_time_relay = "); Serial.print(start_time_relay);
       Serial.print(" NMoonPhase = "); Serial.print(NMoonPhase);
       Serial.print(" Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
@@ -398,13 +398,11 @@ void loop() {
       if (N <= TotalASpeech){N++;} // else{if (LSDcard == false){N=1;}}
     }
   }
-
   // if (LOpenURL == false ) {LOpenURL = true;audio.stopSong();PlayAuto();}
-
   if ((Leof_mp3 == true) and N > TotalASpeech and LPlayAuto == true and LSDcard == true) {
     PlayAuto();LStartSong = true;
   }
-  if (millis() - last_Stopsong > 10000) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
+  if (millis() - last_Stopsong > NPlayEvery) {last_Stopsong = millis();if (LFirst_Song == true and LPlayAuto == true and LStartSong == true and LSDcard==true){audio.stopSong();PlayAuto();}}// เล่นเพลงต่อไป
 
   audio.loop(); 
 }

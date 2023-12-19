@@ -85,7 +85,7 @@ extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอ
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
 extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
 //... ตัวแปร Play Song
-extern int NPlayAuto,FolderPlay,FilePlay,NSongMode;
+extern int NPlayEvery,NPlayAuto,FolderPlay,FilePlay,NSongMode;
 extern bool LNumber_Sound,Leof_speech;
 //... ตัวแปร Time
 extern int minute_past,NEvery_Min_Future,total_every_minute,old_every_minute,every_hour,every_minute;

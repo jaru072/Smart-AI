@@ -169,7 +169,7 @@ void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;
         Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;  
       }
     }else{
-      Leof_speech = false; audio.connecttospeech(CMoonPhaseThai.c_str(), "th");Lwait_MonkDay = true;  
+      Leof_speech = false; audio.connecttospeech(CMoonPhaseThai.c_str(), "th"); //Lwait_MonkDay = true;  
     }
   }
 }

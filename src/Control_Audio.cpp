@@ -44,12 +44,14 @@ void audio_eof_speech(const char *info){last_Sleep=millis();
   Serial.print("eof_speech "); Serial.println(info);
 }
 
-void PlayAuto() { if (NAutoFolder == 3 or NAutoFolder == 4 or NAutoFolder == 5) {NAutoFolder = 6;NumberFile = 1;} // ไม่เปิดนำนังสมาธิ
+void PlayAuto() { if (NAutoFolder == 2 or NAutoFolder == 3 or NAutoFolder == 4) {NAutoFolder = 5;NumberFile = 1;} // ไม่เปิดนำนังสมาธิ
   String Autofile = AFolderFile[NAutoFolder][NumberFile];Serial.print("Autofile = ");Serial.println(Autofile);
   if (Autofile == "") {NAutoFolder= 1;NumberFile = 1;Autofile = AFolderFile[NAutoFolder][NumberFile];}
   audio.connecttoSD( Autofile.c_str() ); NumberFile++;  //audio.loop();
 
   if (AFolderFile[NAutoFolder][NumberFile] == ""){ 
-    NumberFile = 1; LPlayAuto = false;  // Auto เฉพาะในโฟลเดอร์ที่เลือกเท่านั้น NAutoFolder++;
+    // NumberFile = 1; LPlayAuto = false;  // Auto เฉพาะในโฟลเดอร์ที่เลือกเท่านั้น 
+    NAutoFolder++; NumberFile = 1; //
+    if (NAutoFolder == 10) {NAutoFolder = 1;}
   }
 }
