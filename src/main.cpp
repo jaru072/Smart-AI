@@ -371,9 +371,9 @@ void loop() {
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
-      // Serial.print("  NMoonPhase = ");Serial.print(NMoonPhase);
-      // Serial.print(" Task1 counter "); Serial.print(count1);
-      // Serial.print(" Task2 counter "); Serial.print(count2);
+      Serial.print(" Lwait_MonkDay = ");Serial.print(Lwait_MonkDay);
+      Serial.print(" start_time_relay = "); Serial.print(start_time_relay);
+      Serial.print(" NMoonPhase = "); Serial.print(NMoonPhase);
       Serial.print(" Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
     }

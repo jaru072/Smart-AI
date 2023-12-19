@@ -15,7 +15,8 @@ void talk_time_current() {
       // ข้อมูลที่จะดาวน์โหลด "วันของสัปดาห์ วัน/เดือน/ปี" คือตัวแปร CString , ตัวแปร CStringEng ใช้แสดงผลที่ Serial Monitor หรือ จอ LCD เท่านั้น
       if(start_time_relay == "*") {int NTemperature = t;int NHumidity = h;
           // audio.connecttospeech(("อุณหภูมิ "+String(NTemperature)+" องศาเซลเซียส"+" ความชื้น "+String(NHumidity)).c_str(), "th");
-          if (C_Moon == "") {audio.connecttospeech((CMoonPhaseThai).c_str(), "th");}else{audio.connecttospeech((C_Moon).c_str(), "th");}
+          // if (C_Moon == "") {audio.connecttospeech((CMoonPhaseThai).c_str(), "th");}else{audio.connecttospeech((C_Moon).c_str(), "th");}
+          MonkDay();
       }else{        
         if(start_time_relay.startsWith("**"))  {Serial.print("CMoonPhaseThai = ");Serial.println(CMoonPhaseThai);
           String String_Time = (" เวลา "+CDateTime.substring(11,16));
@@ -150,23 +151,26 @@ void Time_Schedu(){
 }
 
 void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;  
-  if (Leof_speech == true and Lwait_MonkDay == false) { 
-    if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ แรม 8 ค่ำ";Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");}
-    if (NMoonPhase == 8 or NMoonPhase == 15){C_Moon = "วันนี้วันพระ "+CMoonPhaseThai;Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");}  
-    if (NMoonPhase == 13) { MoonPhase(NYear+543,NMonth,NDay+2);
-      String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); C_MoonPhaseThai.replace("ค่ำ",""); 
-      int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
-      if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 14 ค่ำ";}   
-      Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");  
-      Serial.println(C_Moon); //delay(4000);
+  if (Leof_speech == true) { 
+    if (NMoonPhase == 7 or NMoonPhase == 8 or NMoonPhase == 13 or NMoonPhase == 14 or NMoonPhase == 15){
+      if (NMoonPhase == 7){C_Moon = "พรุ่งนี้วันพระ แรม 8 ค่ำ";Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;}
+      if (NMoonPhase == 8 or NMoonPhase == 15){C_Moon = "วันนี้วันพระ "+CMoonPhaseThai;Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;}  
+      if (NMoonPhase == 13) { MoonPhase(NYear+543,NMonth,NDay+2);
+        String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); C_MoonPhaseThai.replace("ค่ำ",""); 
+        int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+        if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 14 ค่ำ";}   
+        Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;  
+        Serial.println(C_Moon); //delay(4000);
+      }
+      if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
+        String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
+        int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+        if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
+        Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;  
+      }
+    }else{
+      Leof_speech = false; audio.connecttospeech(CMoonPhaseThai.c_str(), "th");Lwait_MonkDay = true;  
     }
-    if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
-      String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
-      int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
-      if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
-      Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");  
-    }
-    Lwait_MonkDay = true;
   }
 }
 
@@ -184,8 +188,9 @@ void Slogan2() {
 }
 
 void Play_Speech() {
-  MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ 
-  if (Lwait_MonkDay == true) {
+  if (Lwait_MonkDay == false) {   
+    MonkDay();  // เช็ค พรุ่งนี้วันพระ วันนี้วันพระ 
+  }else{   
     Sawasdee(4,0,10,59,"สวัสดีตอนเช้า, วันนี้ฉันมีความสุขมาก");    
     Sawasdee(11,0,11,59,"สวัสดีตอนเพล, วันนี้ฉันมีความสุขมาก");    
     Sawasdee(12,0,12,59,"สวัสดีตอนเที่ยง, วันนี้ฉันมีความสุขมาก");    
@@ -197,7 +202,6 @@ void Play_Speech() {
     Sawasdee(0,11,3,59,"สวัสดีตอนดึก, ขณะนี้เวลานอน ควรหลับในอู่ทะเลบุญ");
   } 
   if (Lwait_MonkDay == true and Lwait_Sawasdee == true) { // คำขวัญประจำวัน
-    Slogan1(); 
-    if (Lwait_Slogan1 == true ) {Slogan2();}
+    Slogan1(); if (Lwait_Slogan1 == true ) {Slogan2();}
   }
 }
