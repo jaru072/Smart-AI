@@ -187,7 +187,7 @@ void ControlBoard() {
         start_time_relay = ""; return;
       }
       if (start_time_relay.isEmpty()){  // ถ้ากด OK โดย start_time_relay = "" ว่างเปล่า
-        // LPlayAuto = !LPlayAuto; // ยกเลิก หรือ เล่น LPlayAuto
+        LPlayAuto = !LPlayAuto; // ยกเลิก หรือ เล่น LPlayAuto
         NFile = 0;  audio.pauseResume();    // Pause , Resume
         Serial.print("PauseResume");Serial.print(" , LPlayAuto = ");Serial.println(LPlayAuto);N = TotalASpeech+1;return;  
       }

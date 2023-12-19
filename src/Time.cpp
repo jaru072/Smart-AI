@@ -129,7 +129,7 @@ void Time_Between(int Array_Number,int Bhour_Start,int Bmin_Start,int Bhour_Stop
         if (Ascheduled[Array_Number][3].indexOf("ความสะอาด") >=0){audio.connecttoSD( AFolderFile[8][4].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("เดินเล่น ออกกำลังกาย") >=0){audio.connecttoSD( AFolderFile[8][3].c_str());}
         if (Ascheduled[Array_Number][3].indexOf("สรงน้ำ") >=0){audio.connecttoSD( AFolderFile[5][5].c_str());}
-        if (Ascheduled[Array_Number][3].indexOf("จำวัตร") >=0){Save_Config(SPIFFS, "/mydir/config.txt");}
+        // if (Ascheduled[Array_Number][3].indexOf("จำวัตร") >=0){Save_Config(SPIFFS, "/mydir/config.txt");}
         Lwait_Speech = false;LTime_Between = false;LFirstOnly = true;
       }
     }    

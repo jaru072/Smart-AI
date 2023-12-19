@@ -51,7 +51,7 @@ void PlayAuto() { if (NAutoFolder == 2 or NAutoFolder == 3 or NAutoFolder == 4) 
 
   if (AFolderFile[NAutoFolder][NumberFile] == ""){ 
     // NumberFile = 1; LPlayAuto = false;  // Auto เฉพาะในโฟลเดอร์ที่เลือกเท่านั้น 
+    if (NAutoFolder == 8 ) {NAutoFolder = 0;}
     NAutoFolder++; NumberFile = 1; //
-    if (NAutoFolder == 10) {NAutoFolder = 1;}
   }
 }
