@@ -397,6 +397,7 @@ void loop() {
   if (Wifi_Connect == true) {
     //........................ Blynk  Run and Connect ..............................//
     if (Blynk.connected() == true){
+      if (Blynk_Connect_Count <= Total_Blynk_Connect and Blynk_Connect_Count > 1) {Blynk_Connect_Count = 1;}
       Blynk.run();
     }else{
       if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
