@@ -4,10 +4,14 @@
 #define BLYNK_PRINT Serial
 #define BLYNK_TEMPLATE_ID           "TMPxxxxxx"
 #define BLYNK_TEMPLATE_NAME         "Device"
-// #define BLYNK_TEMPLATE_ID  "*************"        // "TMPL6lv6nPUtm"
-// #define BLYNK_TEMPLATE_NAME "**************"       // "Quickstart Template"
-#include <WiFiClient.h>
-#include <BlynkSimpleEsp32.h>
+#ifdef ESP32
+  #include "WiFi.h"    
+  #include <WiFiClient.h>
+  #include <BlynkSimpleEsp32.h>
+#else
+  #include <ESP8266WiFi.h>
+  #include <BlynkSimpleEsp8266.h>
+#endif
 const char* serverBlynk = "elec.cmtc.ac.th";  //"blynk.honey.co.th"; //
 const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZZwIfuKC5RL";  //"gXvK65su6DEXBgTIlSy_FZm5aZUQM3q1"; "QFRC8tiVkeug3cz2EAEXWqTnwbEWPSp2";  //
 int portBlynk = 8080;
@@ -334,9 +338,14 @@ BLYNK_WRITE(V1)
   // You can also use:
   String CBlynkReceive = param.asStr();
   // double d = param.asDouble();
-  Serial.print("V1 Slider value is: ");
-  Serial.println(pinValue);
+  // Serial.print("V1 Slider value is: ");
+  // Serial.println(pinValue);
+  String CSample = "ยิ่งเป็นคนฉลาดเท่าไหร่ !!ก็ยิ่งต้อง  เสแสร้งแกล้ง";
   Serial.println(CBlynkReceive);
+  Serial.print("CSample = ");Serial.print(CSample.length());
+  Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+  audio.connecttospeech(CBlynkReceive.c_str(), "th");
+
 }
 
 //....................... SETUP ...........................//

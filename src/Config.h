@@ -1,5 +1,4 @@
 #include "FS.h"
-#include "WiFi.h"    
 #include "Audio.h"
 #include <vfs_api.h>
 #include <Adafruit_Sensor.h>
