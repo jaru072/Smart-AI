@@ -394,15 +394,17 @@ void loop() {
     } 
   }  
 
-  if (Wifi_Connect == true) {
+  if (Wifi_Connect == true and WiFi.status() == WL_CONNECTED) {
     //........................ Blynk  Run and Connect ..............................//
     if (Blynk.connected() == true){
       if (Blynk_Connect_Count <= Total_Blynk_Connect and Blynk_Connect_Count > 1) {Blynk_Connect_Count = 1;}
       Blynk.run();
     }else{
       if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
-        if (Leof_speech == true and Leof_mp3 == true) { Blynk_Connect_Count++;
-          Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+        if (Leof_speech == true and Leof_mp3 == true) {
+          if (Blynk.connect() == false) {Blynk.config(auth, serverBlynk, portBlynk);}else{ 
+            Blynk_Connect_Count++; Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+          }
         }
       }
     }
