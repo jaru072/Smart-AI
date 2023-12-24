@@ -1,6 +1,19 @@
 #include <Arduino.h>
 #include <Config.h>
 
+#define BLYNK_PRINT Serial
+#define BLYNK_TEMPLATE_ID           "TMPxxxxxx"
+#define BLYNK_TEMPLATE_NAME         "Device"
+// #define BLYNK_TEMPLATE_ID  "*************"        // "TMPL6lv6nPUtm"
+// #define BLYNK_TEMPLATE_NAME "**************"       // "Quickstart Template"
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+const char* serverBlynk = "elec.cmtc.ac.th";  //"blynk.honey.co.th"; //
+const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZZwIfuKC5RL";  //"gXvK65su6DEXBgTIlSy_FZm5aZUQM3q1"; "QFRC8tiVkeug3cz2EAEXWqTnwbEWPSp2";  //
+int portBlynk = 8080;
+int Blynk_Connect_Count = 0;
+int Total_Blynk_Connect = 6;
+
 bool LMeditation = false;
 String R_Text = "";
 int NMoonPhase,NZero_Extra = 0;
@@ -315,10 +328,21 @@ void ir_remote() {
     }     
   }  
 }
+BLYNK_WRITE(V1)
+{
+  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  // You can also use:
+  String CBlynkReceive = param.asStr();
+  // double d = param.asDouble();
+  Serial.print("V1 Slider value is: ");
+  Serial.println(pinValue);
+  Serial.println(CBlynkReceive);
+}
 
 //....................... SETUP ...........................//
 void setup() {
   Serial.begin(115200); Serial.println("initializing...");
+  // Blynk.begin(auth, ssid, pass);
   irrecv.enableIRIn(); //..... Start the receiver ...............//
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(Relay1, OUTPUT);pinMode(Relay2, OUTPUT);pinMode(Relay3, OUTPUT);pinMode(Relay4, OUTPUT);
@@ -344,6 +368,9 @@ void setup() {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
     if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
+    Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
+    Blynk.disconnect();
+    Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
   }
   Read_Ascheduled();
 }
@@ -357,13 +384,31 @@ void loop() {
   }
   if (millis() - last_Wifi > 20000) {last_Wifi = millis();
     Check_SDcard(); // xTaskCreate // เช็ค SD Card 
-    if (LConnect_internet_Auto == true) {Check_Wifi(5);}
-    // if (Wifi_Connect == true) {configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
+    if (LConnect_internet_Auto == true) {Check_Wifi(5);}  //{configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");Send_Time();} // ตั้งค่าเวลานาฬิกา และ Send_Time(); ส่งค่าเวลาไปบอร์ดอื่น
+    if (Wifi_Connect==true) {
+      if (Blynk.connected()==false){
+        if (N >= TotalASpeech) {
+          // Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+        }else{ if (N == 1) {Blynk.config(auth, serverBlynk, portBlynk);}}
+      }
+    } 
   }  
 
   if (Wifi_Connect == true) {
-    if (LSend_Serial == true and Leof_speech == true){Send_SerialMonitor();}  // ส่งค่าตัวแปรผ่าน Serial Monitor
-    talk_everytime(every_hour,every_minute);  // บอกเวลาเป็นเสียงพูดทุกกี่ชั่วโมง หรือ นาที (0,1) = ทุก ๆ 1 นาที
+    //........................ Blynk  Run and Connect ..............................//
+    if (Blynk.connected() == true){
+      Blynk.run();
+    }else{
+      if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
+        if (Leof_speech == true and Leof_mp3 == true) { Blynk_Connect_Count++;
+          Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+        }
+      }
+    }
+    //..................... ส่งค่าตัวแปรผ่าน Serial Monitor ............................//
+    if (LSend_Serial == true and Leof_speech == true){Send_SerialMonitor();}
+    //.......... บอกเวลาเป็นเสียงพูดทุกกี่ชั่วโมง หรือ นาที (0,1) = ทุก ๆ 1 นาที ..............//  
+    talk_everytime(every_hour,every_minute);  
   }
   
   Time_Schedu(); // ตารางเวลาประจำวัน 4 เวลา 6:00 , 13:00 , 18:00 , 22:00
