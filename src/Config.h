@@ -21,6 +21,8 @@ extern char chbuf[100];
 #ifndef CONFIG_LITTLEFS_FOR_IDF_3_2
  #include <time.h>
 #endif
+// .............. Blynk Varible ......................//
+extern String CBlynk_Remote;
 //...... Get Date Time from Internet
 extern long timezone;  
 extern byte daysavetime; 

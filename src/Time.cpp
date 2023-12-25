@@ -157,16 +157,17 @@ void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;
       if (NMoonPhase == 8 or NMoonPhase == 15){C_Moon = "วันนี้วันพระ "+CMoonPhaseThai;Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;}  
       if (NMoonPhase == 13) { MoonPhase(NYear+543,NMonth,NDay+2);
         String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); C_MoonPhaseThai.replace("ค่ำ",""); 
-        int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+        NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
         if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 14 ค่ำ";}   
         Leof_speech = false;audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;  
-        Serial.println(C_Moon); //delay(4000);
+        Serial.println(C_Moon); NMoonPhase = 13;
       }
       if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
         String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
-        int NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
+        NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
         if (NMoonPhase == 1){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
-        Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;  
+        Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;
+        NMoonPhase = 14;  
       }
     }else{
       Leof_speech = false; audio.connecttospeech(CMoonPhaseThai.c_str(), "th"); Lwait_MonkDay = true;  

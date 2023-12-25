@@ -166,6 +166,6 @@ void RTOS_Setup() {
   // vTaskDelete(NULL);
 }
 //.................. xTaskCreate Check_SDcard only .................//
-void Check_SDcard() {xTaskCreate(task_Check_SDcard, "Check SDcard", 5000, NULL, 3, &task_Check_SDcardHandle);}
-void check_ssid() {xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 2, &Task_check_ssidHandle);}
-void connectInternet() {xTaskCreate(Task_connectInternet, "connectInternet", 2500, NULL, 1, &Task_connectInternetHandle);}
+void Check_SDcard() {xTaskCreate(task_Check_SDcard, "Check SDcard", 5000, NULL, 2, &task_Check_SDcardHandle);}
+void check_ssid() {xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 1, &Task_check_ssidHandle);}
+void connectInternet() {xTaskCreate(Task_connectInternet, "connectInternet", 3500, NULL, 3, &Task_connectInternetHandle);}

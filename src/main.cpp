@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Config.h>
 
+#include <BlynkConfig.h>
 #define BLYNK_PRINT Serial
 #define BLYNK_TEMPLATE_ID           "TMPxxxxxx"
 #define BLYNK_TEMPLATE_NAME         "Device"
@@ -17,6 +18,7 @@ const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZ
 int portBlynk = 8080;
 int Blynk_Connect_Count = 0;
 int Total_Blynk_Connect = 6;
+String CBlynk_Remote = "";
 
 bool LMeditation = false;
 String R_Text = "";
@@ -182,11 +184,12 @@ void ControlBoard() {
   if (LcontrolBoard == false) {; //Serial.println(results.value); // ควบคุม Board ของตัวเอง
     addnumber();  //ใส่ตัวเลข
     //...........................................กด OK ลูกศร บน ล่าง ซ้าย ขวา ...........................................//
-    if (results.value == ir_ok) { start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
+    if (results.value == ir_ok or CBlynk_Remote.startsWith("remote")) { 
+      if (CBlynk_Remote.startsWith("remote")) { start_time_relay = CBlynk_Remote;start_time_relay.replace("remote","");CBlynk_Remote = "";}
+      start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
       if (start_time_relay.startsWith("99")) { ; // AutoPlay Folder
         String CloopFolder = start_time_relay.substring(2,4);int NloopFolder = CloopFolder.toInt();
       }  
-// Serial.println("go ControlBoard ");
       if (start_time_relay.startsWith("*")) {
         NSongMode = 0;Serial.println(CWday+" "+CDay+"/"+CMon+"/"+CYear);//mp3.playMp3FolderTrack((CMon+CDay).toInt());if(CDay.toInt() < 10){waitMilliseconds(6000);}else{waitMilliseconds(7000);} myData.z = 0;
         if (Wifi_Connect == true) {audio.stopSong();
@@ -332,22 +335,52 @@ void ir_remote() {
     }     
   }  
 }
-BLYNK_WRITE(V1)
-{
-  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+BLYNK_WRITE(V0) {
+  switch (param.asInt())
+  {
+    case 1: // Item 1
+      Serial.println(AFolderFile[1][1]);
+      audio.connecttoSD(AFolderFile[1][1].c_str());
+      break;
+    case 2: // Item 2
+      Serial.println(AFolderFile[1][2]);
+      audio.connecttoSD( AFolderFile[1][2].c_str());
+      break;
+    case 3: // Item 3
+      Serial.println(AFolderFile[1][3]);
+      audio.connecttoSD( AFolderFile[1][3].c_str());
+      break;
+    default:
+      Serial.println("Unknown item selected");
+  }
+}
+BLYNK_WRITE(V1) {
+  // int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
   // You can also use:
-  String CBlynkReceive = param.asStr();
   // double d = param.asDouble();
   // Serial.print("V1 Slider value is: ");
   // Serial.println(pinValue);
-  String CSample = "ยิ่งเป็นคนฉลาดเท่าไหร่ !!ก็ยิ่งต้อง  เสแสร้งแกล้ง";
-  Serial.println(CBlynkReceive);
-  Serial.print("CSample = ");Serial.print(CSample.length());
-  Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
-  audio.connecttospeech(CBlynkReceive.c_str(), "th");
-
+    // String CSample = "ยิ่งเป็นคนฉลาดเท่าไหร่ !!ก็ยิ่งต้อง  เสแสร้งแกล้ง";
+    // Serial.print("CSample = ");Serial.print(CSample.length());
+    // Serial.println(CBlynkReceive);
+  String CBlynkReceive = param.asStr();
+  if (!CBlynkReceive.isEmpty()) { 
+    if (CBlynkReceive.startsWith("remote")) {
+      CBlynk_Remote = CBlynkReceive;ControlBoard();
+      ControlBoard();
+    }else{
+      Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+      audio.connecttospeech(CBlynkReceive.c_str(), "th");
+    }
+  }
 }
-
+BLYNK_WRITE(V2) {int Blynk_Volume = param.asInt();
+  NVolume = Blynk_Volume; audio.setVolume(NVolume);Serial.print("ระดับเสียง = ");Serial.println(NVolume);
+}
+BLYNK_CONNECTED() {
+  Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+  // Blynk.syncAll();
+}
 //....................... SETUP ...........................//
 void setup() {
   Serial.begin(115200); Serial.println("initializing...");
@@ -373,21 +406,21 @@ void setup() {
   WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
   check_ssid();
   connectInternet();  
-  if (Wifi_Connect == true) {EXIT2:
-    configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
-    delay(1000);GetTimeInternet();
-    if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
-    Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
-    Blynk.disconnect();
-    Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-  }
+  // if (Wifi_Connect == true) {EXIT2:
+  //   configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+  //   delay(1000);GetTimeInternet();
+  //   if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
+  //   Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
+  //   Blynk.disconnect();
+  //   Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+  // }
   Read_Ascheduled();
 }
 
 void loop() {
   ir_remote();    // ใช้ Remote Control 
 
-  if (Wifi_Connect == true and NYear == 1970) {
+  if (WiFi.status() == WL_CONNECTED and NYear == 1970) {
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     GetTimeInternet();
   }
@@ -410,11 +443,11 @@ void loop() {
       Blynk.run();
     }else{
       if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
-        if (Leof_speech == true and Leof_mp3 == true) {
+        // if (Leof_speech == true and Leof_mp3 == true) {
           if (Blynk.connect() == false) {Blynk.config(auth, serverBlynk, portBlynk);}else{ 
-            Blynk_Connect_Count++; Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+            Blynk_Connect_Count++;  // Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
           }
-        }
+        // }
       }
     }
     //..................... ส่งค่าตัวแปรผ่าน Serial Monitor ............................//
