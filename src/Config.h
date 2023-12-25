@@ -26,6 +26,7 @@ extern String CBlynk_Remote;
 //...... Get Date Time from Internet
 extern long timezone;  
 extern byte daysavetime; 
+extern void myTimerEvent();
 //................ Varible New .......................//
 extern String R_Text;
 extern bool LMeditation;

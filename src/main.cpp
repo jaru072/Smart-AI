@@ -19,6 +19,7 @@ int portBlynk = 8080;
 int Blynk_Connect_Count = 0;
 int Total_Blynk_Connect = 6;
 String CBlynk_Remote = "";
+BlynkTimer timer1;
 
 bool LMeditation = false;
 String R_Text = "";
@@ -335,20 +336,37 @@ void ir_remote() {
     }     
   }  
 }
+
+// This function sends Arduino's up time every second to Virtual Pin (5).
+void myTimerEvent() {
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  // String CTest_Blynk = "คลองสาม คลองหลวง ปทุมธานี";
+  // Blynk.virtualWrite(V1, CTest_Blynk);Blynk.syncVirtual(V1);
+  // Blynk.virtualWrite(V2, 1);Blynk.syncVirtual(V2);
+  // Blynk.virtualWrite(V2, millis() / 1000);         // ใช้ไม่ได้
+}
+
 BLYNK_WRITE(V0) {
+  if (param.asInt() != 0) {
+    Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
+  }
   switch (param.asInt())
   {
     case 1: // Item 1
-      Serial.println(AFolderFile[1][1]);
-      audio.connecttoSD(AFolderFile[1][1].c_str());
+      FolderPlay = 1; FilePlay = 1;
+      Serial.println(AFolderFile[FolderPlay][FilePlay]);
+      audio.connecttoSD(AFolderFile[FolderPlay][FilePlay].c_str());
       break;
     case 2: // Item 2
-      Serial.println(AFolderFile[1][2]);
-      audio.connecttoSD( AFolderFile[1][2].c_str());
+      FolderPlay = 1; FilePlay = 2;
+      Serial.println(AFolderFile[FolderPlay][FilePlay]);
+      audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str());
       break;
     case 3: // Item 3
-      Serial.println(AFolderFile[1][3]);
-      audio.connecttoSD( AFolderFile[1][3].c_str());
+      FolderPlay = 1; FilePlay = 8;
+      Serial.println(AFolderFile[FolderPlay][FilePlay]);
+      audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str());
       break;
     default:
       Serial.println("Unknown item selected");
@@ -370,6 +388,7 @@ BLYNK_WRITE(V1) {
       ControlBoard();
     }else{
       Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+      if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
       audio.connecttospeech(CBlynkReceive.c_str(), "th");
     }
   }
@@ -377,14 +396,25 @@ BLYNK_WRITE(V1) {
 BLYNK_WRITE(V2) {int Blynk_Volume = param.asInt();
   NVolume = Blynk_Volume; audio.setVolume(NVolume);Serial.print("ระดับเสียง = ");Serial.println(NVolume);
 }
+BLYNK_WRITE(V3) {
+  String action = param.asStr();
+  if (action == "play") {audio.pauseResume();}
+  if (action == "stop") {audio.pauseResume();}
+  if (action == "next") {FilePlay++;if(AFolderFile[FolderPlay][FilePlay].isEmpty()) {FilePlay--;Serial.println("ไฟล์สุดท้าย ของโฟลเดอร์");}else{audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}}
+  if (action == "prev") {if(FilePlay>1){FilePlay--;audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}else{Serial.println("ไฟล์แรก ของโฟลเดอร์");}}
+  Blynk.setProperty(V3, "label", action);
+  Serial.print(action);Serial.println();
+}
+BLYNK_WRITE(V4) {
+  
+}
 BLYNK_CONNECTED() {
-  Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-  // Blynk.syncAll();
+Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+// Blynk.syncAll();
 }
 //....................... SETUP ...........................//
 void setup() {
   Serial.begin(115200); Serial.println("initializing...");
-  // Blynk.begin(auth, ssid, pass);
   irrecv.enableIRIn(); //..... Start the receiver ...............//
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(Relay1, OUTPUT);pinMode(Relay2, OUTPUT);pinMode(Relay3, OUTPUT);pinMode(Relay4, OUTPUT);
@@ -415,6 +445,7 @@ void setup() {
   //   Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
   // }
   Read_Ascheduled();
+  timer1.setInterval(2000L, myTimerEvent);
 }
 
 void loop() {
@@ -440,7 +471,7 @@ void loop() {
     //........................ Blynk  Run and Connect ..............................//
     if (Blynk.connected() == true){
       if (Blynk_Connect_Count <= Total_Blynk_Connect and Blynk_Connect_Count > 1) {Blynk_Connect_Count = 1;}
-      Blynk.run();
+      Blynk.run();timer1.run(); 
     }else{
       if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
         // if (Leof_speech == true and Leof_mp3 == true) {
