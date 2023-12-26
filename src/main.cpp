@@ -18,7 +18,7 @@ const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZ
 int portBlynk = 8080;
 int Blynk_Connect_Count = 0;
 int Total_Blynk_Connect = 6;
-String CBlynk_Remote,CBlynkReceive = "";
+String CBlynk_Cut,CBlynkReceive = "";
 BlynkTimer timer1;
 bool bool_startsWith = false;
 //*************************************************************//
@@ -187,7 +187,12 @@ void ControlBoard() {
     addnumber();  //ใส่ตัวเลข
     //...........................................กด OK ลูกศร บน ล่าง ซ้าย ขวา ...........................................//
     if (results.value == ir_ok or bool_startsWith == true) { 
-      if (bool_startsWith == true) {bool_startsWith = false; start_time_relay = CBlynk_Remote;CBlynk_Remote = "";}
+      if (bool_startsWith == true) {
+        bool_startsWith = false; start_time_relay = CBlynk_Cut;CBlynk_Cut = "";
+        if (start_time_relay.startsWith("0")) {
+          Check(); return;
+        }
+      }
       start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
       if (start_time_relay.startsWith("99")) { ; // AutoPlay Folder
         String CloopFolder = start_time_relay.substring(2,4);int NloopFolder = CloopFolder.toInt();
@@ -373,24 +378,38 @@ BLYNK_WRITE(V0) {
       Serial.println("Unknown item selected");
   }
 }
-bool String_startsWith(String Str1,String Str2,String Str3) {
-  if (CBlynkReceive.startsWith(Str1) or CBlynkReceive.startsWith(Str2) or CBlynkReceive.startsWith(Str3)) {
-    bool_startsWith = true;CBlynkReceive.replace(Str1,"");CBlynkReceive.replace(Str2,"");CBlynkReceive.replace(Str3,"");return true;
+bool String_startsWith(String Str1,String Str2,String Str3) { 
+  // CBlynkReceive จะไม่โดนตัดคำออก , CBlynk_Cut จะโดนตัดคำออก เช่น config replace delete default
+  if (CBlynk_Cut.startsWith(Str1) or CBlynk_Cut.startsWith(Str2) or CBlynk_Cut.startsWith(Str3)) {
+    bool_startsWith = true;CBlynk_Cut.replace(Str1,"");CBlynk_Cut.replace(Str2,"");CBlynk_Cut.replace(Str3,"");CBlynk_Cut.replace(" ","");return true;
   }else{
     bool_startsWith = false;return false;
   }
 }
+
 BLYNK_WRITE(V1) {
   CBlynkReceive = param.asStr();
-  if (!CBlynkReceive.isEmpty()) { 
-    // if (CBlynkReceive.startsWith("remote") or CBlynkReceive.startsWith("เพลง")) {
-    if (String_startsWith("remote","เพลง","play")) {  
-      CBlynk_Remote = CBlynkReceive;
-      ControlBoard();
-    }else{
-      Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
-      if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
-      audio.connecttospeech(CBlynkReceive.c_str(), "th");
+  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
+    // .................. เข้าโหมด Config ...................//
+    if (String_startsWith("config","setup","ตั้งค่า")) {
+      // int bytesSent = Serial.write(CBlynkReceive.c_str());
+      // ....เข้าโหมดย่อยของ Config คือ "replace","delete","default"....//
+      if (String_startsWith("replace","delete","default")) {
+        audio.connecttospeech(CBlynk_Cut.c_str(), "th");
+        if (CBlynkReceive.indexOf("replace") >= 0) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
+        if (CBlynkReceive.indexOf("delete") >= 0) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());}
+        if (CBlynkReceive.indexOf("default") >= 0) {Start_Config();}
+      }
+    }else{ 
+      // .............. เข้าโหมด "remote","เพลง","play............//
+      if (String_startsWith("remote","เพลง","play")) {  
+        ControlBoard();
+      }else{
+        // .............. เข้าโหมด แปลงข้อความ เป็นคำพูด ............//
+        Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+        if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
+        audio.connecttospeech(CBlynkReceive.c_str(), "th");
+      }
     }
   }
 }
