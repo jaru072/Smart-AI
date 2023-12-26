@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Config.h>
-
+//********************** Control Blynk **************************//
 #include <BlynkConfig.h>
 #define BLYNK_PRINT Serial
 #define BLYNK_TEMPLATE_ID           "TMPxxxxxx"
@@ -18,9 +18,10 @@ const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZ
 int portBlynk = 8080;
 int Blynk_Connect_Count = 0;
 int Total_Blynk_Connect = 6;
-String CBlynk_Remote = "";
+String CBlynk_Remote,CBlynkReceive = "";
 BlynkTimer timer1;
-
+bool bool_startsWith = false;
+//*************************************************************//
 bool LMeditation = false;
 String R_Text = "";
 int NMoonPhase,NZero_Extra = 0;
@@ -185,8 +186,8 @@ void ControlBoard() {
   if (LcontrolBoard == false) {; //Serial.println(results.value); // ควบคุม Board ของตัวเอง
     addnumber();  //ใส่ตัวเลข
     //...........................................กด OK ลูกศร บน ล่าง ซ้าย ขวา ...........................................//
-    if (results.value == ir_ok or CBlynk_Remote.startsWith("remote")) { 
-      if (CBlynk_Remote.startsWith("remote")) { start_time_relay = CBlynk_Remote;start_time_relay.replace("remote","");CBlynk_Remote = "";}
+    if (results.value == ir_ok or bool_startsWith == true) { 
+      if (bool_startsWith == true) {bool_startsWith = false; start_time_relay = CBlynk_Remote;CBlynk_Remote = "";}
       start_time_relay.replace(" ","");N = TotalASpeech+1;last_Sleep = millis(); // ลบช่องว่างใน start_time_relay
       if (start_time_relay.startsWith("99")) { ; // AutoPlay Folder
         String CloopFolder = start_time_relay.substring(2,4);int NloopFolder = CloopFolder.toInt();
@@ -372,19 +373,19 @@ BLYNK_WRITE(V0) {
       Serial.println("Unknown item selected");
   }
 }
+bool String_startsWith(String Str1,String Str2,String Str3) {
+  if (CBlynkReceive.startsWith(Str1) or CBlynkReceive.startsWith(Str2) or CBlynkReceive.startsWith(Str3)) {
+    bool_startsWith = true;CBlynkReceive.replace(Str1,"");CBlynkReceive.replace(Str2,"");CBlynkReceive.replace(Str3,"");return true;
+  }else{
+    bool_startsWith = false;return false;
+  }
+}
 BLYNK_WRITE(V1) {
-  // int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
-  // You can also use:
-  // double d = param.asDouble();
-  // Serial.print("V1 Slider value is: ");
-  // Serial.println(pinValue);
-    // String CSample = "ยิ่งเป็นคนฉลาดเท่าไหร่ !!ก็ยิ่งต้อง  เสแสร้งแกล้ง";
-    // Serial.print("CSample = ");Serial.print(CSample.length());
-    // Serial.println(CBlynkReceive);
-  String CBlynkReceive = param.asStr();
+  CBlynkReceive = param.asStr();
   if (!CBlynkReceive.isEmpty()) { 
-    if (CBlynkReceive.startsWith("remote")) {
-      CBlynk_Remote = CBlynkReceive;ControlBoard();
+    // if (CBlynkReceive.startsWith("remote") or CBlynkReceive.startsWith("เพลง")) {
+    if (String_startsWith("remote","เพลง","play")) {  
+      CBlynk_Remote = CBlynkReceive;
       ControlBoard();
     }else{
       Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
