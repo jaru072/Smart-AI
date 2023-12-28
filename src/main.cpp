@@ -13,13 +13,28 @@
   #include <ESP8266WiFi.h>
   #include <BlynkSimpleEsp8266.h>
 #endif
+
+BlynkTimer timer1;
+
+// Define the data for the table
+const int ROWS = 3;
+const int COLS = 3;
+String tableData[ROWS][COLS] = {
+  {"","",""},
+  {"","",""},
+  {"","",""}
+};
+
+int currentRow = 0;
+
+WidgetTerminal terminal(V6);
+
 const char* serverBlynk = "elec.cmtc.ac.th";  //"blynk.honey.co.th"; //
 const char* auth = "aEYM11-kCYSFSlwHAqLQ4dchVMNTRqWe"; //"LZL6-eIu2L8i2R2FdrVHsZZwIfuKC5RL";  //"gXvK65su6DEXBgTIlSy_FZm5aZUQM3q1"; "QFRC8tiVkeug3cz2EAEXWqTnwbEWPSp2";  //
 int portBlynk = 8080;
 int Blynk_Connect_Count = 0;
 int Total_Blynk_Connect = 6;
 String CBlynk_Cut,CBlynkReceive = "";
-BlynkTimer timer1;
 bool bool_startsWith = false;
 //*************************************************************//
 bool LMeditation = false;
@@ -345,18 +360,29 @@ void ir_remote() {
 
 // This function sends Arduino's up time every second to Virtual Pin (5).
 void myTimerEvent() {
+  // Blynk.virtualWrite(V6, "Row: " + String(currentRow + 1));
+  // for (int j = 0; j < COLS; j++) {
+  //   String CNameMusic = AFolderFile[FolderPlay][j];
+  //   int AT_Word = CNameMusic.lastIndexOf("/");
+  //   CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+
+  //   Blynk.virtualWrite(V7, "Col " + String(j + 1) + ": " +String(tableData[currentRow][j]) );
+  //   Blynk.virtualWrite(V7, CNameMusic);
+  // }
+  // Blynk.virtualWrite(V6, "-----------------------");
+  // currentRow = (currentRow + 1) % ROWS;  
   // You can send any value at any time.
   // Please don't send more that 10 values per second.
   // String CTest_Blynk = "คลองสาม คลองหลวง ปทุมธานี";
   // Blynk.virtualWrite(V1, CTest_Blynk);Blynk.syncVirtual(V1);
   // Blynk.virtualWrite(V2, 1);Blynk.syncVirtual(V2);
   // Blynk.virtualWrite(V2, millis() / 1000);         // ใช้ไม่ได้
+  // String Blynk_Leof = "Leof_speech = "+String(Leof_speech)+" Leof_mp3 = "+String(Leof_mp3);
+  // Blynk.virtualWrite(V4, Blynk_Leof);//Blynk.syncVirtual(V4);
 }
 
 BLYNK_WRITE(V0) {
-  if (param.asInt() != 0) {
-    Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
-  }
+  if (param.asInt() != 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
   switch (param.asInt())
   {
     case 1: // Item 1
@@ -388,6 +414,7 @@ bool String_startsWith(String Str1,String Str2,String Str3) {
 }
 
 BLYNK_WRITE(V1) {
+  if (param.asInt() != 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
   CBlynkReceive = param.asStr();
   if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
     // .................. เข้าโหมด Config ...................//
@@ -422,15 +449,41 @@ BLYNK_WRITE(V3) {
   if (action == "stop") {audio.pauseResume();}
   if (action == "next") {FilePlay++;if(AFolderFile[FolderPlay][FilePlay].isEmpty()) {FilePlay--;Serial.println("ไฟล์สุดท้าย ของโฟลเดอร์");}else{audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}}
   if (action == "prev") {if(FilePlay>1){FilePlay--;audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}else{Serial.println("ไฟล์แรก ของโฟลเดอร์");}}
-  Blynk.setProperty(V3, "label", action);
-  Serial.print(action);Serial.println();
-}
-BLYNK_WRITE(V4) {
+  Blynk.setProperty(V3, "label", action); Serial.print(action);Serial.println();
   
+  String CNameMusic = AFolderFile[FolderPlay][FilePlay];
+  int AT_Word = CNameMusic.lastIndexOf("/");
+  CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+  Blynk.virtualWrite(V5, CNameMusic);Blynk.syncVirtual(V5);      
 }
+BLYNK_WRITE(V4) {}
+
+BLYNK_WRITE(V6) { String Str_param = param.asStr();char const* C_param = Str_param.c_str();
+  // switch(C_param) {
+  //   case "ok":
+  //       Serial.println("Something OK");break;
+  //   case "bad":
+  //     Serial.println("Uh-oh!");break;
+  //   case "yes":
+  //     Serial.println("YES!");break;
+  //   case "no":
+  //     Serial.println("Nooooooo!");break;
+  // }
+
+  if (Str_param.startsWith("Marco")) {terminal.println("You said: 'Marco'") ;terminal.println("I said: 'Polo'") ;
+    Str_param.replace("Marco","");Serial.println(Str_param);
+    audio.connecttospeech(Str_param.c_str(), "th"); 
+  } else {
+    // Send it back
+    terminal.print("You said:");
+    terminal.write(param.getBuffer(), param.getLength());terminal.println();
+  }
+  terminal.flush(); // Ensure everything is sent
+}
+
 BLYNK_CONNECTED() {
-Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-// Blynk.syncAll();
+  Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+  // Blynk.syncAll();
 }
 //....................... SETUP ...........................//
 void setup() {
@@ -465,7 +518,18 @@ void setup() {
   //   Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
   // }
   Read_Ascheduled();
-  timer1.setInterval(2000L, myTimerEvent);
+
+  // timer1.setInterval(2000L, myTimerEvent);
+
+  // Clear the terminal content
+  terminal.clear();
+  // This will print Blynk Software version to the Terminal Widget when
+  // your hardware gets connected to Blynk Server
+  terminal.println(F("Blynk v" BLYNK_VERSION ": Device started"));
+  terminal.println(F("-------------"));
+  terminal.println(F("Type 'Marco' and get a reply, or type"));
+  terminal.println(F("anything else and get it printed back."));
+  terminal.flush();
 }
 
 void loop() {
@@ -491,7 +555,7 @@ void loop() {
     //........................ Blynk  Run and Connect ..............................//
     if (Blynk.connected() == true){
       if (Blynk_Connect_Count <= Total_Blynk_Connect and Blynk_Connect_Count > 1) {Blynk_Connect_Count = 1;}
-      Blynk.run();timer1.run(); 
+      Blynk.run();  //timer1.run(); 
     }else{
       if (Blynk_Connect_Count <= Total_Blynk_Connect) {  
         // if (Leof_speech == true and Leof_mp3 == true) {
@@ -512,11 +576,13 @@ void loop() {
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
       // แสดงผลใน Serial Monitor ทุก 2 วินาที
-      // Serial.print(" Lwait_MonkDay = ");Serial.print(Lwait_MonkDay);
+      // Serial.print(" Serial.readString() = ");Serial.print(Serial.readString());
       // Serial.print(" start_time_relay = "); Serial.print(start_time_relay);
       Serial.print(" NMoonPhase = "); Serial.print(NMoonPhase);
       Serial.print(" Leof_speech = ");Serial.print(Leof_speech);
       Serial.print(" Leof_mp3 = ");Serial.println(Leof_mp3);
+      // Blynk.virtualWrite(V6, Serial.readString());Blynk.syncVirtual(V6);  
+
     }
     // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้นSerial.println(" ");
   }
