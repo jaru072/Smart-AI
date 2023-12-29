@@ -70,18 +70,6 @@ void Task_check_ssid(void * parameter) {
   vTaskDelete(NULL); 
 }
 
-void Check_Wifi(int NConnect_Time) {
-  // Serial.print(WiFi.status());Serial.println(" localIP = "+WiFi.localIP().toString());
-  if (WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {check_ssid(); }
-
-  if (WiFi.localIP().toString() == "0.0.0.0" or WiFi.status() != WL_CONNECTED or Wifi_Connect == false) {
-    connectInternet(); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
-    if (WiFi.localIP().toString() != "0.0.0.0") {
-      Wifi_Connect = true ; Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
-    }
-  }
-}
-
 int count1,count2 = 0;
 //..................Task Control SD Card ...........................//
 void printDirectory(File dir, int numTabs) {

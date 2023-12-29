@@ -27,6 +27,7 @@ extern String CBlynk_Remote;
 extern long timezone;  
 extern byte daysavetime; 
 extern void myTimerEvent();
+extern void serialEvent();
 extern String CBlynkReceive,CBlynk_Cut;
 extern bool bool_startsWith;
 //................ Varible New .......................//
