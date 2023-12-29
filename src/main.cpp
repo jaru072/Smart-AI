@@ -393,14 +393,6 @@ void myTimerEvent() {
   // String Blynk_Leof = "Leof_speech = "+String(Leof_speech)+" Leof_mp3 = "+String(Leof_mp3);
   // Blynk.virtualWrite(V4, Blynk_Leof);//Blynk.syncVirtual(V4);
 }
-void terminal_ReadWord() {
-  for (int i = 1; i <= 40; i++){ // Serial.println(R_Text);
-    if (ATime[i][1].isEmpty()) {break;}
-    terminal.println(String(i)+" "+ATime[i][1]+" = "+ATime[i][2]);
-  }
-  terminal.flush();
-}
-
 BLYNK_WRITE(V0) {
   if (param.asInt() != 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
   switch (param.asInt())
@@ -478,8 +470,26 @@ BLYNK_WRITE(V3) {
 }
 BLYNK_WRITE(V4) {}
 
+void terminal_ReadWord() {
+  int NCount = 0;
+  terminal.println("ค่า Config ระบบ");
+  for (int i = 1; i <= 40; i++){ 
+    if (ATime[i][1].isEmpty()) {break;}
+    if (ATime[i][1].indexOf(":") < 0) { NCount++;
+      if (NCount < 10){terminal.print(" "+String(NCount));}else{terminal.print(NCount);}
+      terminal.println(" "+ATime[i][1]+" = "+ATime[i][2]);
+    }
+  }
+  terminal.println();
+  terminal.println("ตารางเวลา กิจวัตรประจำวัน");
+  for (int i = 1; i <= 40; i++){ 
+    if (Ascheduled[i][3].isEmpty()) {break;}
+    terminal.println(Ascheduled[i][1]+":"+Ascheduled[i][2]+" "+Ascheduled[i][3]);
+  }
+  terminal.flush();
+}
 BLYNK_WRITE(V6) { String Str_param = param.asStr();CBlynkReceive = param.asStr();
-  Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
+  Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;start_time_relay = "";
   if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
     // if (CBlynkReceive.indexOf("Marco") >= 0) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
     // if (CBlynkReceive.indexOf("read") >= 0) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
