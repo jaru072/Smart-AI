@@ -221,7 +221,7 @@ void Check_SPIFFS() {
   listDir(SPIFFS, "/", 0);//    readFile(SPIFFS, "/mydir/config.txt");//    removeDir(SPIFFS, "/mydir");//    createDir(SPIFFS, "/mydir");
   deleteFile(SPIFFS, "/mydir/config.txt");
   
-  const char* Str_Config    = ",Volume=5,Sound=on,Play_Test=on,Scheduled=true";
+  const char* Str_Config    = ",Volume=3,Sound=on,PlayEvery=10000,Play_Test=on,Scheduled=true";
   const char* Str_Scheduled1 = ",time 04:00=ตื่นนอน ออกกำลังกาย,time 04:50=สวดมนต์ ทำวัตรเช้า,time 05:22=เตรียมออกบิณฑบาต,time 07:30=ฉันภัตตาหารเช้า,time 09:00=นั่งสมาธิ,time 10:00=เขียนโปรแกรม,time 11:00=ฉันเพล,time 14:00=นั่งสมาธิ,time 15:00=ทำความสะอาดกุฏิ,time 17:00=เดินเล่น ออกกำลังกาย,time 18:00=สรงน้ำ,time 19:00=สวดมนต์ ทำวัตรเย็น,time 19:30=นั่งสมาธิ,time 21:30=จำวัตร,";
   
   writeFile(SPIFFS, "/mydir/config.txt", Str_Config);

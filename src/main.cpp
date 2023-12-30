@@ -424,6 +424,9 @@ bool String_startsWith(String Str1,String Str2,String Str3) {
     bool_startsWith = false;return false;
   }
 }
+bool String_indexOf(String Str1,String Str2,String Str3) { 
+  if (CBlynkReceive.indexOf(Str1) >= 0 or CBlynkReceive.indexOf(Str2) >= 0 or CBlynkReceive.indexOf(Str3) >= 0) {CBlynk_Cut.replace(Str1,"");CBlynk_Cut.replace(Str2,"");CBlynk_Cut.replace(Str3,"");CBlynk_Cut.replace(" ","");return true;}else{return false;}
+}
 
 BLYNK_WRITE(V1) {
   if (param.asInt() != 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
@@ -470,7 +473,7 @@ BLYNK_WRITE(V3) {
 }
 BLYNK_WRITE(V4) {}
 
-void terminal_ReadWord() {
+void terminal_ReadWord() {// ถ้ามีการลบข้อมูล จะยังอ่านค่าที่ลบไปแล้ว ยกเว้น Reset Board
   int NCount = 0;
   terminal.println("ค่า Config ระบบ");
   for (int i = 1; i <= 40; i++){ 
@@ -488,38 +491,31 @@ void terminal_ReadWord() {
   }
   terminal.flush();
 }
-bool String_indexOf(String Str1,String Str2,String Str3) { 
-  if (CBlynkReceive.indexOf(Str1) >= 0 or CBlynkReceive.indexOf(Str2) >= 0 or CBlynkReceive.indexOf(Str3) >= 0) {return true;}else{return false;}
-}
 
 BLYNK_WRITE(V6) { 
-  // String Str_param = param.asStr();CBlynkReceive = param.asStr();
-  // Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;start_time_relay = "";
-  // if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
-  //   if (String_startsWith("Marco","setup","remote")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal.flush();return;}
-  //   if (String_startsWith("read","อ่าน","config")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
-  // }
   //   // Send it back
   // terminal.print("You said:");
   // terminal.write(param.getBuffer(), param.getLength());
   // audio.connecttospeech(Str_param.c_str(), "th"); 
-
   // terminal.println();terminal.flush(); // Ensure everything is sent
+
   CBlynkReceive = param.asStr();
-  // ยกเลิกทักทายตอนเปิดเครื่อง
-  if (param.asInt() != 0 or CBlynkReceive.length() > 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
+  
+  if (param.asInt() != 0 or CBlynkReceive.length() > 0) { // ยกเลิกทักทายตอนเปิดเครื่อง
+    Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
+  }
   if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
     if (String_indexOf("*read","*อ่าน","None!")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
 
     // .................. เข้าโหมด Config ...................//
     if (String_startsWith("config","setup","ตั้งค่า")) {
       // ....เข้าโหมดย่อยของ Config คือ "replace","delete","default"....//
-      if (String_startsWith("replace","delete","default")) {
+      // if (String_startsWith("replace","delete","default")) {
         audio.connecttospeech(CBlynk_Cut.c_str(), "th");
-        if (String_indexOf("replace","แทนที่","None!")) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
-        if (String_indexOf("delete","ลบ","None!")) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());}        
-        if (String_indexOf("default","เริ่มต้น","None!")) {Start_Config();}
-      }
+        if (String_indexOf("default","เริ่มต้น","None!")) {Start_Config();return;}
+        if (String_indexOf("delete","ลบ","None!")) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());return;}        
+        if (String_indexOf("replace","แทนที่","None!")) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());return;} 
+      // }
     }else{ 
       // .............. เข้าโหมด "remote","เพลง","play............//
       if (String_startsWith("remote","เพลง","play")) {  
@@ -531,8 +527,9 @@ BLYNK_WRITE(V6) {
         audio.connecttospeech(CBlynkReceive.c_str(), "th");
       }
     }
+    // Blynk.virtualWrite(V6, CBlynkReceive);Blynk.syncVirtual(V6);
+    terminal.flush();
   }
-
 }
 
 BLYNK_CONNECTED() {
