@@ -488,20 +488,51 @@ void terminal_ReadWord() {
   }
   terminal.flush();
 }
-BLYNK_WRITE(V6) { String Str_param = param.asStr();CBlynkReceive = param.asStr();
-  Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;start_time_relay = "";
-  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
-    // if (CBlynkReceive.indexOf("Marco") >= 0) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
-    // if (CBlynkReceive.indexOf("read") >= 0) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
-    if (String_startsWith("Marco","setup","remote")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal.flush();return;}
-    if (String_startsWith("read","อ่าน","config")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
-  }
-    // Send it back
-  terminal.print("You said:");
-  terminal.write(param.getBuffer(), param.getLength());
-  audio.connecttospeech(Str_param.c_str(), "th"); 
+bool String_indexOf(String Str1,String Str2,String Str3) { 
+  if (CBlynkReceive.indexOf(Str1) >= 0 or CBlynkReceive.indexOf(Str2) >= 0 or CBlynkReceive.indexOf(Str3) >= 0) {return true;}else{return false;}
+}
 
-  terminal.println();terminal.flush(); // Ensure everything is sent
+BLYNK_WRITE(V6) { 
+  // String Str_param = param.asStr();CBlynkReceive = param.asStr();
+  // Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;start_time_relay = "";
+  // if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
+  //   if (String_startsWith("Marco","setup","remote")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal.flush();return;}
+  //   if (String_startsWith("read","อ่าน","config")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
+  // }
+  //   // Send it back
+  // terminal.print("You said:");
+  // terminal.write(param.getBuffer(), param.getLength());
+  // audio.connecttospeech(Str_param.c_str(), "th"); 
+
+  // terminal.println();terminal.flush(); // Ensure everything is sent
+  CBlynkReceive = param.asStr();
+  // ยกเลิกทักทายตอนเปิดเครื่อง
+  if (param.asInt() != 0 or CBlynkReceive.length() > 0) {Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;}
+  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
+    if (String_indexOf("*read","*อ่าน","None!")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
+
+    // .................. เข้าโหมด Config ...................//
+    if (String_startsWith("config","setup","ตั้งค่า")) {
+      // ....เข้าโหมดย่อยของ Config คือ "replace","delete","default"....//
+      if (String_startsWith("replace","delete","default")) {
+        audio.connecttospeech(CBlynk_Cut.c_str(), "th");
+        if (String_indexOf("replace","แทนที่","None!")) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());} 
+        if (String_indexOf("delete","ลบ","None!")) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());}        
+        if (String_indexOf("default","เริ่มต้น","None!")) {Start_Config();}
+      }
+    }else{ 
+      // .............. เข้าโหมด "remote","เพลง","play............//
+      if (String_startsWith("remote","เพลง","play")) {  
+        ControlBoard();
+      }else{
+        // .............. เข้าโหมด แปลงข้อความ เป็นคำพูด ............//
+        Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+        if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
+        audio.connecttospeech(CBlynkReceive.c_str(), "th");
+      }
+    }
+  }
+
 }
 
 BLYNK_CONNECTED() {
