@@ -17,13 +17,13 @@
 BlynkTimer timer1;
 
 // Define the data for the table
-const int ROWS = 3;
-const int COLS = 3;
-String tableData[ROWS][COLS] = {
-  {"","",""},
-  {"","",""},
-  {"","",""}
-};
+// const int ROWS = 3;
+// const int COLS = 3;
+// String tableData[ROWS][COLS] = {
+//   {"","",""},
+//   {"","",""},
+//   {"","",""}
+// };
 
 int currentRow = 0;
 
@@ -78,16 +78,16 @@ File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
 
-//Pinos de conexão do ESP32 e o módulo de cartão SD
-#define SD_CS          5
-#define SPI_MOSI      23
-#define SPI_MISO      19
-#define SPI_SCK       18
+// //Pinos de conexão do ESP32 e o módulo de cartão SD
+// #define SD_CS          5
+// #define SPI_MOSI      23
+// #define SPI_MISO      19
+// #define SPI_SCK       18
 
-//Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
-#define I2S_DOUT      25
-#define I2S_BCLK      27
-#define I2S_LRC       26
+// //Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
+// #define I2S_DOUT      25
+// #define I2S_BCLK      27
+// #define I2S_LRC       26
 
 Audio audio;
 WiFiMulti wifiMulti;
@@ -130,19 +130,19 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 
-//............. Driver and Varible Control Audio ....................//
-#include <driver/i2s.h>
-#define I2S_WS 15
-#define I2S_SD 32
-#define I2S_SCK 14
-#define I2S_PORT I2S_NUM_0
-#define I2S_SAMPLE_RATE   (16000)
-#define I2S_SAMPLE_BITS   (16)
-#define I2S_READ_LEN      (16 * 1024)
-#define RECORD_TIME       (20) //Seconds
-#define I2S_CHANNEL_NUM   (1)
-#define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
-#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+// //............. Driver and Varible Control Audio ....................//
+// #include <driver/i2s.h>
+// #define I2S_WS 15
+// #define I2S_SD 32
+// #define I2S_SCK 14
+// #define I2S_PORT I2S_NUM_0
+// #define I2S_SAMPLE_RATE   (16000)
+// #define I2S_SAMPLE_BITS   (16)
+// #define I2S_READ_LEN      (16 * 1024)
+// #define RECORD_TIME       (20) //Seconds
+// #define I2S_CHANNEL_NUM   (1)
+// #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
+// #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 bool Leof_speech = false; // จำเป็นต้องเป็น false เพราะไม่ให้เข้า บอกกิจวัตรประจำวัน แต่ให้เข้า Play_Speech(); ก่อน
 bool Leof_mp3 = true;
 bool LFirst_Song,LSDcard = false;
@@ -504,27 +504,29 @@ BLYNK_WRITE(V6) {
   if (param.asInt() != 0 or CBlynkReceive.length() > 0) { // ยกเลิกทักทายตอนเปิดเครื่อง
     Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
   }
-  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
-    if (String_indexOf("*read","*อ่าน","None!")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
+  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;String CBlynk_First = CBlynkReceive.substring(0,1);
+    String Sign_Setup = "@/*";
+    if (CBlynk_First.compareTo(Sign_Setup)) { CBlynkReceive = CBlynkReceive.substring(1,CBlynkReceive.length());CBlynk_Cut = CBlynkReceive;
+      if (String_indexOf("read","อ่าน","None!")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
 
-    // .................. เข้าโหมด Config ...................//
-    if (String_startsWith("config","setup","ตั้งค่า")) {
-      // ....เข้าโหมดย่อยของ Config คือ "replace","delete","default"....//
-      // if (String_startsWith("replace","delete","default")) {
-        audio.connecttospeech(CBlynk_Cut.c_str(), "th");
-        if (String_indexOf("default","เริ่มต้น","None!")) {Start_Config();return;}
-        if (String_indexOf("delete","ลบ","None!")) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());return;}        
-        if (String_indexOf("replace","แทนที่","None!")) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());return;} 
-      // }
-    }else{ 
-      // .............. เข้าโหมด "remote","เพลง","play............//
-      if (String_startsWith("remote","เพลง","play")) {  
-        ControlBoard();
-      }else{
-        // .............. เข้าโหมด แปลงข้อความ เป็นคำพูด ............//
-        Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
-        if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
-        audio.connecttospeech(CBlynkReceive.c_str(), "th");
+      // .................. เข้าโหมด Config ...................//
+      if (String_startsWith("config","setup","ตั้งค่า")) {
+        // ....เข้าโหมดย่อยของ Config คือ "replace","delete","default"....//
+          audio.connecttospeech(CBlynk_Cut.c_str(), "th");
+          if (String_indexOf("default","เริ่มต้น","start")) {Start_Config();return;}
+          if (String_indexOf("delete","ลบ","None!")) {Check_Delete_SPIFFS(CBlynk_Cut.c_str());return;}        
+          if (String_indexOf("replace","แทนที่","None!")) {Check_Replace_SPIFFS(CBlynk_Cut.c_str());return;} 
+      }else{ 
+        // .............. เข้าโหมด "remote","เพลง","play............//
+        if (String_startsWith("remote","เพลง","play")) {  
+          ControlBoard();
+        }else{
+          // .............. เข้าโหมด แปลงข้อความ เป็นคำพูด ............//
+          Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
+          if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
+          audio.connecttospeech(CBlynkReceive.c_str(), "th");
+          // terminal.write(param.getBuffer(), param.getLength());
+        }
       }
     }
     // Blynk.virtualWrite(V6, CBlynkReceive);Blynk.syncVirtual(V6);

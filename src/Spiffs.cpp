@@ -260,16 +260,19 @@ void Send_Value(String Name_Config,int Config_Value) {
   }
 }
 //.................. เขียนไฟล์ลง RAM of Board แล้วเรียกกลับไปใช้ setup ค่าตัวแปร .........................//
-void Save_Config(fs::FS &fs, const char * path){ //String R_Text = ""; // Save ตัวแปร Config ทั้งหมดลงกลับไปใน Ram
+void Save_Config(fs::FS &fs, const char * path,String CSave_Spec){ //String R_Text = ""; // Save ตัวแปร Config ทั้งหมดลงกลับไปใน Ram
   File file = fs.open(path); if(!file){Serial.println("Failed to open file for reading"); return;}    
   while(file.available()){R_Text = R_Text+file.readString();}    
   //................... Save ค่าตัวแปร int ไม่เกิน 2 หลัก ..................//
-  Send_Value("Volume=" , NVolume);
-  Send_Value("every_minute=" , every_minute);
-  Send_Value("PlayAuto=" , NPlayAuto);
-  Send_Value("SammaArahang=" , NSammaArahang);
-  Send_Value("Folder_Meditation=" , NFolder_Meditation);
-  Send_Value("File_Meditation=" , NFile_Meditation);
+  if (CSave_Spec.startsWith("Save_FolderFile_Meditation")) {Send_Value("Folder_Meditation=" , NFolder_Meditation);Send_Value("File_Meditation=" , NFile_Meditation);}
+  if (CSave_Spec.startsWith("Save_ALL")) {
+    Send_Value("Volume=" , NVolume);
+    Send_Value("every_minute=" , every_minute);
+    Send_Value("PlayAuto=" , NPlayAuto);
+    Send_Value("SammaArahang=" , NSammaArahang);
+    Send_Value("Folder_Meditation=" , NFolder_Meditation);
+    Send_Value("File_Meditation=" , NFile_Meditation);
+  }
   //........................ แก้ไขค่าตัวแปร String ......................//
   if(CPlay_Test == "on") {R_Text.replace("Play_Test=off","Play_Test=on");}else{R_Text.replace("Play_Test=on","Play_Test=off");}
   if(CSound == "on") {R_Text.replace("Sound=off","Sound=on");}else{R_Text.replace("Sound=on","Sound=off");}
@@ -306,16 +309,16 @@ void Check() {
         if (start_time_relay.toInt() == 5){Leof_speech = false;audio.connecttospeech("ฉันชื่อ จารุณี มีอะไรให้รับใช้", "th");LSend_Serial = true;} // ส่งค่าตัวแปรผ่าน Serial Monitor//อ่านตารางเวลา กิจวัตรประจำวัน Read_Ascheduled();
         if (start_time_relay.toInt() == 6){audio.connecttospeech("ตั้งค่า Config เป็น Default ค่าเริ่มต้น", "th");Start_Config();}       
         // if (start_time_relay.toInt() == 7){audio.connecttospeech("ตั้งค่าสัมมา อะระหัง ทุกกี่นาที", "th");NZero_Extra = 7;}  
-        if (start_time_relay.toInt() == 7){audio.connecttospeech("หลวงพ่อนำนั่ง ง่ายแต่ลึก ต่อไป", "th");PlayNext_Meditation();}  
+        if (start_time_relay.toInt() == 7){audio.connecttospeech("หลวงพ่อนำนั่ง ง่ายแต่ลึก ต่อไป", "th");PlayNext_Meditation("Save_FolderFile_Meditation");}  
         if (start_time_relay.toInt() == 8){audio.connecttospeech("ตั้งค่าบอกเวลา ทุกกี่นาที", "th");NZero_Extra = 8;}  
-        if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt");}  
+        if (start_time_relay.toInt() == 9){audio.connecttospeech("Save ตัวแปร Config ลงใน Ram ของ Board", "th");Save_Config(SPIFFS, "/mydir/config.txt","Save_ALL");}  
         start_time_relay = "";      
         //.........................................................................................//
       }      
     }
 }
 
-void PlayNext_Meditation() {
+void PlayNext_Meditation(String CSave_Spec) {
   if (AFolderFile[NFolder_Meditation][NFile_Meditation].isEmpty()){
     NFolder_Meditation++;NFile_Meditation = 1;
     Serial.print("NFolder_Meditation = ");Serial.println(NFolder_Meditation);
@@ -325,5 +328,5 @@ void PlayNext_Meditation() {
   audio.connecttoSD( AFolderFile[NFolder_Meditation][NFile_Meditation].c_str());
   audio.setVolume(10);Serial.println("Volume = 10");LMeditation = true;
   NFile_Meditation++;Serial.print("NFile_Meditation = ");Serial.println(NFile_Meditation);
-  Save_Config(SPIFFS, "/mydir/config.txt");
+  Save_Config(SPIFFS, "/mydir/config.txt",CSave_Spec);
 }

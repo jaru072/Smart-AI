@@ -10,6 +10,31 @@
 #include "SD.h"
 #include <esp_now.h>
 
+//Pinos de conexão do ESP32 e o módulo de cartão SD
+#define SD_CS          5
+#define SPI_MOSI      23
+#define SPI_MISO      19
+#define SPI_SCK       18
+
+//Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
+#define I2S_DOUT      25
+#define I2S_BCLK      27
+#define I2S_LRC       26
+
+//............. Driver and Varible Control Audio ....................//
+#include <driver/i2s.h>
+#define I2S_WS 15
+#define I2S_SD 32
+#define I2S_SCK 14
+#define I2S_PORT I2S_NUM_0
+#define I2S_SAMPLE_RATE   (16000)
+#define I2S_SAMPLE_BITS   (16)
+#define I2S_READ_LEN      (16 * 1024)
+#define RECORD_TIME       (20) //Seconds
+#define I2S_CHANNEL_NUM   (1)
+#define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+
 extern Audio audio;
 extern struct tm tmstruct ;
 extern time_t now;
@@ -46,7 +71,7 @@ extern int NFolder_Meditation,NFile_Meditation,count1,count2;
 extern TaskHandle_t task1Handle;
 extern TaskHandle_t task2Handle;
 
-extern void PlayNext_Meditation();
+extern void PlayNext_Meditation(String );
 extern void Send_Value(String ,int );
 extern void Save_Config(fs::FS &fs, const char * path);
 extern void Check_Replace_SPIFFS(const char* );
