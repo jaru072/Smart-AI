@@ -15,18 +15,7 @@
 #endif
 
 BlynkTimer timer1;
-
-// Define the data for the table
-// const int ROWS = 3;
-// const int COLS = 3;
-// String tableData[ROWS][COLS] = {
-//   {"","",""},
-//   {"","",""},
-//   {"","",""}
-// };
-
 int currentRow = 0;
-
 WidgetTerminal terminal(V6);
 
 const char* serverBlynk = "elec.cmtc.ac.th";  //"blynk.honey.co.th"; //
@@ -53,8 +42,6 @@ String monthName[] = {"",".มกราคม", ".กุมภาพันธ์
 String wdayName[] = {"","วันจันทร์","วันอังคาร","วันพุธ","วันพฤหัส","วันศุกร์","วันเสาร์","วันอาทิตย์"};
 String yearName[] = {"2565","2566","2567","2568","2569","2570","2571","2572","2573","2574"};
 
-//#include <time.h>
-//...... Get Date Time from Internet
 struct tm tmstruct ;
 
 int every_minute = 5;
@@ -77,17 +64,6 @@ uint8_t sec     = 45;
 File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
-
-// //Pinos de conexão do ESP32 e o módulo de cartão SD
-// #define SD_CS          5
-// #define SPI_MOSI      23
-// #define SPI_MISO      19
-// #define SPI_SCK       18
-
-// //Pinos de conexão do ESP32-I2S e o módulo I2S/DAC CJMCU 1334
-// #define I2S_DOUT      25
-// #define I2S_BCLK      27
-// #define I2S_LRC       26
 
 Audio audio;
 WiFiMulti wifiMulti;
@@ -130,19 +106,6 @@ IRrecv irrecv(RECV_PIN);
 decode_results results;
 unsigned long last_Wifi,last_Remote,last,last_Sleep = millis();
 
-// //............. Driver and Varible Control Audio ....................//
-// #include <driver/i2s.h>
-// #define I2S_WS 15
-// #define I2S_SD 32
-// #define I2S_SCK 14
-// #define I2S_PORT I2S_NUM_0
-// #define I2S_SAMPLE_RATE   (16000)
-// #define I2S_SAMPLE_BITS   (16)
-// #define I2S_READ_LEN      (16 * 1024)
-// #define RECORD_TIME       (20) //Seconds
-// #define I2S_CHANNEL_NUM   (1)
-// #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
-// #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 bool Leof_speech = false; // จำเป็นต้องเป็น false เพราะไม่ให้เข้า บอกกิจวัตรประจำวัน แต่ให้เข้า Play_Speech(); ก่อน
 bool Leof_mp3 = true;
 bool LFirst_Song,LSDcard = false;
@@ -504,9 +467,8 @@ BLYNK_WRITE(V6) {
   if (param.asInt() != 0 or CBlynkReceive.length() > 0) { // ยกเลิกทักทายตอนเปิดเครื่อง
     Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
   }
-  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;String CBlynk_First = CBlynkReceive.substring(0,1);
-    String Sign_Setup = "@/*";
-    if (CBlynk_First.compareTo(Sign_Setup)) { CBlynkReceive = CBlynkReceive.substring(1,CBlynkReceive.length());CBlynk_Cut = CBlynkReceive;
+  if (!CBlynkReceive.isEmpty()) {CBlynk_Cut = CBlynkReceive;
+    if (String_startsWith("@","/","*"))  { //CBlynkReceive = CBlynkReceive.substring(1,CBlynkReceive.length());CBlynk_Cut = CBlynkReceive;
       if (String_indexOf("read","อ่าน","None!")) {audio.connecttospeech(CBlynkReceive.c_str(), "th");terminal_ReadWord();terminal.flush();return;}
 
       // .................. เข้าโหมด Config ...................//
@@ -520,14 +482,14 @@ BLYNK_WRITE(V6) {
         // .............. เข้าโหมด "remote","เพลง","play............//
         if (String_startsWith("remote","เพลง","play")) {  
           ControlBoard();
-        }else{
+        }
+      }
+    }else{
           // .............. เข้าโหมด แปลงข้อความ เป็นคำพูด ............//
           Serial.print(" ความยาวตัวอักษร = ");Serial.println(CBlynkReceive.length());
           if (CBlynkReceive.length() >= 137) {CBlynkReceive = CBlynkReceive.substring(0,136);}
           audio.connecttospeech(CBlynkReceive.c_str(), "th");
           // terminal.write(param.getBuffer(), param.getLength());
-        }
-      }
     }
     // Blynk.virtualWrite(V6, CBlynkReceive);Blynk.syncVirtual(V6);
     terminal.flush();
@@ -551,6 +513,18 @@ BLYNK_CONNECTED() {
   }
   terminal.print("Wifi Connected Ready IP address: ");terminal.println(WiFi.localIP());
   Blynk.virtualWrite(V2, NVolume);Blynk.syncVirtual(V2);
+
+  BlynkParamAllocated items(256); // list length, in bytes
+  for (int j = 0; j <= 10; j++) {
+    // String CNameMusic = AFolderFile[FolderPlay][j];
+    String CNameMusic = AFolderFile[2][j+1];
+    int AT_Word = CNameMusic.lastIndexOf("/");
+    CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+    if (CNameMusic.isEmpty()) {break;}
+    items.add(CNameMusic);
+  }
+  Blynk.setProperty(V7, "labels", items);
+  Blynk.virtualWrite(V7, 1);Blynk.syncVirtual(V7);
   // Blynk.syncAll();
 }
 
