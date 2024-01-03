@@ -496,9 +496,24 @@ BLYNK_WRITE(V6) {
   }
 }
 
+//... items.add Menu for Choose File Music
+BLYNK_WRITE(V7) { audio.connecttoSD(AFolderFile[NFolder][param.asInt()].c_str());}
+//... items.add Menu for Choose Folder Music
+BLYNK_WRITE(V8) { int value = param.asInt(); 
+  BlynkParamAllocated items(256); // list length, in bytes
+  for (int j = 0; j <= 30; j++) {
+    String CNameMusic = AFolderFile[value][j+1];
+    int AT_Word = CNameMusic.lastIndexOf("/");
+    CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+    if (CNameMusic.isEmpty()) {break;}
+    items.add(CNameMusic);
+  }
+  Blynk.setProperty(V7, "labels", items);
+  Blynk.virtualWrite(V7, 1);//Blynk.syncVirtual(V7);
+  if (value != 0) { NFolder = value;}
+}
 BLYNK_CONNECTED() {
   Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-  // Automaticly runs at Mega bootup
   Blynk.virtualWrite(V6, "\n"
                     "   ___  __          __\n"
                     "  / _ )/ /_ _____  / /__\n"
@@ -508,24 +523,17 @@ BLYNK_CONNECTED() {
   size_t ram = BlynkFreeRam();
   Blynk.virtualWrite(V6, "\n Blynk Free RAM: ", ram);
   Blynk.virtualWrite(V6, " , ESP FreeHeap RAM: " + String(ESP.getFreeHeap()) + "\n");
-  if (NYear > 1970) {
-   Blynk.virtualWrite(V6, "\n ", CDateTime, "\n");
-  }
+  if (NYear > 1970) {Blynk.virtualWrite(V6, "\n ", CDateTime, "\n");}
   terminal.print("Wifi Connected Ready IP address: ");terminal.println(WiFi.localIP());
   Blynk.virtualWrite(V2, NVolume);Blynk.syncVirtual(V2);
 
+  //.......... items.add Menu for Choose Folder Music ...........//
   BlynkParamAllocated items(256); // list length, in bytes
-  for (int j = 0; j <= 10; j++) {
-    // String CNameMusic = AFolderFile[FolderPlay][j];
-    String CNameMusic = AFolderFile[2][j+1];
-    int AT_Word = CNameMusic.lastIndexOf("/");
-    CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
-    if (CNameMusic.isEmpty()) {break;}
-    items.add(CNameMusic);
+  for (int j = 0; j <= 30; j++) {String CNameMusic = AFolderFile[j+1][2];
+    int AT_Word = CNameMusic.lastIndexOf("/");CNameMusic = CNameMusic.substring(1,AT_Word);
+    if (CNameMusic.isEmpty()) {break;} items.add(CNameMusic);
   }
-  Blynk.setProperty(V7, "labels", items);
-  Blynk.virtualWrite(V7, 1);Blynk.syncVirtual(V7);
-  // Blynk.syncAll();
+  Blynk.setProperty(V8, "labels", items);Blynk.virtualWrite(V8, 1);Blynk.syncVirtual(V8);
 }
 
 //....................... SETUP ...........................//

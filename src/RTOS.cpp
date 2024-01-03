@@ -17,9 +17,9 @@ File root;
 
 unsigned long last_timer,last_Stopsong = millis();
 int count = 0;
-String AFolderFile[21][31] = { {}, {} }; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
+String AFolderFile[20][31] = { {}, {} }; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 String ASong[100];
-int TotalASong = 0;int ATotalASong[100];String S_info = "Check info";
+int TotalASong = 0;String S_info = "Check info";
 bool LOpenURL = true;
 
 String OldFolderName = "Old";
@@ -76,7 +76,7 @@ void printDirectory(File dir, int numTabs) {
   while (true) {File entry =  dir.openNextFile(); 
     if (! entry) {break;}
     String Fname = entry.name(); int Number = Fname.substring(1,3).toInt();
-    if (Number <= 20) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
+    if (Number <= 30) {   // นอกนั้นอาจมากกว่า 20 จะไม่เก็บในตัวแปรอเรย์
       if (Fname.endsWith(".mp3")||Fname.endsWith(".aac")||Fname.endsWith(".wav")||Fname.endsWith(".m4a")) {  // ||Fname.endsWith(".flac")
         FolderName = Fname.substring(0,Fname.lastIndexOf("/")); AFolderFile[NFolder][0] = FolderName; 
         AFolderFile[NFolder][NFile] = "/"+OldFolderName+"/"+Fname; 

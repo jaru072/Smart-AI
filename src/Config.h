@@ -111,9 +111,9 @@ extern int hourmin(int ,int );
 //... ตัวแปร Audio and Sdcard
 extern bool Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_Slogan,Lwait_MonkDay,Lwait_Speech,LOpenURL,LPlayAuto,LFirst_Song,Leof_mp3,LSDcard;
 extern unsigned long last_Sleep,last_Remote,last_timer,last_Stopsong;
-extern String ASpeech[],AFolderFile[21][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
+extern String ASpeech[],AFolderFile[20][31],ASong[100]; // ตัวแปรอเรย์ 20 โฟลเดอร์/ละ 30 ไฟล์ แต่ต้องใช้ 21 Array
 extern String OldFolder,FolderName,syncword,S_info,OldFolderName;
-extern int ATotalASong[100],TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
+extern int TotalASpeech,count,NAutoFolder,NumberFile,TotalASong,AFolderSong,NFolder,NFile;
 //... ตัวแปร Play Song
 extern int NPlayEvery,NPlayAuto,FolderPlay,FilePlay,NSongMode;
 extern bool LNumber_Sound,Leof_speech;
