@@ -495,23 +495,30 @@ BLYNK_WRITE(V6) {
     terminal.flush();
   }
 }
+//... Choose File Music
+BLYNK_WRITE(V7) { FilePlay = param.asInt();
+  if (FilePlay != 0) { // ยกเลิกทักทายตอนเปิดเครื่อง
+    Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
+    audio.connecttoSD(AFolderFile[FolderPlay][FilePlay].c_str());
+  }  
+}
 
-//... items.add Menu for Choose File Music
-BLYNK_WRITE(V7) { audio.connecttoSD(AFolderFile[NFolder][param.asInt()].c_str());}
 //... items.add Menu for Choose Folder Music
 BLYNK_WRITE(V8) { int value = param.asInt(); 
-  BlynkParamAllocated items(256); // list length, in bytes
+  BlynkParamAllocated items(512); // list length, in bytes
   for (int j = 0; j <= 30; j++) {
     String CNameMusic = AFolderFile[value][j+1];
-    int AT_Word = CNameMusic.lastIndexOf("/");
-    CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+    int AT_Word = CNameMusic.lastIndexOf("/")+1;
+    if (value > 1 and  value < 5) {AT_Word = AT_Word+3;}
+    CNameMusic = CNameMusic.substring(AT_Word,CNameMusic.indexOf(".mp3"));
     if (CNameMusic.isEmpty()) {break;}
     items.add(CNameMusic);
   }
   Blynk.setProperty(V7, "labels", items);
   Blynk.virtualWrite(V7, 1);//Blynk.syncVirtual(V7);
-  if (value != 0) { NFolder = value;}
+  if (value != 0) {FolderPlay = value;}
 }
+
 BLYNK_CONNECTED() {
   Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
   Blynk.virtualWrite(V6, "\n"
@@ -528,7 +535,7 @@ BLYNK_CONNECTED() {
   Blynk.virtualWrite(V2, NVolume);Blynk.syncVirtual(V2);
 
   //.......... items.add Menu for Choose Folder Music ...........//
-  BlynkParamAllocated items(256); // list length, in bytes
+  BlynkParamAllocated items(128); // list length, in bytes
   for (int j = 0; j <= 30; j++) {String CNameMusic = AFolderFile[j+1][2];
     int AT_Word = CNameMusic.lastIndexOf("/");CNameMusic = CNameMusic.substring(1,AT_Word);
     if (CNameMusic.isEmpty()) {break;} items.add(CNameMusic);
@@ -563,16 +570,16 @@ void setup() {
   if (Wifi_Connect == true) {
     Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
   }
-// if (Wifi_Connect == true) {EXIT2:
-  //   configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
-  //   delay(1000);GetTimeInternet();
-  //   if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
-  // if (Wifi_Connect == true)
-    // Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
-    // Blynk.disconnect();
-    // Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-    // delay(1000);
-  // }
+if (Wifi_Connect == true) {EXIT2:
+    configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+    delay(1000);GetTimeInternet();
+    if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
+  if (Wifi_Connect == true)
+    Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
+    Blynk.disconnect();
+    Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
+    delay(1000);
+  }
   Read_Ascheduled();
 
   if (Blynk.connected() == true){
