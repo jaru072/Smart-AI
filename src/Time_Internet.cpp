@@ -7,10 +7,14 @@
 void GetTimeInternet(void) { 
   if (Wifi_Connect == true) {
     tmstruct.tm_year = 0; GetLocalTime(&tmstruct, 1000);
-    hour = tmstruct.tm_hour;minute = tmstruct.tm_min;
+    hour = tmstruct.tm_hour;minute = tmstruct.tm_min;sec = tmstruct.tm_sec;
     char Cha[32];strftime(Cha, sizeof Cha, "%Y-%m-%d %H:%M:%S", &tmstruct); CDateTime = String(Cha);
     NYear = (tmstruct.tm_year + 1900); NMonth = (tmstruct.tm_mon + 1); NDay = (tmstruct.tm_mday);
     CYear = String(NYear);if(NMonth < 10){CMon = ("0"+String(NMonth));}else{CMon = String(NMonth);} if(NDay < 10){CDay = ("0"+String(NDay));}else{CDay = String(NDay);}  DayofWeek(NDay,NMonth,NYear); // while (tmstruct.tm_year < 100);
+    String CMonth_Name = monthName[NMonth].substring(1,100);
+    CDateTime_Thai = CWdayThai+" "+CDay.toInt()+" "+CMonth_Name+" "+String(NYear+543);
+    Add_Zero(minute,1);String CMin = Str_FileNumber;Add_Zero(sec,1); String CSec = Str_FileNumber;
+    CTime = String(tmstruct.tm_hour)+":"+CMin+":"+CSec;
     if (NYear > 1970) {
       Serial.print(" "+CWdayThai);Serial.printf(" %02d-%02d-%d %02d:%02d:%02d",tmstruct.tm_mday, tmstruct.tm_mon + 1,tmstruct.tm_year + 1900, tmstruct.tm_hour,tmstruct.tm_min, tmstruct.tm_sec);
     }

@@ -55,6 +55,7 @@ extern void myTimerEvent();
 extern void serialEvent();
 extern String CBlynkReceive,CBlynk_Cut;
 extern bool bool_startsWith;
+extern void Add_Zero(int,int);
 //................ Varible New .......................//
 extern String R_Text;
 extern bool LMeditation;
@@ -103,7 +104,6 @@ extern void GetTimeInternet(void);
 extern void IRrecv_void();
 extern void List_Config(void);
 extern void Check();
-extern void Add_Zero(int);
 extern void Start_Config(void);
 //... ตัวแปร SETUP
 extern int NZero_Extra;
@@ -122,11 +122,11 @@ extern int minute_past,NEvery_Min_Future,total_every_minute,old_every_minute,eve
 extern bool GetLocalTime(struct tm * , uint32_t);
 extern int DayofWeek(int,int,int);
 extern int NAlarmClock,every_minute,NYear,NMonth,NDay,Nmdaymonyear,NDoW;
-extern String CDay,CMon,CYear,CWday,CDateTime,CWdayThai;
+extern String CDay,CMon,CYear,CWday,CDateTime,CWdayThai,CDateTime_Thai;
 extern String wdayName[],monthName [];
 extern int NMoonPhase,MoonPhase(int ,int ,int );   
 extern bool LTime_SammaArahang,LFirstShow,LTime_Between,Wifi_Connect,Ltalk_Firsttime,LFirstOnly;
-extern String C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
+extern String Str_FileNumber,CTime,C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString;
 //... ตัวแปร อุณหภูมิ ความชื้น
 extern float h,t;
 //... ตัวแปร Remote

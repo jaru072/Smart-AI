@@ -49,11 +49,11 @@ int total_every_minute,old_every_minute,every_hour = 0;
 int minute_past,New_hour,New_minute,NDoW,Nmdaymonyear = 0;
 long timezone = 7;  // 2;
 byte daysavetime = 0; // 1;
-String C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
-String CDay,CMon,CYear,CWday,CDateTime,CWdayThai,CDateTime_Thai = "";
+String CTime,C_Moon,CMoonPhase,CMoonPhaseThai,start_time_relay,CString = "";
 int NAlarmClock,NMonth,NDay = 0;
-int NChange_Remote,NSleep,Total_last_Sleep = 0;
 int NYear = 1970;
+String CDay,CMon,CYear,CWday,CDateTime,CWdayThai,CDateTime_Thai = "";
+int NChange_Remote,NSleep,Total_last_Sleep = 0;
 bool LscanNetworks,Lwait_Slogan2,Lwait_Slogan1,Lwait_Sawasdee,Lwait_MonkDay,Lwait_Speech,LSend_Serial,Ltalk_Firsttime,LTime_Between,LFirstOnly,LFirstShow,LBetween,LTime_SammaArahang = false;
 int NEvery_Min,NEvery_Min_Future = 0;
 bool GetLocalTime(struct tm * info, uint32_t ms);
@@ -131,7 +131,7 @@ void addnumber() {
       // Serial.println(FileNumber);
       if (FileNumber <= 1000) { //  and FileNumber > 0
         if (FileNumber <= 1000) {FolderNumber = "/99 Number 751-1000/";}if (FileNumber <= 750)  {FolderNumber = "/99 Number 501-750/";}if (FileNumber <= 500)  {FolderNumber = "/99 Number 251-500/";}if (FileNumber <= 250)  {FolderNumber = "/99 Number 1-250/";}
-        Add_Zero(FileNumber);
+        Add_Zero(FileNumber,2);
         FolderFileNumber = FolderNumber+Str_FileNumber+".mp3";Serial.println(FolderFileNumber);
         audio.connecttoSD( FolderFileNumber.c_str() );
       }
@@ -290,8 +290,10 @@ void ControlBoard() {
   }
 } 
 
-void Add_Zero(int FileNumber) {Str_FileNumber = String(FileNumber);
-  if (FileNumber < 10){Str_FileNumber = "00"+String(FileNumber);}else{if (FileNumber < 100){Str_FileNumber = "0"+String(FileNumber);}}  // เติม 00 หน้าตัวเลขหลักหน่วย กับ 0 หลักสิบ
+void Add_Zero(int FileNumber,int NZero) {Str_FileNumber = String(FileNumber);
+  if (NZero == 1) {if (FileNumber < 10){Str_FileNumber = "0"+String(FileNumber);}}
+  if (NZero == 2) {if (FileNumber < 10){Str_FileNumber = "00"+String(FileNumber);}else{if (FileNumber < 100){Str_FileNumber = "0"+String(FileNumber);}}}  // เติม 00 หน้าตัวเลขหลักหน่วย กับ 0 หลักสิบ
+  if (NZero == 3) {if (FileNumber < 10){Str_FileNumber = "000"+String(FileNumber);}else{if (FileNumber < 100){Str_FileNumber = "00"+String(FileNumber);}}}  // เติม 000 หน้าตัวเลขหลักหน่วย กับ 00 หลักสิบ
 }
 
 void ir_remote() {
@@ -328,8 +330,10 @@ void Check_Wifi(int NConnect_Time) {
     connectInternet(); // ทำการเชื่อมต่อเน็ตจำนวน NConnect_Time ครั้ง 
     if (WiFi.status() == WL_CONNECTED) {
       Wifi_Connect = true ; Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
+      if (digitalRead(LED_BUILTIN) == HIGH) {digitalWrite(LED_BUILTIN, LOW);}
     }else{
       Serial.println("Wifi not connected !!!");
+      if (digitalRead(LED_BUILTIN) == LOW) {digitalWrite(LED_BUILTIN, HIGH);Wifi_Connect = false;}
     }
   }
 }
@@ -423,16 +427,15 @@ BLYNK_WRITE(V2) {int Blynk_Volume = param.asInt();
 }
 BLYNK_WRITE(V3) {
   String action = param.asStr();
-  if (action == "play") {audio.pauseResume();}
-  if (action == "stop") {audio.pauseResume();}
-  if (action == "next") {FilePlay++;if(AFolderFile[FolderPlay][FilePlay].isEmpty()) {FilePlay--;Serial.println("ไฟล์สุดท้าย ของโฟลเดอร์");}else{audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}}
-  if (action == "prev") {if(FilePlay>1){FilePlay--;audio.connecttoSD( AFolderFile[FolderPlay][FilePlay].c_str() );Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}else{Serial.println("ไฟล์แรก ของโฟลเดอร์");}}
+  if (action == "play") {audio.pauseResume();return;}
+  if (action == "stop") {audio.pauseResume();return;}
+  if (action == "next") {FilePlay++;if(AFolderFile[FolderPlay][FilePlay].isEmpty()) {FilePlay--;Serial.println("ไฟล์สุดท้าย ของโฟลเดอร์");}else{Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}}
+  if (action == "prev") {if(FilePlay>1){FilePlay--;Serial.println("Folder "+String(FolderPlay)+" File "+String(FilePlay));}else{Serial.println("ไฟล์แรก ของโฟลเดอร์");}}
   Blynk.setProperty(V3, "label", action); Serial.print(action);Serial.println();
   
-  String CNameMusic = AFolderFile[FolderPlay][FilePlay];
-  int AT_Word = CNameMusic.lastIndexOf("/");
-  CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
-  Blynk.virtualWrite(V5, CNameMusic);Blynk.syncVirtual(V5);      
+  // String CNameMusic = AFolderFile[FolderPlay][FilePlay];
+  // CNameMusic = CNameMusic.substring(AT_Word+1,CNameMusic.length());
+  Blynk.virtualWrite(V7, FilePlay);Blynk.syncVirtual(V7);      
 }
 BLYNK_WRITE(V4) {}
 
@@ -562,35 +565,26 @@ void setup() {
   
   // RTOS_Setup(); // xTaskCreate
   Check_SDcard(); // xTaskCreate
-
+  Read_Ascheduled();
   //... Start Wifi and Connect Internet and get time from internet .............//
   WiFi.mode(WIFI_STA);WiFi.disconnect();delay(100);
-  check_ssid();
-  connectInternet();  
+  // check_ssid();
+  // connectInternet();  
+  Check_Wifi(4);
   if (Wifi_Connect == true) {
     Serial.print("Wifi Connected Ready IP address: ");Serial.println(WiFi.localIP()); Wifi_Connect = true ;
-  }
-if (Wifi_Connect == true) {EXIT2:
     configTime(3600 * timezone, daysavetime * 3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
     delay(1000);GetTimeInternet();
-    if (CMoonPhaseThai == "") {goto EXIT2;} // Must be GetTimeInternet() pass
-  if (Wifi_Connect == true)
-    Blynk.config(auth,serverBlynk,portBlynk);delay(1000);
-    Blynk.disconnect();
-    Blynk.connect(); Serial.print(" Server ");Serial.print(serverBlynk);Serial.print(" Auth ");Serial.println(auth);
-    delay(1000);
   }
-  Read_Ascheduled();
-
-  if (Blynk.connected() == true){
-    terminal.clear();
-    terminal.println(F("Blynk v" BLYNK_VERSION ": Device started"));
-    terminal.println(F("-------------"));
-    terminal.println(F("Type 'Marco' and get a reply, or type"));
-    terminal.println(F("anything else and get it printed back."));
-    terminal.flush();
-    // timer1.setInterval(2000L, myTimerEvent);
-  }  
+  // if (Blynk.connected() == true){
+  //   terminal.clear();
+  //   terminal.println(F("Blynk v" BLYNK_VERSION ": Device started"));
+  //   terminal.println(F("-------------"));
+  //   terminal.println(F("Type 'Marco' and get a reply, or type"));
+  //   terminal.println(F("anything else and get it printed back."));
+  //   terminal.flush();
+  //   timer1.setInterval(2000L, myTimerEvent);
+  // }  
 }
 
 void loop() {
@@ -634,11 +628,12 @@ void loop() {
   
   Time_Schedu(); // ตารางเวลาประจำวัน 4 เวลา 6:00 , 13:00 , 18:00 , 22:00
 
+  // แสดงผลใน Serial Monitor และ Blynk Terminal ทุก 2 วินาที
   if (millis() - last_timer > 2000) {last_timer = millis();
     if (Wifi_Connect == true){ GetTimeInternet();
-      // แสดงผลใน Serial Monitor และ Blynk Terminal ทุก 2 วินาที
+      if (digitalRead(LED_BUILTIN) == HIGH) {digitalWrite(LED_BUILTIN, LOW);}
       String C_Print = " NMoon = "+String(NMoonPhase)+" Leof_speech = "+Leof_speech+" Leof_mp3 = "+Leof_mp3;
-      Serial.println(C_Print); terminal.println(CWdayThai+" "+CDateTime+C_Print);
+      Serial.println(C_Print); terminal.println(CDateTime_Thai+" "+CTime+CMoonPhaseThai);
     }
     // sendDHT();    // ส่งค่าอุณหภูมิ ความชื้นSerial.println(" ");
   }
