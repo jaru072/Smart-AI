@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Config.h>
+
 //Pinos de conexão do ESP32 e o módulo de cartão SD
 #define SD_CS          5
 #define SPI_MOSI      23
@@ -10,6 +11,14 @@
 #define I2S_DOUT      25
 #define I2S_BCLK      27
 #define I2S_LRC       26
+
+// extern BleKeyboard bleKeyboard;
+// extern void Task_Ble_Keyboard(void * );
+
+// #include <BleKeyboard.h>
+// BleKeyboard bleKeyboard;
+void Task_Ble_Keyboard(void * );
+void Ble_Keyboard();
 
 const char* URL = "https://mp3.ffh.de/radioffh/hqlivestream.mp3";  //"https://tunein.com/radio/STAR-FM-s266883/";
 String File_SD = "/006 ครบรอบ 138 ปี พระมงคลเทพมุนี.mp3";
@@ -121,39 +130,51 @@ void task_Check_SDcard(void * parameter){
   }
   vTaskDelete(NULL);
 }
-//............. Task Control Led blink every 500 ms ................//
-void toggleLED(void * parameter){
-  for(;;){ 
-    digitalWrite(LED_BUILTIN, HIGH);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task for 500ms
-    digitalWrite(LED_BUILTIN, LOW);
-    vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task again for 500ms
-  }
-}
-//................... Task Control uploadToAWS.....................//
-void uploadToAWS(void * parameter){
-    // Implement your custom logic here
-    // When you're done, call vTaskDelete. Don't forget this!
-    vTaskDelete(NULL);
-}
-//....................... Task Control task2 ......................//
-TaskHandle_t task2Handle = NULL;
-void task2(void * parameter){
-  for(;;){count2++;
-    // Serial.print("Task 2 counter");Serial.println(count2);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-  }
-}
-//........................ xTaskCreate Main ........................//
-void RTOS_Setup() {
-  //............... Setup RTOS xTaskCreate ................//
-  xTaskCreate(task2, "Task 2", 1000, NULL, 1, &task2Handle);
-  // Function that should be called// Name of the task (for debugging)// Stack size (bytes)// Parameter to pass// Task priority// Task handle
-  xTaskCreate(toggleLED, "Toggle LED", 1000, NULL, 1, NULL);  
-  xTaskCreate(uploadToAWS, "Upload to AWS", 1000, NULL, 1, NULL);
-  // vTaskDelete(NULL);
-}
+// //............. Task Control Led blink every 500 ms ................//
+// void toggleLED(void * parameter){
+//   for(;;){ 
+//     digitalWrite(LED_BUILTIN, HIGH);
+//     vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task for 500ms
+//     digitalWrite(LED_BUILTIN, LOW);
+//     vTaskDelay(500 / portTICK_PERIOD_MS);//Pause the task again for 500ms
+//   }
+// }
+// //................... Task Control uploadToAWS.....................//
+// void uploadToAWS(void * parameter){
+//     // Implement your custom logic here
+//     // When you're done, call vTaskDelete. Don't forget this!
+//     vTaskDelete(NULL);
+// }
+// //....................... Task Control task2 ......................//
+// TaskHandle_t task2Handle = NULL;
+// void task2(void * parameter){
+//   for(;;){count2++;
+//     // Serial.print("Task 2 counter");Serial.println(count2);
+//     vTaskDelay(1000 / portTICK_PERIOD_MS);
+//   }
+// }
+
+// TaskHandle_t Task_Ble_KeyboardHandle = NULL;
+// void Task_Ble_Keyboard(void * parameter) {
+//   if(bleKeyboard.isConnected()) {
+//     Serial.println("Sending Enter key...");bleKeyboard.write(KEY_RETURN);vTaskDelay(1000 / portTICK_PERIOD_MS);
+//     // Serial.println("Sending Play/Pause media key...");bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);delay(1000);
+//     vTaskDelay(3000 / portTICK_PERIOD_MS);  //Serial.println("Waiting 3 seconds...");
+//   }
+//   vTaskDelete(NULL);
+// }
+// //........................ xTaskCreate Main ........................//
+// void RTOS_Setup() {
+//   //............... Setup RTOS xTaskCreate ................//
+//   xTaskCreate(task2, "Task 2", 1000, NULL, 1, &task2Handle);
+//   // Function that should be called// Name of the task (for debugging)// Stack size (bytes)// Parameter to pass// Task priority// Task handle
+//   xTaskCreate(toggleLED, "Toggle LED", 1000, NULL, 1, NULL);  
+//   xTaskCreate(uploadToAWS, "Upload to AWS", 1000, NULL, 1, NULL);
+//   // vTaskDelete(NULL);
+// }
+
 //.................. xTaskCreate Check_SDcard only .................//
-void Check_SDcard() {xTaskCreate(task_Check_SDcard, "Check SDcard", 5000, NULL, 2, &task_Check_SDcardHandle);}
+void Check_SDcard() {xTaskCreate(task_Check_SDcard, "Check SDcard", 4000, NULL, 2, &task_Check_SDcardHandle);}
 void check_ssid() {xTaskCreate(Task_check_ssid, "check ssid", 2800, NULL, 1, &Task_check_ssidHandle);}
-void connectInternet() {xTaskCreate(Task_connectInternet, "connectInternet", 3500, NULL, 3, &Task_connectInternetHandle);}
+// void Ble_Keyboard() {xTaskCreate(Task_Ble_Keyboard, "Ble_Keyboard", 3000, NULL, 3, &Task_Ble_KeyboardHandle);}
+void connectInternet() {xTaskCreate(Task_connectInternet, "connectInternet", 3500, NULL, 4, &Task_connectInternetHandle);}

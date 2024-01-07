@@ -1,15 +1,18 @@
 #include "FS.h"
 #include "Audio.h"
 #include <vfs_api.h>
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
-// #include <IRremote.h>
+// #include <Adafruit_Sensor.h>
+// #include <DHT.h>
+// #include <DHT_U.h>
 #include "WiFiMulti.h"
 #include "SPI.h"
 #include "SD.h"
-#include <esp_now.h>
+// #include <esp_now.h>
 
+// #include <BleKeyboard.h>
+// extern BleKeyboard bleKeyboard;
+// extern void Task_Ble_Keyboard(void * );
+// extern void Ble_Keyboard();
 //Pinos de conexão do ESP32 e o módulo de cartão SD
 #define SD_CS          5
 #define SPI_MOSI      23
@@ -143,34 +146,12 @@ extern String Ascheduled[30][3];
 extern const char * Replace_Config;
 extern int NSammaArahang;
 
-#define code_ON  33446055 // ค่าปุ่มกด Auto ON
-#define code_OFF 33446055 // ค่าปุ่มกด Auto OFF
-#define code_Mode1 33439935 // ค่าปุ่มกด 3H
-#define code_Mode2 33472575 // ค่าปุ่มกด 5H
-#define code_Mode3  33448095 // ค่าปุ่มกด 8H
-#define code_Mode4  33464415 // ค่าปุ่มกด ดำขาว
-
-#define R_zero 16738455
-#define R_one 16724175
-#define R_two 16718055
-#define R_three 16743045
-#define R_four 16716015
-#define R_five 16726215
-#define R_six 16734885
-#define R_seven 16728765
-#define R_eight 16730805
-#define R_nine 16732845
-#define R_star 16753245   // Power
-#define R_sharp 16736925  // Mode
-#define R_ok 16769055     // EQ
-#define R_top 16748655
-#define R_right 16761405
-#define R_bottom 16754775
-#define R_left 16712445
-#define R_Mute 16769565  //   ---space16769565
-#define R_PlayPause 16720605  // ---space
-#define R_RPT 16750695 //   ---space
-#define R_U_SD 16756815  // ---space
+// #define code_ON  33446055 // ค่าปุ่มกด Auto ON
+// #define code_OFF 33446055 // ค่าปุ่มกด Auto OFF
+// #define code_Mode1 33439935 // ค่าปุ่มกด 3H
+// #define code_Mode2 33472575 // ค่าปุ่มกด 5H
+// #define code_Mode3  33448095 // ค่าปุ่มกด 8H
+// #define code_Mode4  33464415 // ค่าปุ่มกด ดำขาว
 
 #define ir_one 16753245   // ค่าปุ่มกด 0-9 * # OK สามเหลี่ยม บน ขวา ล่าง ซ้าย
 #define ir_two 16736925
