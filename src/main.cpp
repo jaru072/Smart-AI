@@ -502,7 +502,7 @@ BLYNK_WRITE(V6) {
 BLYNK_WRITE(V7) { FilePlay = param.asInt();
   if (FilePlay != 0) { // ยกเลิกทักทายตอนเปิดเครื่อง
     Lwait_Slogan1 = true;Lwait_Slogan2 = true;Leof_speech = true;N = TotalASpeech+1;
-    audio.connecttoSD(AFolderFile[FolderPlay][FilePlay].c_str());
+    Leof_mp3 = false;audio.connecttoSD(AFolderFile[FolderPlay][FilePlay].c_str());
   }  
 }
 
