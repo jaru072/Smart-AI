@@ -165,7 +165,7 @@ void MonkDay() { String Last_MoonPhaseThai = CMoonPhaseThai;
       if (NMoonPhase == 14) { MoonPhase(NYear+543,NMonth,NDay+1);
         String C_MoonPhaseThai = CMoonPhaseThai;C_MoonPhaseThai.replace(" ","");C_MoonPhaseThai.replace("แรม","");C_MoonPhaseThai.replace("ขึ้น",""); 
         NMoonPhase = C_MoonPhaseThai.toInt(); CMoonPhaseThai = Last_MoonPhaseThai;
-        if (NMoonPhase == 15){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}    
+        if (NMoonPhase == 15){C_Moon = "พรุ่งนี้วันพระ แรม 15 ค่ำ";}else{C_Moon = "วันนี้วันพระ แรม 14 ค่ำ";}    
         Leof_speech = false; audio.connecttospeech(C_Moon.c_str(), "th");Lwait_MonkDay = true;
         NMoonPhase = 14;  
       }
